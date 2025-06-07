@@ -57,13 +57,7 @@ const nextConfig = {
   },
 
   // Content Security Policy
-  async rewrites() {
-    return {
-      beforeFiles: [],
-      afterFiles: [],
-      fallback: []
-    }
-  },
+  // Note: rewrites function is defined later in the file
 
   // =============================================================================
   // PERFORMANCE OPTIMIZATIONS
@@ -142,7 +136,7 @@ const nextConfig = {
   
   // Environment variables to expose to the client
   env: {
-    CUSTOM_KEY: process.env.CUSTOM_KEY,
+    // Add any client-side environment variables here if needed
   },
 
   // Public runtime configuration
