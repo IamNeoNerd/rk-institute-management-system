@@ -26,7 +26,8 @@ export async function GET(request: Request) {
     }
     
     if (month) {
-      whereClause.month = parseInt(month);
+      const monthDate = new Date(parseInt(year || new Date().getFullYear()), parseInt(month) - 1, 1);
+      whereClause.month = monthDate;
     }
     
     if (year) {
@@ -50,17 +51,13 @@ export async function GET(request: Request) {
             },
           },
         },
-        paymentAllocations: {
-          include: {
-            payment: {
-              select: {
-                id: true,
-                amount: true,
-                paymentDate: true,
-                paymentMethod: true,
-                referenceNumber: true,
-              },
-            },
+        payment: {
+          select: {
+            id: true,
+            amount: true,
+            paymentDate: true,
+            paymentMethod: true,
+            reference: true,
           },
         },
       },
@@ -128,7 +125,7 @@ export async function POST(request: Request) {
           where: {
             studentId_month_year: {
               studentId: student.id,
-              month: parseInt(month),
+              month: new Date(parseInt(year), parseInt(month) - 1, 1),
               year: parseInt(year),
             },
           },
@@ -140,7 +137,7 @@ export async function POST(request: Request) {
           },
           create: {
             studentId: student.id,
-            month: parseInt(month),
+            month: new Date(parseInt(year), parseInt(month) - 1, 1),
             year: parseInt(year),
             grossAmount: calculation.grossMonthlyFee,
             discountAmount: calculation.totalDiscount,

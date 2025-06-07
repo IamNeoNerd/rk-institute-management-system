@@ -131,6 +131,8 @@ model StudentFeeAllocation {
   studentId         String
   payment           Payment?        @relation(fields: [paymentId], references: [id])
   paymentId         String?
+
+  @@unique([studentId, month, year])
 }
 
 model Payment {
