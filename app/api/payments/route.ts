@@ -30,24 +30,18 @@ export async function GET(request: Request) {
     const payments = await prisma.payment.findMany({
       where: whereClause,
       include: {
-        student: {
+        family: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        feeAllocations: {
           include: {
-            family: {
+            student: {
               select: {
                 id: true,
                 name: true,
-              },
-            },
-          },
-        },
-        allocations: {
-          include: {
-            feeAllocation: {
-              select: {
-                id: true,
-                month: true,
-                year: true,
-                netAmount: true,
               },
             },
           },
@@ -72,93 +66,54 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { 
-      studentId, 
-      amount, 
-      paymentMethod, 
-      referenceNumber, 
+    const {
+      familyId,
+      amount,
+      paymentMethod,
+      reference,
       paymentDate,
-      allocations 
+      feeAllocationIds
     } = body;
 
     // Validate required fields
-    if (!studentId || !amount || !paymentMethod) {
+    if (!familyId || !amount || !paymentMethod) {
       return NextResponse.json(
-        { error: 'Student, amount, and payment method are required' },
+        { error: 'Family, amount, and payment method are required' },
         { status: 400 }
       );
     }
 
-    // Verify student exists
-    const student = await prisma.student.findUnique({
-      where: { id: studentId },
+    // Verify family exists
+    const family = await prisma.family.findUnique({
+      where: { id: familyId },
     });
 
-    if (!student) {
+    if (!family) {
       return NextResponse.json(
-        { error: 'Student not found' },
+        { error: 'Family not found' },
         { status: 404 }
       );
     }
 
-    // Create payment with allocations in a transaction
-    const result = await prisma.$transaction(async (tx) => {
-      // Create the payment
-      const payment = await tx.payment.create({
-        data: {
-          studentId,
-          amount: parseFloat(amount),
-          paymentMethod,
-          referenceNumber: referenceNumber || null,
-          paymentDate: paymentDate ? new Date(paymentDate) : new Date(),
-          status: 'COMPLETED',
-        },
-      });
-
-      // Create payment allocations if provided
-      if (allocations && allocations.length > 0) {
-        for (const allocation of allocations) {
-          await tx.paymentAllocation.create({
-            data: {
-              paymentId: payment.id,
-              feeAllocationId: allocation.feeAllocationId,
-              amount: parseFloat(allocation.amount),
-            },
-          });
-
-          // Update fee allocation status
-          const totalAllocated = await tx.paymentAllocation.aggregate({
-            where: { feeAllocationId: allocation.feeAllocationId },
-            _sum: { amount: true },
-          });
-
-          const feeAllocation = await tx.studentFeeAllocation.findUnique({
-            where: { id: allocation.feeAllocationId },
-          });
-
-          if (feeAllocation && totalAllocated._sum.amount) {
-            const newStatus = totalAllocated._sum.amount >= feeAllocation.netAmount 
-              ? 'PAID' 
-              : 'PARTIAL';
-            
-            await tx.studentFeeAllocation.update({
-              where: { id: allocation.feeAllocationId },
-              data: { status: newStatus },
-            });
-          }
-        }
-      }
-
-      return payment;
-    });
-
-    // Fetch the complete payment with relations
-    const completePayment = await prisma.payment.findUnique({
-      where: { id: result.id },
+    // Create payment
+    const payment = await prisma.payment.create({
+      data: {
+        familyId,
+        amount: parseFloat(amount),
+        paymentMethod,
+        reference: reference || null,
+        paymentDate: paymentDate ? new Date(paymentDate) : new Date(),
+      },
       include: {
-        student: {
+        family: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        feeAllocations: {
           include: {
-            family: {
+            student: {
               select: {
                 id: true,
                 name: true,
@@ -166,22 +121,25 @@ export async function POST(request: Request) {
             },
           },
         },
-        allocations: {
-          include: {
-            feeAllocation: {
-              select: {
-                id: true,
-                month: true,
-                year: true,
-                netAmount: true,
-              },
-            },
-          },
-        },
       },
     });
 
-    return NextResponse.json(completePayment, { status: 201 });
+    // Update fee allocations if provided
+    if (feeAllocationIds && feeAllocationIds.length > 0) {
+      await prisma.studentFeeAllocation.updateMany({
+        where: {
+          id: { in: feeAllocationIds },
+        },
+        data: {
+          paymentId: payment.id,
+          isPaid: true,
+          status: 'PAID',
+          paidDate: new Date(),
+        },
+      });
+    }
+
+    return NextResponse.json(payment, { status: 201 });
   } catch (error) {
     console.error('Error recording payment:', error);
     return NextResponse.json(
