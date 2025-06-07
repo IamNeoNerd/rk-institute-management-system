@@ -220,7 +220,7 @@ scripts/seed/
 # Development configuration files
 .eslintrc.*
 .prettierrc.*
-tsconfig.json
+# tsconfig.json - NEEDED for production deployment on Vercel
 tailwind.config.js
 postcss.config.js
 
