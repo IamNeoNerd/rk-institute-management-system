@@ -4,6 +4,8 @@
 
 This folder contains the production-ready deployment version of the RK Institute Management System. All development files, sensitive information, and unnecessary artifacts have been removed for security and performance.
 
+**Latest Update**: Fixed tsconfig.json for Vercel deployment compatibility.
+
 ## **🏗️ Architecture**
 
 - **Frontend**: Next.js 14 with TypeScript
