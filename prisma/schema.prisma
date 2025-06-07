@@ -1,0 +1,218 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String   @id @default(uuid())
+  email          String   @unique
+  password       String
+  name           String
+  role           String   @default("ADMIN")
+  isActive       Boolean  @default(true)
+  lastLoginAt    DateTime?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  family         Family?  @relation(fields: [familyId], references: [id])
+  familyId       String?
+  teacherCourses Course[] @relation("TeacherCourses")
+}
+
+// Role values: ADMIN, TEACHER, PARENT, STUDENT
+
+model Family {
+  id              String            @id @default(uuid())
+  name            String
+  address         String?
+  phone           String?
+  email           String?
+  discountAmount  Float             @default(0)
+  isActive        Boolean           @default(true)
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  users           User[]
+  students        Student[]
+  payments        Payment[]
+  auditTrail      AuditTrail[]
+  notifications   Notification[]
+}
+
+model Student {
+  id                    String                 @id @default(uuid())
+  name                  String
+  grade                 String?
+  dateOfBirth           DateTime?
+  enrollmentDate        DateTime               @default(now())
+  isActive              Boolean                @default(true)
+  studentId             String?                @unique // Optional student ID number
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
+  family                Family                 @relation(fields: [familyId], references: [id])
+  familyId              String
+  subscriptions         StudentSubscription[]
+  feeAllocations        StudentFeeAllocation[]
+  academicLogs          AcademicLog[]
+  attendanceRecords     AttendanceRecord[]
+}
+
+model Course {
+  id                String                @id @default(uuid())
+  name              String
+  description       String?
+  grade             String?
+  isActive          Boolean               @default(true)
+  capacity          Int?                  // Maximum students
+  createdAt         DateTime              @default(now())
+  updatedAt         DateTime              @updatedAt
+  teacher           User?                 @relation("TeacherCourses", fields: [teacherId], references: [id])
+  teacherId         String?
+  feeStructure      FeeStructure?
+  subscriptions     StudentSubscription[]
+  attendanceRecords AttendanceRecord[]    @relation("CourseAttendance")
+}
+
+model Service {
+  id                String                @id @default(uuid())
+  name              String
+  description       String?
+  createdAt         DateTime              @default(now())
+  updatedAt         DateTime              @updatedAt
+  feeStructure      FeeStructure?
+  subscriptions     StudentSubscription[]
+}
+
+// BillingCycle values: MONTHLY, QUARTERLY, HALF_YEARLY, YEARLY
+
+model FeeStructure {
+  id                String          @id @default(uuid())
+  amount            Float
+  billingCycle      String          @default("MONTHLY")
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  course            Course?         @relation(fields: [courseId], references: [id])
+  courseId          String?         @unique
+  service           Service?        @relation(fields: [serviceId], references: [id])
+  serviceId         String?         @unique
+}
+
+model StudentSubscription {
+  id                String          @id @default(uuid())
+  discountAmount    Float           @default(0)
+  startDate         DateTime        @default(now())
+  endDate           DateTime?
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  student           Student         @relation(fields: [studentId], references: [id])
+  studentId         String
+  course            Course?         @relation(fields: [courseId], references: [id])
+  courseId          String?
+  service           Service?        @relation(fields: [serviceId], references: [id])
+  serviceId         String?
+}
+
+model StudentFeeAllocation {
+  id                String          @id @default(uuid())
+  month             DateTime
+  year              Int
+  grossAmount       Float
+  discountAmount    Float
+  netAmount         Float
+  isPaid            Boolean         @default(false)
+  status            String          @default("PENDING") // PENDING, PAID, OVERDUE, CANCELLED
+  dueDate           DateTime?
+  paidDate          DateTime?
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  student           Student         @relation(fields: [studentId], references: [id])
+  studentId         String
+  payment           Payment?        @relation(fields: [paymentId], references: [id])
+  paymentId         String?
+}
+
+model Payment {
+  id                String                 @id @default(uuid())
+  amount            Float
+  paymentDate       DateTime               @default(now())
+  paymentMethod     String?
+  reference         String?
+  createdAt         DateTime               @default(now())
+  updatedAt         DateTime               @updatedAt
+  family            Family                 @relation(fields: [familyId], references: [id])
+  familyId          String
+  feeAllocations    StudentFeeAllocation[]
+}
+
+model AuditTrail {
+  id                String          @id @default(uuid())
+  action            String
+  details           String?
+  performedAt       DateTime        @default(now())
+  performedBy       String
+  family            Family?         @relation(fields: [familyId], references: [id])
+  familyId          String?
+}
+
+model AcademicLog {
+  id                String          @id @default(uuid())
+  content           String
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  student           Student         @relation(fields: [studentId], references: [id])
+  studentId         String
+}
+
+// New models for enhanced functionality
+
+model AttendanceRecord {
+  id                String          @id @default(uuid())
+  date              DateTime        @default(now())
+  status            String          // PRESENT, ABSENT, LATE, EXCUSED
+  notes             String?
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  student           Student         @relation(fields: [studentId], references: [id])
+  studentId         String
+  course            Course?         @relation("CourseAttendance", fields: [courseId], references: [id])
+  courseId          String?
+}
+
+model Notification {
+  id                String          @id @default(uuid())
+  title             String
+  message           String
+  type              String          // EMAIL, SMS, PUSH, IN_APP
+  status            String          @default("PENDING") // PENDING, SENT, FAILED
+  recipientEmail    String?
+  recipientPhone    String?
+  sentAt            DateTime?
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  family            Family?         @relation(fields: [familyId], references: [id])
+  familyId          String?
+}
+
+model SystemSettings {
+  id                String          @id @default(uuid())
+  key               String          @unique
+  value             String
+  description       String?
+  category          String          @default("GENERAL")
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+}
+
+model Report {
+  id                String          @id @default(uuid())
+  name              String
+  type              String          // FINANCIAL, ACADEMIC, ATTENDANCE, CUSTOM
+  parameters        String?         // JSON string of report parameters
+  generatedBy       String
+  filePath          String?
+  status            String          @default("GENERATING") // GENERATING, COMPLETED, FAILED
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+}

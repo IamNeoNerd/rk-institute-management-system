@@ -1,0 +1,48 @@
+{
+  "name": "rk-institute-management-system",
+  "version": "1.0.0",
+  "description": "RK Institute Management System - Production Ready",
+  "private": true,
+  "scripts": {
+    "build": "next build",
+    "start": "next start",
+    "postinstall": "prisma generate",
+    "db:migrate": "prisma migrate deploy",
+    "db:generate": "prisma generate",
+    "health": "node scripts/health-check.js"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.7.1",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/jsonwebtoken": "^9.0.5",
+    "@types/node": "^20.10.5",
+    "@types/react": "^18.2.45",
+    "@types/react-dom": "^18.2.18",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "express-rate-limit": "^7.1.5",
+    "helmet": "^7.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "next": "14.0.4",
+    "prisma": "^5.7.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "typescript": "^5.3.3",
+    "zod": "^3.22.4"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "keywords": [
+    "institute-management",
+    "education",
+    "fee-management",
+    "student-management",
+    "nextjs",
+    "typescript",
+    "postgresql"
+  ],
+  "author": "RK Institute",
+  "license": "PROPRIETARY"
+}
