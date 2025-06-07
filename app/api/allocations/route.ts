@@ -26,7 +26,8 @@ export async function GET(request: Request) {
     }
     
     if (month) {
-      const monthDate = new Date(parseInt(year || new Date().getFullYear()), parseInt(month) - 1, 1);
+      const yearValue = year ? parseInt(year) : new Date().getFullYear();
+      const monthDate = new Date(yearValue, parseInt(month) - 1, 1);
       whereClause.month = monthDate;
     }
     
