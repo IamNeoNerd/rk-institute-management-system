@@ -247,11 +247,12 @@ export class FeeCalculationService {
         const calculation = await this.calculateStudentMonthlyFee(student.id);
         
         // Create or update fee allocation
+        const monthDate = new Date(year, month - 1, 1); // Convert to Date object
         const allocation = await prisma.studentFeeAllocation.upsert({
           where: {
             studentId_month_year: {
               studentId: student.id,
-              month,
+              month: monthDate,
               year
             }
           },
@@ -259,16 +260,16 @@ export class FeeCalculationService {
             grossAmount: calculation.grossMonthlyFee,
             discountAmount: calculation.totalDiscount,
             netAmount: calculation.netMonthlyFee,
-            dueDate: new Date(year, month, 15), // 15th of the month
+            dueDate: new Date(year, month - 1, 15), // 15th of the month
           },
           create: {
             studentId: student.id,
-            month,
+            month: monthDate,
             year,
             grossAmount: calculation.grossMonthlyFee,
             discountAmount: calculation.totalDiscount,
             netAmount: calculation.netMonthlyFee,
-            dueDate: new Date(year, month, 15),
+            dueDate: new Date(year, month - 1, 15),
             status: 'PENDING'
           }
         });
