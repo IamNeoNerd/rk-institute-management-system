@@ -30,7 +30,7 @@ export default function TestLoginPage() {
         setResult(`❌ Login failed: ${data.error}`);
       }
     } catch (error) {
-      setResult(`❌ Network error: ${error.message}`);
+      setResult(`❌ Network error: ${error instanceof Error ? error.message : 'Unknown error'}`);
     } finally {
       setLoading(false);
     }
@@ -75,7 +75,7 @@ export default function TestLoginPage() {
         setResult('❌ Courses API failed');
       }
     } catch (error) {
-      setResult(`❌ Error: ${error.message}`);
+      setResult(`❌ Error: ${error instanceof Error ? error.message : 'Unknown error'}`);
     } finally {
       setLoading(false);
     }
