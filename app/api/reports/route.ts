@@ -5,16 +5,24 @@ import jwt from 'jsonwebtoken';
 const prisma = new PrismaClient();
 
 export async function GET(request: NextRequest) {
+  console.log('📊 Reports API called');
   try {
     // Get auth token
     const token = request.headers.get('authorization')?.replace('Bearer ', '');
+    console.log('🔑 Token received:', token ? 'Yes' : 'No');
+
     if (!token) {
+      console.log('❌ No token provided');
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     // Verify token
+    console.log('🔐 Verifying token...');
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as any;
+    console.log('✅ Token verified, role:', decoded.role);
+
     if (decoded.role !== 'ADMIN') {
+      console.log('❌ Insufficient permissions');
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
@@ -23,9 +31,13 @@ export async function GET(request: NextRequest) {
     const month = parseInt(searchParams.get('month') || String(new Date().getMonth() + 1));
     const year = parseInt(searchParams.get('year') || String(new Date().getFullYear()));
 
+    console.log('📅 Query params - Month:', month, 'Year:', year);
+
     // Calculate date range for the month
     const startDate = new Date(year, month - 1, 1);
     const endDate = new Date(year, month, 0, 23, 59, 59);
+
+    console.log('📅 Date range:', startDate.toISOString(), 'to', endDate.toISOString());
 
     // Get basic counts with error handling
     let totalStudents = 0;
@@ -167,9 +179,19 @@ export async function GET(request: NextRequest) {
       topCourses,
     };
 
+    console.log('✅ Report data compiled successfully:', {
+      totalStudents,
+      totalFamilies,
+      monthlyRevenue,
+      outstandingDues,
+      recentPaymentsCount: recentPayments.length,
+      topCoursesCount: topCourses.length
+    });
+
     return NextResponse.json(reportData);
   } catch (error) {
-    console.error('Reports API error:', error);
+    console.error('❌ Reports API error:', error);
+    console.error('Error stack:', error instanceof Error ? error.stack : 'No stack trace');
     return NextResponse.json(
       { error: 'Failed to fetch report data', details: error instanceof Error ? error.message : 'Unknown error' },
       { status: 500 }

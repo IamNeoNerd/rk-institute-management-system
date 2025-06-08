@@ -34,8 +34,8 @@ export default function ReportsPage() {
   const [reportData, setReportData] = useState<ReportData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
-  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+  const [selectedMonth, setSelectedMonth] = useState(6); // June - where we have test data
+  const [selectedYear, setSelectedYear] = useState(2024); // 2024 - where we have test data
 
   useEffect(() => {
     fetchReportData();
@@ -123,11 +123,14 @@ export default function ReportsPage() {
               onChange={(e) => setSelectedYear(parseInt(e.target.value))}
               className="input-field"
             >
-              {Array.from({ length: 5 }, (_, i) => (
-                <option key={selectedYear - 2 + i} value={selectedYear - 2 + i}>
-                  {selectedYear - 2 + i}
-                </option>
-              ))}
+              {Array.from({ length: 5 }, (_, i) => {
+                const year = 2022 + i; // 2022, 2023, 2024, 2025, 2026
+                return (
+                  <option key={year} value={year}>
+                    {year}
+                  </option>
+                );
+              })}
             </select>
           </div>
         </div>
