@@ -17,9 +17,10 @@ model User {
   lastLoginAt    DateTime?
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
-  family         Family?  @relation(fields: [familyId], references: [id])
+  family         Family?       @relation(fields: [familyId], references: [id])
   familyId       String?
-  teacherCourses Course[] @relation("TeacherCourses")
+  teacherCourses Course[]      @relation("TeacherCourses")
+  academicLogs   AcademicLog[]
 }
 
 // Role values: ADMIN, TEACHER, PARENT, STUDENT
@@ -160,11 +161,17 @@ model AuditTrail {
 
 model AcademicLog {
   id                String          @id @default(uuid())
+  title             String
   content           String
+  logType           String          // ACHIEVEMENT, CONCERN, GENERAL, PROGRESS
+  subject           String?
+  isPrivate         Boolean         @default(false)
   createdAt         DateTime        @default(now())
   updatedAt         DateTime        @updatedAt
   student           Student         @relation(fields: [studentId], references: [id])
   studentId         String
+  teacher           User            @relation(fields: [teacherId], references: [id])
+  teacherId         String
 }
 
 // New models for enhanced functionality

@@ -122,11 +122,13 @@ export async function POST(request: Request) {
         const calculation = await FeeCalculationService.calculateStudentMonthlyFee(student.id);
         
         // Create or update fee allocation
+        const monthDate = new Date(parseInt(year), parseInt(month) - 1, 1);
+
         const allocation = await prisma.studentFeeAllocation.upsert({
           where: {
             studentId_month_year: {
               studentId: student.id,
-              month: new Date(parseInt(year), parseInt(month) - 1, 1),
+              month: monthDate,
               year: parseInt(year),
             },
           },
@@ -138,7 +140,7 @@ export async function POST(request: Request) {
           },
           create: {
             studentId: student.id,
-            month: new Date(parseInt(year), parseInt(month) - 1, 1),
+            month: monthDate,
             year: parseInt(year),
             grossAmount: calculation.grossMonthlyFee,
             discountAmount: calculation.totalDiscount,
