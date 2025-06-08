@@ -6,6 +6,9 @@ import FamilyOverview from '../components/FamilyOverview';
 import ChildrenView from '../components/ChildrenView';
 import FamilyFeesView from '../components/FamilyFeesView';
 import FamilyAcademicView from '../components/FamilyAcademicView';
+import StatCard from '../../../components/shared/StatCard';
+import TabNavigation from '../../../components/shared/TabNavigation';
+import LoadingSpinner from '../../../components/shared/LoadingSpinner';
 
 interface User {
   id: string;
@@ -125,11 +128,7 @@ export default function ParentDashboard() {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
-      </div>
-    );
+    return <LoadingSpinner size="lg" color="green" text="Loading family dashboard..." />;
   }
 
   return (
@@ -184,31 +183,17 @@ export default function ParentDashboard() {
       )}
 
       {/* Navigation Tabs */}
-      <div className="bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <nav className="flex space-x-8">
-            {[
-              { id: 'overview', name: 'Family Overview', icon: '🏠' },
-              { id: 'children', name: 'My Children', icon: '👨‍👩‍👧‍👦' },
-              { id: 'fees', name: 'Fees & Payments', icon: '💰' },
-              { id: 'academic', name: 'Academic Progress', icon: '📚' },
-            ].map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
-                  activeTab === tab.id
-                    ? 'border-green-500 text-green-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                }`}
-              >
-                <span className="mr-2">{tab.icon}</span>
-                {tab.name}
-              </button>
-            ))}
-          </nav>
-        </div>
-      </div>
+      <TabNavigation
+        tabs={[
+          { id: 'overview', name: 'Family Overview', icon: '🏠' },
+          { id: 'children', name: 'My Children', icon: '👨‍👩‍👧‍👦' },
+          { id: 'fees', name: 'Fees & Payments', icon: '💰' },
+          { id: 'academic', name: 'Academic Progress', icon: '📚' },
+        ]}
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+        color="green"
+      />
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -237,93 +222,48 @@ export default function ParentDashboard() {
 
             {/* Family Stats */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-gray-600">Total Children</p>
-                    <p className="text-3xl font-bold text-gray-900">{stats.totalChildren}</p>
-                    <p className="text-sm text-blue-600 mt-1">Enrolled students</p>
-                  </div>
-                  <div className="p-3 bg-blue-100 rounded-lg">
-                    <span className="text-3xl">👨‍👩‍👧‍👦</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-gray-600">Monthly Fee</p>
-                    <p className="text-3xl font-bold text-gray-900">₹{stats.totalMonthlyFee.toLocaleString()}</p>
-                    <p className="text-sm text-green-600 mt-1">After family discount</p>
-                  </div>
-                  <div className="p-3 bg-green-100 rounded-lg">
-                    <span className="text-3xl">💰</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-gray-600">Outstanding Dues</p>
-                    <p className={`text-3xl font-bold ${stats.outstandingDues > 0 ? 'text-red-600' : 'text-green-600'}`}>
-                      ₹{stats.outstandingDues.toLocaleString()}
-                    </p>
-                    <p className={`text-sm mt-1 ${stats.outstandingDues > 0 ? 'text-red-600' : 'text-green-600'}`}>
-                      {stats.outstandingDues > 0 ? 'Payment required' : 'All clear!'}
-                    </p>
-                  </div>
-                  <div className={`p-3 rounded-lg ${stats.outstandingDues > 0 ? 'bg-red-100' : 'bg-green-100'}`}>
-                    <span className="text-3xl">{stats.outstandingDues > 0 ? '⚠️' : '✅'}</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-gray-600">Achievements</p>
-                    <p className="text-3xl font-bold text-yellow-600">{stats.totalAchievements}</p>
-                    <p className="text-sm text-yellow-600 mt-1">This month</p>
-                  </div>
-                  <div className="p-3 bg-yellow-100 rounded-lg">
-                    <span className="text-3xl">🏆</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-gray-600">Areas of Concern</p>
-                    <p className={`text-3xl font-bold ${stats.totalConcerns > 0 ? 'text-red-600' : 'text-green-600'}`}>
-                      {stats.totalConcerns}
-                    </p>
-                    <p className={`text-sm mt-1 ${stats.totalConcerns > 0 ? 'text-red-600' : 'text-green-600'}`}>
-                      {stats.totalConcerns > 0 ? 'Needs attention' : 'All good!'}
-                    </p>
-                  </div>
-                  <div className={`p-3 rounded-lg ${stats.totalConcerns > 0 ? 'bg-red-100' : 'bg-green-100'}`}>
-                    <span className="text-3xl">{stats.totalConcerns > 0 ? '⚠️' : '😊'}</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-gray-600">Last Payment</p>
-                    <p className="text-lg font-bold text-gray-900">
-                      {new Date(stats.lastPaymentDate).toLocaleDateString()}
-                    </p>
-                    <p className="text-sm text-purple-600 mt-1">Payment received</p>
-                  </div>
-                  <div className="p-3 bg-purple-100 rounded-lg">
-                    <span className="text-3xl">💳</span>
-                  </div>
-                </div>
-              </div>
+              <StatCard
+                title="Total Children"
+                value={stats.totalChildren}
+                subtitle="Enrolled students"
+                icon="👨‍👩‍👧‍👦"
+                color="blue"
+              />
+              <StatCard
+                title="Monthly Fee"
+                value={`₹${stats.totalMonthlyFee.toLocaleString()}`}
+                subtitle="After family discount"
+                icon="💰"
+                color="green"
+              />
+              <StatCard
+                title="Outstanding Dues"
+                value={`₹${stats.outstandingDues.toLocaleString()}`}
+                subtitle={stats.outstandingDues > 0 ? 'Payment required' : 'All clear!'}
+                icon={stats.outstandingDues > 0 ? '⚠️' : '✅'}
+                color={stats.outstandingDues > 0 ? 'red' : 'green'}
+              />
+              <StatCard
+                title="Achievements"
+                value={stats.totalAchievements}
+                subtitle="This month"
+                icon="🏆"
+                color="yellow"
+              />
+              <StatCard
+                title="Areas of Concern"
+                value={stats.totalConcerns}
+                subtitle={stats.totalConcerns > 0 ? 'Needs attention' : 'All good!'}
+                icon={stats.totalConcerns > 0 ? '⚠️' : '😊'}
+                color={stats.totalConcerns > 0 ? 'red' : 'green'}
+              />
+              <StatCard
+                title="Last Payment"
+                value={new Date(stats.lastPaymentDate).toLocaleDateString()}
+                subtitle="Payment received"
+                icon="💳"
+                color="purple"
+              />
             </div>
 
             {/* Quick Actions */}
