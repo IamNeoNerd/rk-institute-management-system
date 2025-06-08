@@ -117,7 +117,7 @@ export default function FamilyAcademicView({ selectedChild }: FamilyAcademicView
     }
   };
 
-  const uniqueSubjects = [...new Set(academicLogs.map(log => log.subject))];
+  const uniqueSubjects = Array.from(new Set(academicLogs.map(log => log.subject)));
   
   // Calculate statistics
   const emmaLogs = academicLogs.filter(log => log.studentName.includes('Emma'));

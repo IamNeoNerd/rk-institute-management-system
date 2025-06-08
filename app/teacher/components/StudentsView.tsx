@@ -72,7 +72,7 @@ export default function StudentsView() {
     return matchesSearch && matchesGrade;
   });
 
-  const uniqueGrades = [...new Set(students.map(student => student.grade))].sort();
+  const uniqueGrades = Array.from(new Set(students.map(student => student.grade))).sort();
 
   const getLogTypeIcon = (logType: string) => {
     switch (logType) {

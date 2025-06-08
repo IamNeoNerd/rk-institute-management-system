@@ -107,7 +107,7 @@ export default function MyAcademicLogsView() {
     return matchesType && matchesSubject && !log.isPrivate; // Only show non-private logs to students
   });
 
-  const uniqueSubjects = [...new Set(academicLogs.map(log => log.subject))];
+  const uniqueSubjects = Array.from(new Set(academicLogs.map(log => log.subject)));
   const achievementCount = academicLogs.filter(log => log.logType === 'ACHIEVEMENT').length;
   const progressCount = academicLogs.filter(log => log.logType === 'PROGRESS').length;
 
