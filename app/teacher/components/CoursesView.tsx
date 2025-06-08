@@ -64,7 +64,7 @@ export default function CoursesView() {
   };
 
   // Filter courses taught by current teacher
-  const myCourses = courses.filter(course => course.teacher.id === currentUser?.id);
+  const myCourses = courses.filter(course => course.teacher?.id === currentUser?.id);
 
   const getEnrollmentPercentage = (course: Course) => {
     return Math.round((course.subscriptions.length / course.capacity) * 100);

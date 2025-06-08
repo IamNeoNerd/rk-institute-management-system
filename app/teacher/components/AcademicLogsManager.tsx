@@ -72,16 +72,22 @@ export default function AcademicLogsManager() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     try {
       const token = localStorage.getItem('token');
+      const userData = localStorage.getItem('user');
+      const user = userData ? JSON.parse(userData) : null;
+
       const response = await fetch('/api/academic-logs', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          teacherId: user?.id, // Add teacher ID from logged-in user
+        }),
       });
 
       if (response.ok) {

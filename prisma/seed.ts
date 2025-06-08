@@ -49,6 +49,36 @@ async function main() {
 
   console.log('✅ Admin and teacher users created');
 
+  // Create parent user (linked to Johnson family)
+  const parentUser = await prisma.user.upsert({
+    where: { email: 'parent@rkinstitute.com' },
+    update: {},
+    create: {
+      email: 'parent@rkinstitute.com',
+      password: hashedPassword,
+      name: 'Johnson Family Parent',
+      role: 'PARENT',
+      familyId: 'family-1', // Will be created later
+      isActive: true,
+    },
+  });
+
+  // Create student user (Emma Johnson)
+  const studentUser = await prisma.user.upsert({
+    where: { email: 'student@rkinstitute.com' },
+    update: {},
+    create: {
+      email: 'student@rkinstitute.com',
+      password: hashedPassword,
+      name: 'Emma Johnson',
+      role: 'STUDENT',
+      familyId: 'family-1', // Will be created later
+      isActive: true,
+    },
+  });
+
+  console.log('✅ Parent and student users created');
+
   // Create diverse families with different scenarios
   const families = [
     {
