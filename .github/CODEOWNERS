@@ -1,0 +1,111 @@
+# =============================================================================
+# RK Institute Management System - Code Ownership Rules
+# =============================================================================
+# This file defines code ownership for different parts of the codebase.
+# Code owners are automatically requested for review when PRs modify their areas.
+#
+# Syntax: path-pattern @username @team-name
+# More specific patterns override less specific ones.
+
+# =============================================================================
+# Global Ownership (Fallback)
+# =============================================================================
+# Default owners for everything in the repository
+* @IamNeoNerd
+
+# =============================================================================
+# Core Business Logic (Critical Components)
+# =============================================================================
+# Fee calculation engine - requires careful review
+/lib/feeCalculationService.ts @IamNeoNerd
+/lib/fee-calculation.service.ts @IamNeoNerd
+
+# Database schema and migrations
+/prisma/ @IamNeoNerd
+/prisma/schema.prisma @IamNeoNerd
+
+# Authentication and security
+/lib/auth.ts @IamNeoNerd
+/lib/security.js @IamNeoNerd
+/app/api/auth/ @IamNeoNerd
+
+# =============================================================================
+# API Endpoints (Backend Logic)
+# =============================================================================
+# Core API routes
+/app/api/ @IamNeoNerd
+
+# Fee-related APIs (critical business logic)
+/app/api/fees/ @IamNeoNerd
+/app/api/payments/ @IamNeoNerd
+/app/api/students/ @IamNeoNerd
+
+# Academic and administrative APIs
+/app/api/academic-logs/ @IamNeoNerd
+/app/api/families/ @IamNeoNerd
+/app/api/courses/ @IamNeoNerd
+
+# =============================================================================
+# Frontend Components
+# =============================================================================
+# Core UI components
+/components/ui/ @IamNeoNerd
+
+# Feature-specific components
+/components/forms/ @IamNeoNerd
+/components/layout/ @IamNeoNerd
+
+# Admin interface components
+/app/admin/ @IamNeoNerd
+
+# =============================================================================
+# Configuration & Infrastructure
+# =============================================================================
+# Build and deployment configuration
+/next.config.js @IamNeoNerd
+/package.json @IamNeoNerd
+/tsconfig.json @IamNeoNerd
+/tailwind.config.js @IamNeoNerd
+
+# Docker and deployment
+/Dockerfile @IamNeoNerd
+/docker-compose.yml @IamNeoNerd
+
+# Environment and security
+/.env.example @IamNeoNerd
+/.gitignore @IamNeoNerd
+
+# =============================================================================
+# CI/CD and Workflows
+# =============================================================================
+# GitHub Actions workflows
+/.github/ @IamNeoNerd
+/.github/workflows/ @IamNeoNerd
+
+# =============================================================================
+# Documentation
+# =============================================================================
+# Project documentation
+/README.md @IamNeoNerd
+/DEPLOYMENT-GUIDE.md @IamNeoNerd
+/SECURITY.md @IamNeoNerd
+/API-DOCUMENTATION.md @IamNeoNerd
+
+# =============================================================================
+# Testing
+# =============================================================================
+# Test files and configuration
+/tests/ @IamNeoNerd
+/jest.config.js @IamNeoNerd
+
+# =============================================================================
+# Scripts and Utilities
+# =============================================================================
+# Deployment and utility scripts
+/scripts/ @IamNeoNerd
+
+# =============================================================================
+# Special Files (High Security)
+# =============================================================================
+# Files that require extra scrutiny
+CODEOWNERS @IamNeoNerd
