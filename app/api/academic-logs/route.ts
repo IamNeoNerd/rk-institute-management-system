@@ -15,6 +15,12 @@ export async function GET() {
             id: true,
             name: true,
             grade: true,
+            family: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
           },
         },
         teacher: {
@@ -95,6 +101,12 @@ export async function POST(request: Request) {
             id: true,
             name: true,
             grade: true,
+            family: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
           },
         },
         teacher: {

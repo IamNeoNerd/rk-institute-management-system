@@ -56,12 +56,18 @@ export default function AcademicLogsManager() {
 
       if (logsRes.ok) {
         const logsData = await logsRes.json();
+        console.log('Academic logs data:', logsData);
         setLogs(logsData);
+      } else {
+        console.error('Failed to fetch academic logs:', await logsRes.text());
       }
 
       if (studentsRes.ok) {
         const studentsData = await studentsRes.json();
+        console.log('Students data:', studentsData);
         setStudents(studentsData);
+      } else {
+        console.error('Failed to fetch students:', await studentsRes.text());
       }
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -91,6 +97,8 @@ export default function AcademicLogsManager() {
       });
 
       if (response.ok) {
+        const newLog = await response.json();
+        console.log('Created academic log:', newLog);
         setShowCreateForm(false);
         setFormData({
           title: '',
@@ -102,7 +110,9 @@ export default function AcademicLogsManager() {
         });
         fetchData(); // Refresh the logs
       } else {
-        console.error('Failed to create academic log');
+        const errorData = await response.text();
+        console.error('Failed to create academic log:', errorData);
+        alert('Failed to create academic log. Please try again.');
       }
     } catch (error) {
       console.error('Error creating academic log:', error);
@@ -175,7 +185,7 @@ export default function AcademicLogsManager() {
                   <option value="">Select a student</option>
                   {students.map((student) => (
                     <option key={student.id} value={student.id}>
-                      {student.name} ({student.grade}) - {student.family.name}
+                      {student.name} ({student.grade}) - {student.family?.name || 'Unknown Family'}
                     </option>
                   ))}
                 </select>
@@ -307,7 +317,7 @@ export default function AcademicLogsManager() {
                     )}
                   </div>
                   <p className="text-sm text-gray-600 mb-2">
-                    <strong>{log.student.name}</strong> ({log.student.grade}) - {log.student.family.name}
+                    <strong>{log.student.name}</strong> ({log.student.grade}) - {log.student.family?.name || 'Unknown Family'}
                   </p>
                   <p className="text-sm text-gray-600 mb-3">
                     Subject: <strong>{log.subject}</strong>
