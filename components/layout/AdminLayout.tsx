@@ -72,7 +72,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
         </svg>
       ),
       color: 'from-pink-500 to-pink-600',
-      description: 'Students, Families & Users'
+      description: 'Students, families and users'
     },
     {
       name: 'Academics',
