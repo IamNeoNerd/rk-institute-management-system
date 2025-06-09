@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import AdminLayout from '@/components/ui/AdminLayout';
+import AdminLayout from '@/components/layout/AdminLayout';
 import Link from 'next/link';
 
 interface AcademicLog {

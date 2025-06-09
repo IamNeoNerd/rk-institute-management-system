@@ -16,6 +16,23 @@ export async function GET() {
           },
         },
         feeStructure: true,
+        subscriptions: {
+          include: {
+            student: {
+              select: {
+                id: true,
+                name: true,
+                grade: true,
+                studentId: true,
+                family: {
+                  select: {
+                    name: true,
+                  },
+                },
+              },
+            },
+          },
+        },
         _count: {
           select: {
             subscriptions: true,
