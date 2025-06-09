@@ -80,11 +80,17 @@ export async function GET(request: NextRequest) {
         include: {
           family: {
             select: {
-              name: true
+              name: true,
+              email: true
             }
           },
           subscriptions: {
-            where: { isActive: true },
+            where: {
+              AND: [
+                { startDate: { lte: new Date() } },
+                { OR: [{ endDate: null }, { endDate: { gte: new Date() } }] }
+              ]
+            },
             include: {
               course: { select: { name: true } },
               service: { select: { name: true } }
@@ -105,7 +111,7 @@ export async function GET(request: NextRequest) {
           id: student.id,
           type: 'student',
           name: student.name,
-          email: student.email,
+          email: student.family.email,
           status: activeSubscriptions > 0 ? 'active' : 'inactive',
           details: `Family: ${student.family.name} | Enrolled in: ${subscriptionDetails || 'No active enrollments'}`,
           href: `/admin/students/${student.id}`
@@ -121,8 +127,8 @@ export async function GET(request: NextRequest) {
             query ? {
               OR: [
                 { name: { contains: query, mode: 'insensitive' } },
-                { contactEmail: { contains: query, mode: 'insensitive' } },
-                { contactPhone: { contains: query, mode: 'insensitive' } },
+                { email: { contains: query, mode: 'insensitive' } },
+                { phone: { contains: query, mode: 'insensitive' } },
                 { id: { contains: query, mode: 'insensitive' } }
               ]
             } : {},
@@ -134,7 +140,12 @@ export async function GET(request: NextRequest) {
             select: {
               name: true,
               subscriptions: {
-                where: { isActive: true }
+                where: {
+                  AND: [
+                    { startDate: { lte: new Date() } },
+                    { OR: [{ endDate: null }, { endDate: { gte: new Date() } }] }
+                  ]
+                }
               }
             }
           }
@@ -152,7 +163,7 @@ export async function GET(request: NextRequest) {
           id: family.id,
           type: 'family',
           name: family.name,
-          email: family.contactEmail,
+          email: family.email,
           status: activeStudents > 0 ? 'active' : 'inactive',
           details: `${studentCount} student${studentCount !== 1 ? 's' : ''} | ${activeStudents} active enrollment${activeStudents !== 1 ? 's' : ''}`,
           href: `/admin/families/${family.id}`

@@ -238,7 +238,7 @@ export async function GET(request: NextRequest) {
     const stats = {
       // Core KPIs
       totalRevenueThisMonth: totalRevenueThisMonth._sum.amount || 0,
-      totalOutstandingDues: totalOutstandingDues._sum.amount || 0,
+      totalOutstandingDues: totalOutstandingDues._sum.netAmount || 0,
       recentPaymentActivity,
       totalStudentsWithDues,
       averageMonthlyRevenue: avgMonthlyRevenue,
@@ -266,7 +266,7 @@ export async function GET(request: NextRequest) {
         amount: payment.amount,
         paymentDate: payment.paymentDate,
         familyName: payment.family.name,
-        method: payment.method
+        method: payment.paymentMethod
       })),
       overdueBreakdown: overdueBreakdown.map(item => ({
         studentId: item.studentId,

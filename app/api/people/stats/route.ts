@@ -42,7 +42,10 @@ export async function GET(request: NextRequest) {
         where: {
           subscriptions: {
             some: {
-              isActive: true
+              AND: [
+                { startDate: { lte: new Date() } },
+                { OR: [{ endDate: null }, { endDate: { gte: new Date() } }] }
+              ]
             }
           }
         }
@@ -79,10 +82,11 @@ export async function GET(request: NextRequest) {
         where: {
           subscriptions: {
             some: {
-              isActive: true,
-              course: {
-                isNot: null
-              }
+              AND: [
+                { startDate: { lte: new Date() } },
+                { OR: [{ endDate: null }, { endDate: { gte: new Date() } }] },
+                { courseId: { not: null } }
+              ]
             }
           }
         }
