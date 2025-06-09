@@ -45,6 +45,56 @@ export class SchedulerService {
       isActive: true
     });
 
+    // Fee reminder jobs
+    this.scheduleJob({
+      id: 'fee-reminder-early',
+      name: 'Early Fee Reminder',
+      schedule: '0 9 * * *', // Daily at 9 AM
+      description: 'Send reminders 3 days before fee due date',
+      isActive: true
+    });
+
+    this.scheduleJob({
+      id: 'fee-reminder-due',
+      name: 'Due Date Fee Reminder',
+      schedule: '0 10 * * *', // Daily at 10 AM
+      description: 'Send reminders on fee due date',
+      isActive: true
+    });
+
+    this.scheduleJob({
+      id: 'fee-reminder-overdue',
+      name: 'Overdue Fee Reminder',
+      schedule: '0 11 * * *', // Daily at 11 AM
+      description: 'Send reminders for overdue fees',
+      isActive: true
+    });
+
+    // Report generation jobs
+    this.scheduleJob({
+      id: 'weekly-report',
+      name: 'Weekly Report Generation',
+      schedule: '0 8 * * 1', // Every Monday at 8 AM
+      description: 'Generate weekly performance and collection reports',
+      isActive: true
+    });
+
+    this.scheduleJob({
+      id: 'monthly-report',
+      name: 'Monthly Report Generation',
+      schedule: '0 8 1 * *', // 1st day of every month at 8 AM
+      description: 'Generate comprehensive monthly reports',
+      isActive: true
+    });
+
+    this.scheduleJob({
+      id: 'outstanding-dues-report',
+      name: 'Outstanding Dues Report',
+      schedule: '0 8 * * 3', // Every Wednesday at 8 AM
+      description: 'Generate outstanding dues and collection reports',
+      isActive: true
+    });
+
     console.log('[Scheduler Service] Default jobs initialized');
   }
 
@@ -108,6 +158,24 @@ export class SchedulerService {
         case 'monthly-billing':
           await this.executeMonthlyBillingJob();
           break;
+        case 'fee-reminder-early':
+          await this.executeFeeReminderJob('early');
+          break;
+        case 'fee-reminder-due':
+          await this.executeFeeReminderJob('due');
+          break;
+        case 'fee-reminder-overdue':
+          await this.executeFeeReminderJob('overdue');
+          break;
+        case 'weekly-report':
+          await this.executeReportGenerationJob('weekly');
+          break;
+        case 'monthly-report':
+          await this.executeReportGenerationJob('monthly');
+          break;
+        case 'outstanding-dues-report':
+          await this.executeReportGenerationJob('outstanding');
+          break;
         default:
           console.warn(`[Scheduler Service] Unknown job type: ${jobId}`);
       }
@@ -125,7 +193,7 @@ export class SchedulerService {
   private async executeMonthlyBillingJob(): Promise<void> {
     try {
       const result = await AutomationEngineService.executeMonthlyBillingJob();
-      
+
       if (result.success) {
         console.log(`[Scheduler Service] Monthly billing completed successfully: ${result.successfulBills}/${result.totalStudents} bills generated`);
       } else {
@@ -134,6 +202,42 @@ export class SchedulerService {
       }
     } catch (error) {
       console.error('[Scheduler Service] Monthly billing job failed:', error);
+    }
+  }
+
+  /**
+   * Execute fee reminder job
+   */
+  private async executeFeeReminderJob(reminderType: 'early' | 'due' | 'overdue'): Promise<void> {
+    try {
+      const result = await AutomationEngineService.executeFeeReminderJob(reminderType);
+
+      if (result.success) {
+        console.log(`[Scheduler Service] Fee reminder (${reminderType}) completed successfully: ${result.successfulBills} reminders sent`);
+      } else {
+        console.error(`[Scheduler Service] Fee reminder (${reminderType}) completed with errors: ${result.failedBills} failed out of ${result.totalStudents}`);
+        console.error('Errors:', result.errors);
+      }
+    } catch (error) {
+      console.error(`[Scheduler Service] Fee reminder (${reminderType}) job failed:`, error);
+    }
+  }
+
+  /**
+   * Execute report generation job
+   */
+  private async executeReportGenerationJob(reportType: 'monthly' | 'weekly' | 'outstanding'): Promise<void> {
+    try {
+      const result = await AutomationEngineService.generateAutomatedReport(reportType);
+
+      if (result.success) {
+        console.log(`[Scheduler Service] Report generation (${reportType}) completed successfully`);
+      } else {
+        console.error(`[Scheduler Service] Report generation (${reportType}) failed`);
+        console.error('Errors:', result.errors);
+      }
+    } catch (error) {
+      console.error(`[Scheduler Service] Report generation (${reportType}) job failed:`, error);
     }
   }
 

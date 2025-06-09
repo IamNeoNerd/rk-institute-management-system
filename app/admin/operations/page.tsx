@@ -38,6 +38,7 @@ export default function OperationsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [triggeringJob, setTriggeringJob] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<'overview' | 'reminders' | 'reports'>('overview');
 
   useEffect(() => {
     fetchAutomationStatus();
@@ -75,9 +76,9 @@ export default function OperationsPage() {
         },
         body: JSON.stringify({}), // Use current month/year
       });
-      
+
       const data = await response.json();
-      
+
       if (data.success) {
         alert(`Monthly billing completed successfully!\n\nGenerated ${data.data.successfulBills} bills out of ${data.data.totalStudents} students.\nExecution time: ${data.data.executionTime}ms`);
         fetchAutomationStatus(); // Refresh status
@@ -87,6 +88,60 @@ export default function OperationsPage() {
     } catch (err) {
       alert('Network error while triggering monthly billing');
       console.error('Error triggering monthly billing:', err);
+    } finally {
+      setTriggeringJob(null);
+    }
+  };
+
+  const triggerFeeReminder = async (reminderType: 'early' | 'due' | 'overdue') => {
+    setTriggeringJob(`fee-reminder-${reminderType}`);
+    try {
+      const response = await fetch('/api/automation/fee-reminders', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ reminderType }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        alert(`Fee reminders (${reminderType}) sent successfully!\n\nSent ${data.data.successfulReminders} reminders out of ${data.data.totalAllocations} due allocations.\nExecution time: ${data.data.executionTime}ms`);
+        fetchAutomationStatus(); // Refresh status
+      } else {
+        alert(`Fee reminders (${reminderType}) failed: ${data.error}\n\nDetails: ${data.details || 'No additional details'}`);
+      }
+    } catch (err) {
+      alert('Network error while triggering fee reminders');
+      console.error('Error triggering fee reminders:', err);
+    } finally {
+      setTriggeringJob(null);
+    }
+  };
+
+  const triggerReport = async (reportType: 'monthly' | 'weekly' | 'outstanding') => {
+    setTriggeringJob(`report-${reportType}`);
+    try {
+      const response = await fetch('/api/automation/reports', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ reportType }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        alert(`Report (${reportType}) generated successfully!\n\nExecution time: ${data.data.executionTime}ms\n\nCheck the server logs for report details.`);
+        fetchAutomationStatus(); // Refresh status
+      } else {
+        alert(`Report generation (${reportType}) failed: ${data.error}\n\nDetails: ${data.details || 'No additional details'}`);
+      }
+    } catch (err) {
+      alert('Network error while triggering report generation');
+      console.error('Error triggering report generation:', err);
     } finally {
       setTriggeringJob(null);
     }
@@ -147,65 +202,301 @@ export default function OperationsPage() {
           </div>
         )}
 
+        {/* Tab Navigation */}
+        <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
+          <div className="flex space-x-1 bg-gray-100 p-1 rounded-xl">
+            {[
+              { id: 'overview', name: 'Overview', icon: '📊' },
+              { id: 'reminders', name: 'Fee Reminders', icon: '📧' },
+              { id: 'reports', name: 'Reports', icon: '📈' }
+            ].map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id as any)}
+                className={`flex-1 flex items-center justify-center px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                  activeTab === tab.id
+                    ? 'bg-white text-blue-600 shadow-sm'
+                    : 'text-gray-600 hover:text-gray-900'
+                }`}
+              >
+                <span className="mr-2">{tab.icon}</span>
+                {tab.name}
+              </button>
+            ))}
+          </div>
+        </div>
+
         {automationStatus && (
           <>
-            {/* System Status */}
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">System Status</h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="bg-green-50 rounded-xl p-4 border border-green-200">
-                  <div className="flex items-center">
-                    <div className="h-3 w-3 bg-green-500 rounded-full mr-3"></div>
-                    <div>
-                      <p className="text-sm font-medium text-green-800">Automation Engine</p>
-                      <p className="text-xs text-green-600 capitalize">{automationStatus.systemStatus.automationEngine}</p>
+            {activeTab === 'overview' && (
+              <>
+                {/* System Status */}
+                <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
+                  <h2 className="text-2xl font-bold text-gray-900 mb-4">System Status</h2>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="bg-green-50 rounded-xl p-4 border border-green-200">
+                      <div className="flex items-center">
+                        <div className="h-3 w-3 bg-green-500 rounded-full mr-3"></div>
+                        <div>
+                          <p className="text-sm font-medium text-green-800">Automation Engine</p>
+                          <p className="text-xs text-green-600 capitalize">{automationStatus.systemStatus.automationEngine}</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="bg-blue-50 rounded-xl p-4 border border-blue-200">
+                      <div className="flex items-center">
+                        <div className="h-3 w-3 bg-blue-500 rounded-full mr-3"></div>
+                        <div>
+                          <p className="text-sm font-medium text-blue-800">Scheduler</p>
+                          <p className="text-xs text-blue-600 capitalize">{automationStatus.systemStatus.scheduler}</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="bg-gray-50 rounded-xl p-4 border border-gray-200">
+                      <div>
+                        <p className="text-sm font-medium text-gray-800">Last Updated</p>
+                        <p className="text-xs text-gray-600">{formatDateTime(automationStatus.systemStatus.timestamp)}</p>
+                      </div>
                     </div>
                   </div>
                 </div>
-                <div className="bg-blue-50 rounded-xl p-4 border border-blue-200">
-                  <div className="flex items-center">
-                    <div className="h-3 w-3 bg-blue-500 rounded-full mr-3"></div>
-                    <div>
-                      <p className="text-sm font-medium text-blue-800">Scheduler</p>
-                      <p className="text-xs text-blue-600 capitalize">{automationStatus.systemStatus.scheduler}</p>
-                    </div>
-                  </div>
-                </div>
-                <div className="bg-gray-50 rounded-xl p-4 border border-gray-200">
-                  <div>
-                    <p className="text-sm font-medium text-gray-800">Last Updated</p>
-                    <p className="text-xs text-gray-600">{formatDateTime(automationStatus.systemStatus.timestamp)}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
 
-            {/* Quick Actions */}
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Quick Actions</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <button
-                  onClick={triggerMonthlyBilling}
-                  disabled={triggeringJob === 'monthly-billing'}
-                  className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 disabled:from-gray-400 disabled:to-gray-500 text-white px-6 py-4 rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl disabled:cursor-not-allowed"
-                >
-                  {triggeringJob === 'monthly-billing' ? (
-                    <div className="flex items-center justify-center">
-                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                      Generating Bills...
+                {/* Quick Actions */}
+                <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
+                  <h2 className="text-2xl font-bold text-gray-900 mb-4">Quick Actions</h2>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <button
+                      onClick={triggerMonthlyBilling}
+                      disabled={triggeringJob === 'monthly-billing'}
+                      className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 disabled:from-gray-400 disabled:to-gray-500 text-white px-6 py-4 rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl disabled:cursor-not-allowed"
+                    >
+                      {triggeringJob === 'monthly-billing' ? (
+                        <div className="flex items-center justify-center">
+                          <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                          Generating Bills...
+                        </div>
+                      ) : (
+                        'Trigger Monthly Billing'
+                      )}
+                    </button>
+                    <button
+                      onClick={() => triggerFeeReminder('overdue')}
+                      disabled={triggeringJob === 'fee-reminder-overdue'}
+                      className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 disabled:from-gray-400 disabled:to-gray-500 text-white px-6 py-4 rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl disabled:cursor-not-allowed"
+                    >
+                      {triggeringJob === 'fee-reminder-overdue' ? (
+                        <div className="flex items-center justify-center">
+                          <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                          Sending Reminders...
+                        </div>
+                      ) : (
+                        'Send Overdue Reminders'
+                      )}
+                    </button>
+                    <button
+                      onClick={() => triggerReport('monthly')}
+                      disabled={triggeringJob === 'report-monthly'}
+                      className="bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 disabled:from-gray-400 disabled:to-gray-500 text-white px-6 py-4 rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl disabled:cursor-not-allowed"
+                    >
+                      {triggeringJob === 'report-monthly' ? (
+                        <div className="flex items-center justify-center">
+                          <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                          Generating Report...
+                        </div>
+                      ) : (
+                        'Generate Monthly Report'
+                      )}
+                    </button>
+                  </div>
+                </div>
+              </>
+            )}
+
+            {activeTab === 'reminders' && (
+              <>
+                {/* Fee Reminder Controls */}
+                <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
+                  <h2 className="text-2xl font-bold text-gray-900 mb-4">Fee Reminder Management</h2>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <button
+                      onClick={() => triggerFeeReminder('early')}
+                      disabled={triggeringJob === 'fee-reminder-early'}
+                      className="bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 disabled:from-gray-400 disabled:to-gray-500 text-white px-6 py-4 rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl disabled:cursor-not-allowed"
+                    >
+                      {triggeringJob === 'fee-reminder-early' ? (
+                        <div className="flex items-center justify-center">
+                          <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                          Sending...
+                        </div>
+                      ) : (
+                        <>
+                          <div className="text-lg mb-1">📅</div>
+                          <div>Early Reminders</div>
+                          <div className="text-xs opacity-80">3 days before due</div>
+                        </>
+                      )}
+                    </button>
+                    <button
+                      onClick={() => triggerFeeReminder('due')}
+                      disabled={triggeringJob === 'fee-reminder-due'}
+                      className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 disabled:from-gray-400 disabled:to-gray-500 text-white px-6 py-4 rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl disabled:cursor-not-allowed"
+                    >
+                      {triggeringJob === 'fee-reminder-due' ? (
+                        <div className="flex items-center justify-center">
+                          <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                          Sending...
+                        </div>
+                      ) : (
+                        <>
+                          <div className="text-lg mb-1">⏰</div>
+                          <div>Due Date Reminders</div>
+                          <div className="text-xs opacity-80">Due today</div>
+                        </>
+                      )}
+                    </button>
+                    <button
+                      onClick={() => triggerFeeReminder('overdue')}
+                      disabled={triggeringJob === 'fee-reminder-overdue'}
+                      className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 disabled:from-gray-400 disabled:to-gray-500 text-white px-6 py-4 rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl disabled:cursor-not-allowed"
+                    >
+                      {triggeringJob === 'fee-reminder-overdue' ? (
+                        <div className="flex items-center justify-center">
+                          <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                          Sending...
+                        </div>
+                      ) : (
+                        <>
+                          <div className="text-lg mb-1">🚨</div>
+                          <div>Overdue Reminders</div>
+                          <div className="text-xs opacity-80">Past due date</div>
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </div>
+
+                {/* Reminder Schedule */}
+                <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
+                  <h2 className="text-2xl font-bold text-gray-900 mb-4">Automated Reminder Schedule</h2>
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between p-4 bg-yellow-50 rounded-xl border border-yellow-200">
+                      <div>
+                        <h3 className="font-semibold text-yellow-800">Early Fee Reminders</h3>
+                        <p className="text-sm text-yellow-600">Daily at 9:00 AM - 3 days before due date</p>
+                      </div>
+                      <div className="text-yellow-600">📅</div>
                     </div>
-                  ) : (
-                    'Trigger Monthly Billing'
-                  )}
-                </button>
-                <button
-                  onClick={fetchAutomationStatus}
-                  className="bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 text-white px-6 py-4 rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl"
-                >
-                  Refresh Status
-                </button>
-              </div>
-            </div>
+                    <div className="flex items-center justify-between p-4 bg-blue-50 rounded-xl border border-blue-200">
+                      <div>
+                        <h3 className="font-semibold text-blue-800">Due Date Reminders</h3>
+                        <p className="text-sm text-blue-600">Daily at 10:00 AM - on due date</p>
+                      </div>
+                      <div className="text-blue-600">⏰</div>
+                    </div>
+                    <div className="flex items-center justify-between p-4 bg-red-50 rounded-xl border border-red-200">
+                      <div>
+                        <h3 className="font-semibold text-red-800">Overdue Reminders</h3>
+                        <p className="text-sm text-red-600">Daily at 11:00 AM - for overdue payments</p>
+                      </div>
+                      <div className="text-red-600">🚨</div>
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
+
+            {activeTab === 'reports' && (
+              <>
+                {/* Report Generation Controls */}
+                <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
+                  <h2 className="text-2xl font-bold text-gray-900 mb-4">Report Generation</h2>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <button
+                      onClick={() => triggerReport('weekly')}
+                      disabled={triggeringJob === 'report-weekly'}
+                      className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 disabled:from-gray-400 disabled:to-gray-500 text-white px-6 py-4 rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl disabled:cursor-not-allowed"
+                    >
+                      {triggeringJob === 'report-weekly' ? (
+                        <div className="flex items-center justify-center">
+                          <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                          Generating...
+                        </div>
+                      ) : (
+                        <>
+                          <div className="text-lg mb-1">📊</div>
+                          <div>Weekly Report</div>
+                          <div className="text-xs opacity-80">Last 7 days</div>
+                        </>
+                      )}
+                    </button>
+                    <button
+                      onClick={() => triggerReport('monthly')}
+                      disabled={triggeringJob === 'report-monthly'}
+                      className="bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 disabled:from-gray-400 disabled:to-gray-500 text-white px-6 py-4 rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl disabled:cursor-not-allowed"
+                    >
+                      {triggeringJob === 'report-monthly' ? (
+                        <div className="flex items-center justify-center">
+                          <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                          Generating...
+                        </div>
+                      ) : (
+                        <>
+                          <div className="text-lg mb-1">📈</div>
+                          <div>Monthly Report</div>
+                          <div className="text-xs opacity-80">Current month</div>
+                        </>
+                      )}
+                    </button>
+                    <button
+                      onClick={() => triggerReport('outstanding')}
+                      disabled={triggeringJob === 'report-outstanding'}
+                      className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 disabled:from-gray-400 disabled:to-gray-500 text-white px-6 py-4 rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl disabled:cursor-not-allowed"
+                    >
+                      {triggeringJob === 'report-outstanding' ? (
+                        <div className="flex items-center justify-center">
+                          <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                          Generating...
+                        </div>
+                      ) : (
+                        <>
+                          <div className="text-lg mb-1">💰</div>
+                          <div>Outstanding Dues</div>
+                          <div className="text-xs opacity-80">Overdue payments</div>
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </div>
+
+                {/* Report Schedule */}
+                <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
+                  <h2 className="text-2xl font-bold text-gray-900 mb-4">Automated Report Schedule</h2>
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between p-4 bg-green-50 rounded-xl border border-green-200">
+                      <div>
+                        <h3 className="font-semibold text-green-800">Weekly Reports</h3>
+                        <p className="text-sm text-green-600">Every Monday at 8:00 AM</p>
+                      </div>
+                      <div className="text-green-600">📊</div>
+                    </div>
+                    <div className="flex items-center justify-between p-4 bg-purple-50 rounded-xl border border-purple-200">
+                      <div>
+                        <h3 className="font-semibold text-purple-800">Monthly Reports</h3>
+                        <p className="text-sm text-purple-600">1st day of every month at 8:00 AM</p>
+                      </div>
+                      <div className="text-purple-600">📈</div>
+                    </div>
+                    <div className="flex items-center justify-between p-4 bg-orange-50 rounded-xl border border-orange-200">
+                      <div>
+                        <h3 className="font-semibold text-orange-800">Outstanding Dues Reports</h3>
+                        <p className="text-sm text-orange-600">Every Wednesday at 8:00 AM</p>
+                      </div>
+                      <div className="text-orange-600">💰</div>
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
 
             {/* Scheduled Jobs */}
             <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
