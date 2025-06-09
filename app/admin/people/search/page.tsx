@@ -55,10 +55,22 @@ export default function PeopleSearchPage() {
         const data = await response.json();
         setResults(data.results || []);
       } else {
+        // Try to parse error response for more specific feedback
+        try {
+          const errorData = await response.json();
+          console.error('Search failed:', errorData.message || `HTTP ${response.status}`);
+        } catch {
+          console.error('Search failed:', `HTTP ${response.status}`);
+        }
         setResults([]);
       }
     } catch (error) {
-      console.error('Search error:', error);
+      // Provide more specific error logging
+      if (error instanceof Error) {
+        console.error('Search network error:', error.message);
+      } else {
+        console.error('Search error: Unable to connect to server');
+      }
       setResults([]);
     } finally {
       setLoading(false);

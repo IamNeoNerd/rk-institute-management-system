@@ -98,8 +98,8 @@ export class ReportStorageService {
         orderBy: {
           createdAt: 'desc'
         },
-        take: filters?.limit || 50,
-        skip: filters?.offset || 0
+        take: filters?.limit ?? 50,
+        skip: filters?.offset ?? 0
       });
 
       return reports.map(report => ({
@@ -221,8 +221,11 @@ export class ReportStorageService {
         totalReports,
         archivedCount,
         recentCount,
-        allReports
+        reportsByType,
+        reportsByCategory,
+        totalDownloadsResult
       ] = await Promise.all([
+        // Basic counts
         prisma.report.count(),
         prisma.report.count({ where: { isArchived: true } }),
         prisma.report.count({
@@ -232,35 +235,48 @@ export class ReportStorageService {
             }
           }
         }),
-        prisma.report.findMany({
-          select: {
-            type: true,
-            category: true,
+        // Efficient aggregation for reports by type
+        prisma.report.groupBy({
+          by: ['type'],
+          _count: {
+            id: true
+          }
+        }),
+        // Efficient aggregation for reports by category
+        prisma.report.groupBy({
+          by: ['category'],
+          _count: {
+            id: true
+          }
+        }),
+        // Efficient aggregation for total downloads
+        prisma.report.aggregate({
+          _sum: {
             downloadCount: true
           }
         })
       ]);
 
-      // Calculate statistics
-      const reportsByType: Record<string, number> = {};
-      const reportsByCategory: Record<string, number> = {};
-      let totalDownloads = 0;
+      // Convert groupBy results to Record format
+      const reportsByTypeRecord: Record<string, number> = {};
+      reportsByType.forEach(item => {
+        reportsByTypeRecord[item.type] = item._count.id;
+      });
 
-      allReports.forEach(report => {
-        reportsByType[report.type] = (reportsByType[report.type] || 0) + 1;
-        reportsByCategory[report.category] = (reportsByCategory[report.category] || 0) + 1;
-        totalDownloads += report.downloadCount;
+      const reportsByCategoryRecord: Record<string, number> = {};
+      reportsByCategory.forEach(item => {
+        reportsByCategoryRecord[item.category] = item._count.id;
       });
 
       return {
         totalReports,
-        reportsByType,
-        reportsByCategory,
-        totalDownloads,
+        reportsByType: reportsByTypeRecord,
+        reportsByCategory: reportsByCategoryRecord,
+        totalDownloads: totalDownloadsResult._sum.downloadCount || 0,
         archivedReports: archivedCount,
         recentReports: recentCount
       };
-      
+
     } catch (error) {
       console.error('[Report Storage] Error fetching statistics:', error);
       throw new Error('Failed to fetch report statistics');

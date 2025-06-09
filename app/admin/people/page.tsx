@@ -34,6 +34,14 @@ export default function PeopleHubPage() {
   const fetchPeopleStats = async () => {
     try {
       const token = localStorage.getItem('token');
+
+      // Check if token exists before making API call
+      if (!token) {
+        setError('Authentication required. Please log in again.');
+        setLoading(false);
+        return;
+      }
+
       const response = await fetch('/api/people/stats', {
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -44,10 +52,21 @@ export default function PeopleHubPage() {
         const data = await response.json();
         setStats(data);
       } else {
-        setError('Failed to fetch people statistics');
+        // Try to parse error response for more specific feedback
+        try {
+          const errorData = await response.json();
+          setError(errorData.message || `Failed to fetch people statistics (${response.status})`);
+        } catch {
+          setError(`Failed to fetch people statistics (${response.status})`);
+        }
       }
     } catch (error) {
-      setError('Network error');
+      // Provide more specific error messages
+      if (error instanceof Error) {
+        setError(`Network error: ${error.message}`);
+      } else {
+        setError('Network error: Unable to connect to server');
+      }
     } finally {
       setLoading(false);
     }
@@ -111,6 +130,7 @@ export default function PeopleHubPage() {
       color: 'from-green-500 to-green-600',
       stats: stats ? [
         { label: 'Total Families', value: stats.totalFamilies },
+        // TODO: Replace with dynamic data from API
         { label: 'Multi-Child Families', value: Math.floor(stats.totalFamilies * 0.6) },
         { label: 'Average Family Size', value: '2.3' }
       ] : []
