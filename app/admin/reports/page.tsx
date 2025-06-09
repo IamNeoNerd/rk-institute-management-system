@@ -36,10 +36,16 @@ export default function ReportsPage() {
   const [error, setError] = useState('');
   const [selectedMonth, setSelectedMonth] = useState(6); // June - where we have test data
   const [selectedYear, setSelectedYear] = useState(2024); // 2024 - where we have test data
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'automated' | 'history'>('dashboard');
+  const [automationReports, setAutomationReports] = useState<any[]>([]);
+  const [generatingReport, setGeneratingReport] = useState<string | null>(null);
 
   useEffect(() => {
     fetchReportData();
-  }, [selectedMonth, selectedYear]);
+    if (activeTab === 'automated') {
+      fetchAutomationReports();
+    }
+  }, [selectedMonth, selectedYear, activeTab]);
 
   const fetchReportData = async () => {
     try {
@@ -60,6 +66,46 @@ export default function ReportsPage() {
       setError('Network error');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchAutomationReports = async () => {
+    try {
+      const response = await fetch('/api/automation/reports');
+      if (response.ok) {
+        const data = await response.json();
+        setAutomationReports(data.data?.reportHistory || []);
+      }
+    } catch (error) {
+      console.error('Failed to fetch automation reports:', error);
+    }
+  };
+
+  const generateAutomationReport = async (reportType: 'weekly' | 'monthly' | 'outstanding') => {
+    setGeneratingReport(reportType);
+    try {
+      const response = await fetch('/api/automation/reports', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ reportType }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        // Show success toast (user-friendly message)
+        alert(`${reportType.charAt(0).toUpperCase() + reportType.slice(1)} report generated successfully!`);
+        fetchAutomationReports(); // Refresh the reports list
+      } else {
+        alert(`Failed to generate ${reportType} report: ${data.error}`);
+      }
+    } catch (error) {
+      alert('Network error while generating report');
+      console.error('Error generating report:', error);
+    } finally {
+      setGeneratingReport(null);
     }
   };
 
@@ -103,39 +149,65 @@ export default function ReportsPage() {
           <div>
             <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">Reports & Analytics</h1>
             <p className="mt-2 text-lg text-gray-600">
-              Comprehensive insights into institute performance
+              Comprehensive insights and automated reports
             </p>
           </div>
-          <div className="flex space-x-4">
-            <select
-              value={selectedMonth}
-              onChange={(e) => setSelectedMonth(parseInt(e.target.value))}
-              className="input-field"
-            >
-              {Array.from({ length: 12 }, (_, i) => (
-                <option key={i + 1} value={i + 1}>
-                  {new Date(0, i).toLocaleString('default', { month: 'long' })}
-                </option>
-              ))}
-            </select>
-            <select
-              value={selectedYear}
-              onChange={(e) => setSelectedYear(parseInt(e.target.value))}
-              className="input-field"
-            >
-              {Array.from({ length: 5 }, (_, i) => {
-                const year = 2022 + i; // 2022, 2023, 2024, 2025, 2026
-                return (
-                  <option key={year} value={year}>
-                    {year}
+          {activeTab === 'dashboard' && (
+            <div className="flex space-x-4">
+              <select
+                value={selectedMonth}
+                onChange={(e) => setSelectedMonth(parseInt(e.target.value))}
+                className="input-field"
+              >
+                {Array.from({ length: 12 }, (_, i) => (
+                  <option key={i + 1} value={i + 1}>
+                    {new Date(0, i).toLocaleString('default', { month: 'long' })}
                   </option>
-                );
-              })}
-            </select>
+                ))}
+              </select>
+              <select
+                value={selectedYear}
+                onChange={(e) => setSelectedYear(parseInt(e.target.value))}
+                className="input-field"
+              >
+                {Array.from({ length: 5 }, (_, i) => {
+                  const year = 2022 + i; // 2022, 2023, 2024, 2025, 2026
+                  return (
+                    <option key={year} value={year}>
+                      {year}
+                    </option>
+                  );
+                })}
+              </select>
+            </div>
+          )}
+        </div>
+
+        {/* Tab Navigation */}
+        <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
+          <div className="flex space-x-1 bg-gray-100 p-1 rounded-xl">
+            {[
+              { id: 'dashboard', name: 'Live Dashboard', icon: '📊' },
+              { id: 'automated', name: 'Automated Reports', icon: '🤖' },
+              { id: 'history', name: 'Report History', icon: '📋' }
+            ].map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id as any)}
+                className={`flex-1 flex items-center justify-center px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                  activeTab === tab.id
+                    ? 'bg-white text-blue-600 shadow-sm'
+                    : 'text-gray-600 hover:text-gray-900'
+                }`}
+              >
+                <span className="mr-2">{tab.icon}</span>
+                {tab.name}
+              </button>
+            ))}
           </div>
         </div>
 
-        {reportData && (
+        {activeTab === 'dashboard' && reportData && (
           <>
             {/* Key Metrics */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 animate-fade-in">
@@ -266,6 +338,145 @@ export default function ReportsPage() {
               </div>
             </div>
           </>
+        )}
+
+        {activeTab === 'automated' && (
+          <>
+            {/* Report Generation Controls */}
+            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">Generate New Reports</h2>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <button
+                  onClick={() => generateAutomationReport('weekly')}
+                  disabled={generatingReport === 'weekly'}
+                  className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 disabled:from-gray-400 disabled:to-gray-500 text-white px-6 py-4 rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl disabled:cursor-not-allowed"
+                >
+                  {generatingReport === 'weekly' ? (
+                    <div className="flex items-center justify-center">
+                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                      Creating...
+                    </div>
+                  ) : (
+                    <>
+                      <div className="text-lg mb-1">📊</div>
+                      <div>Weekly Summary</div>
+                      <div className="text-xs opacity-80">Last 7 days performance</div>
+                    </>
+                  )}
+                </button>
+                <button
+                  onClick={() => generateAutomationReport('monthly')}
+                  disabled={generatingReport === 'monthly'}
+                  className="bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 disabled:from-gray-400 disabled:to-gray-500 text-white px-6 py-4 rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl disabled:cursor-not-allowed"
+                >
+                  {generatingReport === 'monthly' ? (
+                    <div className="flex items-center justify-center">
+                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                      Creating...
+                    </div>
+                  ) : (
+                    <>
+                      <div className="text-lg mb-1">📈</div>
+                      <div>Monthly Analysis</div>
+                      <div className="text-xs opacity-80">Comprehensive monthly metrics</div>
+                    </>
+                  )}
+                </button>
+                <button
+                  onClick={() => generateAutomationReport('outstanding')}
+                  disabled={generatingReport === 'outstanding'}
+                  className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 disabled:from-gray-400 disabled:to-gray-500 text-white px-6 py-4 rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl disabled:cursor-not-allowed"
+                >
+                  {generatingReport === 'outstanding' ? (
+                    <div className="flex items-center justify-center">
+                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                      Creating...
+                    </div>
+                  ) : (
+                    <>
+                      <div className="text-lg mb-1">💰</div>
+                      <div>Outstanding Dues</div>
+                      <div className="text-xs opacity-80">Collection analysis</div>
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+
+            {/* Automated Report Schedule */}
+            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">Automated Schedule</h2>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between p-4 bg-green-50 rounded-xl border border-green-200">
+                  <div>
+                    <h3 className="font-semibold text-green-800">Weekly Performance Reports</h3>
+                    <p className="text-sm text-green-600">Every Monday at 8:00 AM</p>
+                  </div>
+                  <div className="text-green-600">📊</div>
+                </div>
+                <div className="flex items-center justify-between p-4 bg-purple-50 rounded-xl border border-purple-200">
+                  <div>
+                    <h3 className="font-semibold text-purple-800">Monthly Analysis Reports</h3>
+                    <p className="text-sm text-purple-600">1st day of every month at 8:00 AM</p>
+                  </div>
+                  <div className="text-purple-600">📈</div>
+                </div>
+                <div className="flex items-center justify-between p-4 bg-orange-50 rounded-xl border border-orange-200">
+                  <div>
+                    <h3 className="font-semibold text-orange-800">Outstanding Dues Reports</h3>
+                    <p className="text-sm text-orange-600">Every Wednesday at 8:00 AM</p>
+                  </div>
+                  <div className="text-orange-600">💰</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Recent Automated Reports */}
+            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">Recent Reports</h2>
+              {automationReports.length === 0 ? (
+                <div className="text-center py-8">
+                  <div className="text-gray-400 text-4xl mb-4">📋</div>
+                  <p className="text-gray-500">No automated reports generated yet</p>
+                  <p className="text-sm text-gray-400 mt-2">Generate your first report using the buttons above</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {automationReports.map((report, index) => (
+                    <div key={report.id || index} className="flex items-center justify-between p-4 bg-gray-50 rounded-xl border border-gray-200">
+                      <div>
+                        <h3 className="font-semibold text-gray-900 capitalize">{report.type} Report</h3>
+                        <p className="text-sm text-gray-600">Generated on {new Date(report.generatedAt).toLocaleDateString()}</p>
+                      </div>
+                      <div className="flex items-center space-x-3">
+                        <div className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                          report.status === 'completed'
+                            ? 'bg-green-100 text-green-800'
+                            : 'bg-yellow-100 text-yellow-800'
+                        }`}>
+                          {report.status}
+                        </div>
+                        <button className="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                          View Details
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </>
+        )}
+
+        {activeTab === 'history' && (
+          <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">Report History</h2>
+            <div className="text-center py-8">
+              <div className="text-gray-400 text-4xl mb-4">🗂️</div>
+              <p className="text-gray-500">Report history feature coming soon</p>
+              <p className="text-sm text-gray-400 mt-2">This will show all historical reports with download options</p>
+            </div>
+          </div>
         )}
       </div>
     </AdminLayout>
