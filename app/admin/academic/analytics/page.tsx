@@ -4,69 +4,15 @@ import { useState, useEffect } from 'react';
 import AdminLayout from '@/components/layout/AdminLayout';
 import Link from 'next/link';
 
-interface AnalyticsData {
-  enrollmentTrends: {
-    month: string;
-    courses: number;
-    services: number;
-  }[];
-  topPerformers: {
-    courses: Array<{
-      name: string;
-      enrollments: number;
-      averageProgress: number;
-    }>;
-    services: Array<{
-      name: string;
-      subscriptions: number;
-      satisfaction: number;
-    }>;
-  };
-  progressDistribution: {
-    excellent: number;
-    good: number;
-    average: number;
-    needsImprovement: number;
-  };
-  teacherPerformance: Array<{
-    name: string;
-    studentsManaged: number;
-    averageProgress: number;
-    logsCreated: number;
-  }>;
-}
-
 export default function AcademicAnalyticsPage() {
-  const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [selectedPeriod, setSelectedPeriod] = useState('6months');
 
   useEffect(() => {
-    fetchAnalyticsData();
+    // Simulate loading for now
+    setTimeout(() => setLoading(false), 1000);
   }, [selectedPeriod]);
-
-  const fetchAnalyticsData = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      const response = await fetch(`/api/academic/analytics?period=${selectedPeriod}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setAnalytics(data);
-      } else {
-        setError('Failed to fetch analytics data');
-      }
-    } catch (error) {
-      setError('Network error');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   if (loading) {
     return (
