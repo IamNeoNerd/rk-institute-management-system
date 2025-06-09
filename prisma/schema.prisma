@@ -217,11 +217,19 @@ model SystemSettings {
 model Report {
   id                String          @id @default(uuid())
   name              String
-  type              String          // FINANCIAL, ACADEMIC, ATTENDANCE, CUSTOM
+  type              String          // WEEKLY, MONTHLY, OUTSTANDING, FINANCIAL, ACADEMIC, ATTENDANCE, CUSTOM
+  category          String          @default("AUTOMATION") // AUTOMATION, MANUAL, SCHEDULED
   parameters        String?         // JSON string of report parameters
+  data              String?         // JSON string of report data
   generatedBy       String
   filePath          String?
+  fileSize          Int?            // File size in bytes
+  format            String          @default("JSON") // JSON, PDF, EXCEL, CSV
   status            String          @default("GENERATING") // GENERATING, COMPLETED, FAILED
+  executionTime     Int?            // Execution time in milliseconds
+  errorMessage      String?         // Error details if failed
+  downloadCount     Int             @default(0)
+  isArchived        Boolean         @default(false)
   createdAt         DateTime        @default(now())
   updatedAt         DateTime        @updatedAt
 }

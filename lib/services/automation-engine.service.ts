@@ -6,6 +6,7 @@
 import { PrismaClient } from '@prisma/client';
 import { FeeCalculationService } from '../feeCalculationService';
 import NotificationService from './notification.service';
+import { reportStorageService, ReportData } from './report-storage.service';
 
 const prisma = new PrismaClient();
 
@@ -266,6 +267,16 @@ export class AutomationEngineService {
     };
 
     try {
+      // Create report placeholder
+      const reportName = `${reportType.charAt(0).toUpperCase() + reportType.slice(1)} Report - ${timestamp.toLocaleDateString()}`;
+      const reportId = await reportStorageService.createReportPlaceholder({
+        name: reportName,
+        type: reportType.toUpperCase() as any,
+        category: 'AUTOMATION',
+        generatedBy: 'AUTOMATION_ENGINE',
+        format: 'JSON'
+      });
+
       // Generate report based on type
       let reportData: any = {};
 
@@ -281,12 +292,16 @@ export class AutomationEngineService {
           break;
       }
 
-      // For now, just log the report (in future, save to database or send via email)
-      console.log(`[Automation Engine] ✅ Generated ${reportType} report:`, JSON.stringify(reportData, null, 2));
+      // Store the generated report
+      const executionTime = Date.now() - startTime;
+      await reportStorageService.updateReportData(reportId, reportData, executionTime);
+
+      console.log(`[Automation Engine] ✅ Generated and stored ${reportType} report: ${reportId}`);
+      console.log(`[Automation Engine] Report data:`, JSON.stringify(reportData, null, 2));
 
       result.success = true;
       result.successfulBills = 1; // One report generated
-      result.executionTime = Date.now() - startTime;
+      result.executionTime = executionTime;
 
       // Update job log
       jobLog.status = 'COMPLETED';

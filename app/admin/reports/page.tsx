@@ -71,10 +71,15 @@ export default function ReportsPage() {
 
   const fetchAutomationReports = async () => {
     try {
-      const response = await fetch('/api/automation/reports');
+      const token = localStorage.getItem('token');
+      const response = await fetch('/api/reports/stored', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
       if (response.ok) {
         const data = await response.json();
-        setAutomationReports(data.data?.reportHistory || []);
+        setAutomationReports(data.reports || []);
       }
     } catch (error) {
       console.error('Failed to fetch automation reports:', error);
@@ -445,19 +450,39 @@ export default function ReportsPage() {
                   {automationReports.map((report, index) => (
                     <div key={report.id || index} className="flex items-center justify-between p-4 bg-gray-50 rounded-xl border border-gray-200">
                       <div>
-                        <h3 className="font-semibold text-gray-900 capitalize">{report.type} Report</h3>
-                        <p className="text-sm text-gray-600">Generated on {new Date(report.generatedAt).toLocaleDateString()}</p>
+                        <h3 className="font-semibold text-gray-900">{report.name}</h3>
+                        <p className="text-sm text-gray-600">Generated on {new Date(report.createdAt).toLocaleDateString()}</p>
+                        <p className="text-xs text-gray-500">
+                          {report.executionTime && `Execution time: ${report.executionTime}ms`}
+                          {report.fileSize && ` • Size: ${(report.fileSize / 1024).toFixed(1)}KB`}
+                          {report.downloadCount > 0 && ` • Downloaded ${report.downloadCount} times`}
+                        </p>
                       </div>
                       <div className="flex items-center space-x-3">
                         <div className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                          report.status === 'completed'
+                          report.status === 'COMPLETED'
                             ? 'bg-green-100 text-green-800'
-                            : 'bg-yellow-100 text-yellow-800'
+                            : report.status === 'GENERATING'
+                            ? 'bg-yellow-100 text-yellow-800'
+                            : 'bg-red-100 text-red-800'
                         }`}>
-                          {report.status}
+                          {report.status.toLowerCase()}
                         </div>
-                        <button className="text-blue-600 hover:text-blue-800 text-sm font-medium">
-                          View Details
+                        <div className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                          report.type === 'WEEKLY'
+                            ? 'bg-blue-100 text-blue-800'
+                            : report.type === 'MONTHLY'
+                            ? 'bg-purple-100 text-purple-800'
+                            : 'bg-orange-100 text-orange-800'
+                        }`}>
+                          {report.type.toLowerCase()}
+                        </div>
+                        <button
+                          onClick={() => window.open(`/api/reports/download/${report.id}`, '_blank')}
+                          className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                          disabled={report.status !== 'COMPLETED'}
+                        >
+                          {report.status === 'COMPLETED' ? 'Download' : 'View Details'}
                         </button>
                       </div>
                     </div>
