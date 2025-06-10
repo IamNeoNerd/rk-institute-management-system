@@ -3,6 +3,14 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
+interface CreateStudentBody {
+  name?: unknown;
+  grade?: unknown;
+  dateOfBirth?: unknown;
+  familyId?: unknown;
+  enrollmentDate?: unknown;
+}
+
 // GET - Fetch all students
 export async function GET() {
   try {
@@ -60,20 +68,58 @@ export async function GET() {
 // POST - Create a new student
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
-    const { name, grade, dateOfBirth, familyId, enrollmentDate } = body;
-
-    // Validate required fields
-    if (!name || !familyId) {
+    let body: CreateStudentBody | undefined;
+    try {
+      body = await request.json();
+    } catch (jsonError) {
+      console.error('JSON parsing error:', jsonError);
       return NextResponse.json(
-        { error: 'Student name and family are required' },
+        { error: 'Invalid JSON in request body' },
         { status: 400 }
       );
     }
 
+    if (!body ||
+        typeof body.name !== 'string' ||
+        typeof body.familyId !== 'string' ||
+        (body.grade && typeof body.grade !== 'string') ||
+        (body.dateOfBirth && typeof body.dateOfBirth !== 'string') ||
+        (body.enrollmentDate && typeof body.enrollmentDate !== 'string')
+        ) {
+      return NextResponse.json(
+        { error: 'Invalid request body. Ensure name (string) and familyId (string) are provided. Optional fields (grade, dateOfBirth, enrollmentDate) must also be strings if provided.' },
+        { status: 400 }
+      );
+    }
+
+    const { name, grade, dateOfBirth, familyId, enrollmentDate } = body;
+
+    let finalDateOfBirth: Date | null = null;
+    if (dateOfBirth) {
+      const parsedDOB = new Date(dateOfBirth as string);
+      if (isNaN(parsedDOB.getTime())) {
+        return NextResponse.json({ error: 'Invalid date of birth format.' }, { status: 400 });
+      }
+      if (parsedDOB > new Date()) {
+        return NextResponse.json({ error: 'Date of birth cannot be in the future.' }, { status: 400 });
+      }
+      finalDateOfBirth = parsedDOB;
+    }
+
+    let finalEnrollmentDate: Date;
+    if (enrollmentDate) {
+      const parsedEnrollmentDate = new Date(enrollmentDate as string);
+      if (isNaN(parsedEnrollmentDate.getTime())) {
+        return NextResponse.json({ error: 'Invalid enrollment date format.' }, { status: 400 });
+      }
+      finalEnrollmentDate = parsedEnrollmentDate;
+    } else {
+      finalEnrollmentDate = new Date();
+    }
+
     // Verify family exists
     const family = await prisma.family.findUnique({
-      where: { id: familyId },
+      where: { id: familyId as string },
     });
 
     if (!family) {
@@ -86,11 +132,11 @@ export async function POST(request: Request) {
     // Create student
     const student = await prisma.student.create({
       data: {
-        name,
-        grade: grade || null,
-        dateOfBirth: dateOfBirth ? new Date(dateOfBirth) : null,
-        enrollmentDate: enrollmentDate ? new Date(enrollmentDate) : new Date(),
-        familyId,
+        name: name as string,
+        grade: (grade as string) || null,
+        dateOfBirth: finalDateOfBirth,
+        enrollmentDate: finalEnrollmentDate,
+        familyId: familyId as string,
       },
       include: {
         family: {

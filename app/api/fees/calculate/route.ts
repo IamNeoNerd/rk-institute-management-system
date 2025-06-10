@@ -1,24 +1,53 @@
 import { NextResponse } from 'next/server';
 import { FeeCalculationService } from '@/lib/feeCalculationService';
 
+interface CalculateFeesBody {
+  studentId?: unknown;
+  familyId?: unknown;
+  type?: unknown;
+}
+
 // POST - Calculate fees for student or family
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
-    const { studentId, familyId, type } = body;
+    let body: CalculateFeesBody | undefined;
+    try {
+      body = await request.json();
+    } catch (jsonError) {
+      console.error('JSON parsing error:', jsonError);
+      return NextResponse.json(
+        { error: 'Invalid JSON in request body' },
+        { status: 400 }
+      );
+    }
 
-    if (type === 'student' && studentId) {
-      const calculation = await FeeCalculationService.calculateStudentMonthlyFee(studentId);
+    if (!body ||
+        typeof body.type !== 'string' ||
+        (body.type !== 'student' && body.type !== 'family') ||
+        (body.type === 'student' && typeof body.studentId !== 'string') ||
+        (body.type === 'family' && typeof body.familyId !== 'string')) {
+      return NextResponse.json(
+        { error: 'Invalid request body. Ensure "type" is "student" (with string "studentId") or "family" (with string "familyId").' },
+        { status: 400 }
+      );
+    }
+
+    // Type assertion for type safety in subsequent code
+    const { studentId, familyId, type } = body as { studentId?: string; familyId?: string; type: 'student' | 'family' };
+
+    if (type === 'student') { // studentId is guaranteed to be a string here by the check above
+      const calculation = await FeeCalculationService.calculateStudentMonthlyFee(studentId!); // Non-null assertion for studentId
       return NextResponse.json(calculation);
     }
 
-    if (type === 'family' && familyId) {
-      const calculations = await FeeCalculationService.calculateFamilyFees(familyId);
+    if (type === 'family') { // familyId is guaranteed to be a string here
+      const calculations = await FeeCalculationService.calculateFamilyFees(familyId!); // Non-null assertion for familyId
       return NextResponse.json(calculations);
     }
 
+    // This part should ideally be unreachable due to the comprehensive validation above
     return NextResponse.json(
-      { error: 'Invalid request. Provide studentId or familyId with appropriate type.' },
+      { error: 'Invalid request type. Should be "student" or "family".' },
       { status: 400 }
     );
   } catch (error) {
