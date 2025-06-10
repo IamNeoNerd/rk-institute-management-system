@@ -263,7 +263,7 @@ export default function AssignmentsManager() {
     }
   };
 
-  const uniqueGrades = [...new Set(students.map(s => s.grade).filter(Boolean))];
+  const uniqueGrades = Array.from(new Set(students.map(s => s.grade).filter(Boolean)));
 
   if (loading) {
     return (

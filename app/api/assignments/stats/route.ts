@@ -105,7 +105,7 @@ export async function GET(request: NextRequest) {
       }
 
       const studentIds = family.students.map(s => s.id);
-      const grades = [...new Set(family.students.map(s => s.grade).filter(Boolean))];
+      const grades = Array.from(new Set(family.students.map(s => s.grade).filter((grade): grade is string => Boolean(grade))));
 
       // Get assignments for family's children
       const assignments = await prisma.assignment.findMany({

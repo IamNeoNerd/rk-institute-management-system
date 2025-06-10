@@ -136,9 +136,9 @@ export default function AssignmentsView() {
     } else if (filterStatus === 'submitted') {
       matchesStatus = assignment.submissions.length > 0;
     } else if (filterStatus === 'overdue') {
-      matchesStatus = assignment.dueDate && 
-        new Date() > new Date(assignment.dueDate) && 
-        assignment.submissions.length === 0;
+      matchesStatus = Boolean(assignment.dueDate &&
+        new Date() > new Date(assignment.dueDate) &&
+        assignment.submissions.length === 0);
     }
     
     return matchesSubject && matchesType && matchesStatus;
@@ -201,8 +201,8 @@ export default function AssignmentsView() {
     }
   };
 
-  const uniqueSubjects = [...new Set(assignments.map(a => a.subject))];
-  const uniqueTypes = [...new Set(assignments.map(a => a.assignmentType))];
+  const uniqueSubjects = Array.from(new Set(assignments.map(a => a.subject)));
+  const uniqueTypes = Array.from(new Set(assignments.map(a => a.assignmentType)));
 
   if (loading) {
     return (
