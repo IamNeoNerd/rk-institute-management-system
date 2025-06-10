@@ -1,7 +1,7 @@
 {
   "name": "rk-institute-management-system",
   "version": "1.1.0",
-  "description": "RK Institute Management System - Production Ready",
+  "description": "RK Institute Management System - Production Ready with Assignments",
   "private": true,
   "scripts": {
     "build": "prisma migrate deploy && prisma generate && next build",
