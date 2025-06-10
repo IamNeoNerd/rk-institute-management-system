@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import MyCoursesView from '../components/MyCoursesView';
 import MyFeesView from '../components/MyFeesView';
 import MyAcademicLogsView from '../components/MyAcademicLogsView';
+import AssignmentsView from '../components/AssignmentsView';
 
 interface User {
   id: string;
@@ -160,6 +161,7 @@ export default function StudentDashboard() {
               { id: 'overview', name: 'Dashboard', icon: '📊' },
               { id: 'my-courses', name: 'My Courses', icon: '📚' },
               { id: 'my-fees', name: 'Fees & Payments', icon: '💰' },
+              { id: 'assignments', name: 'Assignments & Notes', icon: '📋' },
               { id: 'academic-logs', name: 'Academic Progress', icon: '📝' },
             ].map((tab) => (
               <button
@@ -320,6 +322,21 @@ export default function StudentDashboard() {
               </button>
 
               <button
+                onClick={() => setActiveTab('assignments')}
+                className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-all border border-gray-200 text-left group"
+              >
+                <div className="flex items-center">
+                  <div className="p-3 bg-indigo-100 rounded-lg group-hover:bg-indigo-200 transition-colors">
+                    <span className="text-2xl">📋</span>
+                  </div>
+                  <div className="ml-4">
+                    <h3 className="text-lg font-semibold text-gray-900">Assignments & Notes</h3>
+                    <p className="text-gray-600">View homework, projects, and study materials</p>
+                  </div>
+                </div>
+              </button>
+
+              <button
                 onClick={() => setActiveTab('academic-logs')}
                 className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-all border border-gray-200 text-left group"
               >
@@ -376,6 +393,7 @@ export default function StudentDashboard() {
 
         {activeTab === 'my-courses' && <MyCoursesView />}
         {activeTab === 'my-fees' && <MyFeesView />}
+        {activeTab === 'assignments' && <AssignmentsView />}
         {activeTab === 'academic-logs' && <MyAcademicLogsView />}
       </main>
     </div>

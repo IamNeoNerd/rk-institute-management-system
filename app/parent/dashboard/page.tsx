@@ -6,6 +6,7 @@ import FamilyOverview from '../components/FamilyOverview';
 import ChildrenView from '../components/ChildrenView';
 import FamilyFeesView from '../components/FamilyFeesView';
 import FamilyAcademicView from '../components/FamilyAcademicView';
+import FamilyAssignmentsView from '../components/FamilyAssignmentsView';
 import StatCard from '../../../components/shared/StatCard';
 import TabNavigation from '../../../components/shared/TabNavigation';
 import LoadingSpinner from '../../../components/shared/LoadingSpinner';
@@ -188,6 +189,7 @@ export default function ParentDashboard() {
           { id: 'overview', name: 'Family Overview', icon: '🏠' },
           { id: 'children', name: 'My Children', icon: '👨‍👩‍👧‍👦' },
           { id: 'fees', name: 'Fees & Payments', icon: '💰' },
+          { id: 'assignments', name: 'Assignments & Notes', icon: '📋' },
           { id: 'academic', name: 'Academic Progress', icon: '📚' },
         ]}
         activeTab={activeTab}
@@ -319,6 +321,7 @@ export default function ParentDashboard() {
         {activeTab === 'overview' && <FamilyOverview familyProfile={familyProfile} />}
         {activeTab === 'children' && <ChildrenView selectedChild={selectedChild} />}
         {activeTab === 'fees' && <FamilyFeesView selectedChild={selectedChild} />}
+        {activeTab === 'assignments' && <FamilyAssignmentsView selectedChild={selectedChild} />}
         {activeTab === 'academic' && <FamilyAcademicView selectedChild={selectedChild} />}
       </main>
     </div>

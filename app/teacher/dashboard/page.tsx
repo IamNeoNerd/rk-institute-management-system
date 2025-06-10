@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import AcademicLogsManager from '../components/AcademicLogsManager';
 import StudentsView from '../components/StudentsView';
 import CoursesView from '../components/CoursesView';
+import AssignmentsManager from '../components/AssignmentsManager';
 
 interface User {
   id: string;
@@ -161,6 +162,7 @@ export default function TeacherDashboard() {
           <nav className="flex space-x-8">
             {[
               { id: 'overview', name: 'Dashboard Overview', icon: '📊' },
+              { id: 'assignments', name: 'Assignments & Notes', icon: '📋' },
               { id: 'academic-logs', name: 'Academic Logs', icon: '📝' },
               { id: 'my-students', name: 'My Students', icon: '👨‍🎓' },
               { id: 'my-courses', name: 'My Courses', icon: '📚' },
@@ -289,6 +291,21 @@ export default function TeacherDashboard() {
             {/* Quick Actions */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               <button
+                onClick={() => setActiveTab('assignments')}
+                className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-all border border-gray-200 text-left group"
+              >
+                <div className="flex items-center">
+                  <div className="p-3 bg-indigo-100 rounded-lg group-hover:bg-indigo-200 transition-colors">
+                    <span className="text-2xl">📋</span>
+                  </div>
+                  <div className="ml-4">
+                    <h3 className="text-lg font-semibold text-gray-900">Manage Assignments</h3>
+                    <p className="text-gray-600">Create homework, projects, and study materials</p>
+                  </div>
+                </div>
+              </button>
+
+              <button
                 onClick={() => setActiveTab('academic-logs')}
                 className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-all border border-gray-200 text-left group"
               >
@@ -336,6 +353,7 @@ export default function TeacherDashboard() {
           </div>
         )}
 
+        {activeTab === 'assignments' && <AssignmentsManager />}
         {activeTab === 'academic-logs' && <AcademicLogsManager />}
         {activeTab === 'my-students' && <StudentsView />}
         {activeTab === 'my-courses' && <CoursesView />}
