@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import AdminLayout from '@/components/layout/AdminLayout';
 
 interface ReportData {
@@ -40,14 +40,7 @@ export default function ReportsPage() {
   const [automationReports, setAutomationReports] = useState<any[]>([]);
   const [generatingReport, setGeneratingReport] = useState<string | null>(null);
 
-  useEffect(() => {
-    fetchReportData();
-    if (activeTab === 'automated') {
-      fetchAutomationReports();
-    }
-  }, [selectedMonth, selectedYear, activeTab]);
-
-  const fetchReportData = async () => {
+  const fetchReportData = useCallback(async () => {
     try {
       const token = localStorage.getItem('token');
       const response = await fetch(`/api/reports?month=${selectedMonth}&year=${selectedYear}`, {
@@ -67,9 +60,9 @@ export default function ReportsPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [selectedMonth, selectedYear]);
 
-  const fetchAutomationReports = async () => {
+  const fetchAutomationReports = useCallback(async () => {
     try {
       const token = localStorage.getItem('token');
       const response = await fetch('/api/reports/stored', {
@@ -84,7 +77,14 @@ export default function ReportsPage() {
     } catch (error) {
       console.error('Failed to fetch automation reports:', error);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchReportData();
+    if (activeTab === 'automated') {
+      fetchAutomationReports();
+    }
+  }, [fetchReportData, fetchAutomationReports, activeTab]);
 
   const generateAutomationReport = async (reportType: 'weekly' | 'monthly' | 'outstanding') => {
     setGeneratingReport(reportType);

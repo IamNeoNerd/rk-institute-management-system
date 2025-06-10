@@ -164,7 +164,7 @@ export default function CoursesView() {
             <span className="text-3xl">📚</span>
           </div>
           <h3 className="text-lg font-medium text-gray-900 mb-2">No Courses Assigned</h3>
-          <p className="text-gray-600">You haven't been assigned to teach any courses yet.</p>
+          <p className="text-gray-600">You haven&apos;t been assigned to teach any courses yet.</p>
         </div>
       )}
 

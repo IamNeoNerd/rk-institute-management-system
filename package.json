@@ -5,6 +5,7 @@
   "private": true,
   "scripts": {
     "build": "prisma migrate deploy && prisma generate && next build",
+    "build:local": "prisma generate && next build",
     "start": "next start",
     "dev": "next dev",
     "postinstall": "prisma generate",

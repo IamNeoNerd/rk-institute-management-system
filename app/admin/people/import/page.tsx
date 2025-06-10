@@ -30,7 +30,7 @@ export default function PeopleBulkImportPage() {
           <div className="text-6xl mb-6">📁</div>
           <h2 className="text-3xl font-bold text-gray-900 mb-4">Bulk Import Coming Soon</h2>
           <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
-            We're developing a comprehensive bulk import system that will allow you to efficiently 
+            We&apos;re developing a comprehensive bulk import system that will allow you to efficiently
             import large numbers of students, families, and users from various file formats.
           </p>
           
@@ -133,7 +133,7 @@ export default function PeopleBulkImportPage() {
           <div className="mt-12 p-6 bg-gray-50 rounded-xl">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Import Templates</h3>
             <p className="text-gray-600 mb-4">
-              When available, you'll be able to download template files to ensure your data is formatted correctly.
+              When available, you&apos;ll be able to download template files to ensure your data is formatted correctly.
             </p>
             <div className="flex justify-center space-x-4">
               <button 

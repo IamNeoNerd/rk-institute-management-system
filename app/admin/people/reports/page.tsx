@@ -30,7 +30,7 @@ export default function PeopleReportsPage() {
           <div className="text-6xl mb-6">📊</div>
           <h2 className="text-3xl font-bold text-gray-900 mb-4">Reports Coming Soon</h2>
           <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
-            We're working on comprehensive reporting features for people management. 
+            We&apos;re working on comprehensive reporting features for people management.
             This will include student performance reports, family summaries, user activity reports, and more.
           </p>
           

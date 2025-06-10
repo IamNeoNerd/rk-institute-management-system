@@ -136,7 +136,7 @@ export default function TeacherDashboard() {
             <div className="flex items-center">
               <h1 className="text-2xl font-bold text-gray-900">RK Institute</h1>
               <span className="ml-4 px-3 py-1 bg-gradient-to-r from-teal-100 to-blue-100 text-teal-800 text-sm font-medium rounded-full">
-                🎓 Teacher's Toolkit
+                🎓 Teacher&apos;s Toolkit
               </span>
             </div>
             <div className="flex items-center space-x-4">
@@ -188,7 +188,7 @@ export default function TeacherDashboard() {
           <div className="space-y-8">
             {/* Welcome Section */}
             <div className="bg-gradient-to-r from-teal-500 via-blue-600 to-purple-600 rounded-xl shadow-lg p-8 text-white">
-              <h2 className="text-3xl font-bold mb-4">Teacher's Dashboard</h2>
+              <h2 className="text-3xl font-bold mb-4">Teacher&apos;s Dashboard</h2>
               <p className="text-lg opacity-90 mb-6">
                 Empower student success through comprehensive academic tracking and progress management
               </p>

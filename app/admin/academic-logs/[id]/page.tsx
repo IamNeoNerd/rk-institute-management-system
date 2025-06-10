@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import AdminLayout from '@/components/layout/AdminLayout';
 import Link from 'next/link';
@@ -39,17 +39,11 @@ export default function AcademicLogDetail() {
 
   const logId = params.id as string;
 
-  useEffect(() => {
-    if (logId) {
-      fetchLog();
-    }
-  }, [logId]);
-
-  const fetchLog = async () => {
+  const fetchLog = useCallback(async () => {
     try {
       setLoading(true);
       const response = await fetch(`/api/academic-logs/${logId}`);
-      
+
       if (!response.ok) {
         if (response.status === 404) {
           setError('Academic log not found');
@@ -66,7 +60,13 @@ export default function AcademicLogDetail() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [logId]);
+
+  useEffect(() => {
+    if (logId) {
+      fetchLog();
+    }
+  }, [logId, fetchLog]);
 
   const getLogTypeColor = (type: string) => {
     switch (type.toUpperCase()) {

@@ -203,7 +203,7 @@ export default function ParentDashboard() {
             <div className="bg-gradient-to-r from-green-500 via-blue-600 to-purple-600 rounded-xl shadow-lg p-8 text-white">
               <h2 className="text-3xl font-bold mb-4">Welcome, {familyProfile?.name}!</h2>
               <p className="text-lg opacity-90 mb-6">
-                Stay connected with your children's academic journey and manage family account information
+                Stay connected with your children&apos;s academic journey and manage family account information
               </p>
               <div className="flex flex-wrap gap-4">
                 <div className="bg-white bg-opacity-20 rounded-lg px-4 py-2">

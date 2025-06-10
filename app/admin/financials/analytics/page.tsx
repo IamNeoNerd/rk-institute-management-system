@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import AdminLayout from '@/components/layout/AdminLayout';
 import Link from 'next/link';
 
@@ -32,11 +32,7 @@ export default function FinancialAnalyticsPage() {
   const [error, setError] = useState('');
   const [selectedPeriod, setSelectedPeriod] = useState('6months');
 
-  useEffect(() => {
-    fetchAnalyticsData();
-  }, [selectedPeriod]);
-
-  const fetchAnalyticsData = async () => {
+  const fetchAnalyticsData = useCallback(async () => {
     try {
       const token = localStorage.getItem('token');
       const response = await fetch(`/api/financials/analytics?period=${selectedPeriod}`, {
@@ -56,7 +52,11 @@ export default function FinancialAnalyticsPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [selectedPeriod]);
+
+  useEffect(() => {
+    fetchAnalyticsData();
+  }, [fetchAnalyticsData]);
 
   if (loading) {
     return (
