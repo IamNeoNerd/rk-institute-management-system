@@ -97,7 +97,7 @@ jobs:
         run: npx prisma generate
 
       - name: 🏗️ Build application
-        run: npm run build
+        run: npm run build:ci
 
       - name: 📊 Upload build artifacts
         uses: actions/upload-artifact@v4
