@@ -7,6 +7,7 @@ This document outlines the comprehensive security measures implemented in the RK
 ## **🛡️ Security Architecture**
 
 ### **Multi-Layer Security Approach**
+
 1. **Network Security** - Firewall, SSL/TLS, DDoS protection
 2. **Application Security** - Input validation, authentication, authorization
 3. **Data Security** - Encryption, secure storage, backup protection
@@ -17,12 +18,14 @@ This document outlines the comprehensive security measures implemented in the RK
 ## **🔐 Authentication & Authorization**
 
 ### **JWT-Based Authentication**
+
 - **Algorithm**: HS256 with secure secret key
 - **Token Expiry**: 4 hours (configurable)
 - **Refresh Strategy**: Automatic token refresh
 - **Storage**: Secure HTTP-only cookies (recommended)
 
 ### **Role-Based Access Control (RBAC)**
+
 ```typescript
 // User Roles
 ADMIN     - Full system access
@@ -32,6 +35,7 @@ STUDENT   - Read-only access to own data
 ```
 
 ### **Security Configuration**
+
 ```bash
 # Environment Variables
 JWT_SECRET="minimum-32-character-secure-random-string"
@@ -44,11 +48,12 @@ BCRYPT_ROUNDS="14"  # Higher for production
 ## **🚫 Rate Limiting & DDoS Protection**
 
 ### **Multi-Tier Rate Limiting**
+
 ```javascript
 // Authentication endpoints
 AUTH_RATE_LIMIT: 5 requests per 15 minutes
 
-// General API endpoints  
+// General API endpoints
 API_RATE_LIMIT: 100 requests per 15 minutes
 
 // Strict endpoints (admin actions)
@@ -56,6 +61,7 @@ STRICT_RATE_LIMIT: 10 requests per minute
 ```
 
 ### **Configuration**
+
 ```bash
 RATE_LIMIT_WINDOW="900000"  # 15 minutes
 RATE_LIMIT_MAX="100"        # Max requests
@@ -66,6 +72,7 @@ RATE_LIMIT_MAX="100"        # Max requests
 ## **🔍 Input Validation & Sanitization**
 
 ### **Validation Schema**
+
 - **Email**: RFC 5322 compliant validation
 - **Password**: Minimum 8 characters, complexity requirements
 - **Names**: Alphanumeric with spaces, hyphens, apostrophes
@@ -74,12 +81,14 @@ RATE_LIMIT_MAX="100"        # Max requests
 - **UUIDs**: Strict UUID v4 format
 
 ### **XSS Prevention**
+
 - HTML tag removal from user inputs
 - JavaScript protocol blocking
 - Event handler attribute removal
 - Content Security Policy (CSP) headers
 
 ### **SQL Injection Prevention**
+
 - Prisma ORM with parameterized queries
 - Input type validation
 - Query result sanitization
@@ -89,6 +98,7 @@ RATE_LIMIT_MAX="100"        # Max requests
 ## **🌐 Security Headers**
 
 ### **Implemented Headers**
+
 ```javascript
 // Content Security Policy
 Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'
@@ -110,12 +120,13 @@ Referrer-Policy: strict-origin-when-cross-origin
 ```
 
 ### **CORS Configuration**
+
 ```javascript
 // Production CORS Settings
-origin: "https://your-domain.com"
-credentials: true
-methods: ["GET", "POST", "PUT", "DELETE", "PATCH"]
-allowedHeaders: ["Content-Type", "Authorization"]
+origin: 'https://your-domain.com';
+credentials: true;
+methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'];
+allowedHeaders: ['Content-Type', 'Authorization'];
 ```
 
 ---
@@ -123,18 +134,21 @@ allowedHeaders: ["Content-Type", "Authorization"]
 ## **🗄️ Database Security**
 
 ### **Connection Security**
+
 - SSL/TLS encrypted connections
 - Connection pooling with limits
 - Prepared statements only
 - Database user with minimal privileges
 
 ### **Data Encryption**
+
 - **Passwords**: Bcrypt with salt rounds 14+
 - **Sensitive Data**: AES-256 encryption for PII
 - **Database**: Encrypted at rest (cloud providers)
 - **Backups**: Encrypted backup storage
 
 ### **Database Configuration**
+
 ```sql
 -- Create dedicated user with limited privileges
 CREATE USER rk_app WITH ENCRYPTED PASSWORD 'secure_password';
@@ -148,6 +162,7 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO rk_app;
 ## **📝 Audit Logging**
 
 ### **Logged Events**
+
 - User authentication (success/failure)
 - Data modifications (create, update, delete)
 - Administrative actions
@@ -155,6 +170,7 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO rk_app;
 - System errors and exceptions
 
 ### **Log Format**
+
 ```json
 {
   "timestamp": "2024-01-15T10:30:00Z",
@@ -171,6 +187,7 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO rk_app;
 ```
 
 ### **Log Management**
+
 - **Retention**: 90 days minimum
 - **Storage**: Secure, encrypted storage
 - **Access**: Restricted to authorized personnel
@@ -181,6 +198,7 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO rk_app;
 ## **🔧 Server Hardening**
 
 ### **Operating System Security**
+
 ```bash
 # Update system packages
 sudo apt update && sudo apt upgrade -y
@@ -203,6 +221,7 @@ sudo nano /etc/ssh/sshd_config
 ```
 
 ### **Node.js Security**
+
 ```bash
 # Use specific Node.js version
 nvm use 18.19.0
@@ -223,6 +242,7 @@ chmod 755 -R public/
 ## **🚨 Security Monitoring**
 
 ### **Real-Time Monitoring**
+
 - Failed authentication attempts
 - Rate limit violations
 - Unusual access patterns
@@ -230,6 +250,7 @@ chmod 755 -R public/
 - Application errors
 
 ### **Alerting Configuration**
+
 ```bash
 # Example: Monitor failed logins
 tail -f /var/log/rk-institute/audit.log | grep "LOGIN_FAILED" | \
@@ -239,12 +260,13 @@ done
 ```
 
 ### **Health Check Endpoints**
+
 ```javascript
 // Security health checks
 GET /api/health/security
 {
   "rateLimit": "operational",
-  "authentication": "operational", 
+  "authentication": "operational",
   "database": "operational",
   "encryption": "operational"
 }
@@ -255,6 +277,7 @@ GET /api/health/security
 ## **🔄 Backup Security**
 
 ### **Backup Encryption**
+
 ```bash
 # Encrypted database backup
 pg_dump rk_institute | gpg --cipher-algo AES256 --compress-algo 1 \
@@ -266,6 +289,7 @@ aws s3 cp backup_$(date +%Y%m%d).sql.gpg s3://secure-backups/ \
 ```
 
 ### **Backup Access Control**
+
 - Separate backup user with read-only access
 - Encrypted backup files
 - Secure backup storage location
@@ -276,6 +300,7 @@ aws s3 cp backup_$(date +%Y%m%d).sql.gpg s3://secure-backups/ \
 ## **🔐 SSL/TLS Configuration**
 
 ### **Certificate Management**
+
 ```bash
 # Let's Encrypt with auto-renewal
 sudo certbot --nginx -d your-domain.com
@@ -284,6 +309,7 @@ sudo crontab -e
 ```
 
 ### **SSL Configuration (Nginx)**
+
 ```nginx
 # Strong SSL configuration
 ssl_protocols TLSv1.2 TLSv1.3;
@@ -300,6 +326,7 @@ ssl_stapling_verify on;
 ## **🚨 Incident Response**
 
 ### **Security Incident Procedures**
+
 1. **Detection** - Monitor alerts and logs
 2. **Assessment** - Determine severity and impact
 3. **Containment** - Isolate affected systems
@@ -308,6 +335,7 @@ ssl_stapling_verify on;
 6. **Documentation** - Record incident details
 
 ### **Emergency Contacts**
+
 ```bash
 # Security team contacts
 SECURITY_EMAIL="security@company.com"
@@ -320,6 +348,7 @@ INCIDENT_RESPONSE_TEAM="incident@company.com"
 ## **✅ Security Checklist**
 
 ### **Pre-Deployment Security Checklist**
+
 - [ ] Environment variables configured securely
 - [ ] Database user has minimal privileges
 - [ ] SSL/TLS certificates installed and configured
@@ -332,6 +361,7 @@ INCIDENT_RESPONSE_TEAM="incident@company.com"
 - [ ] Security incident response plan in place
 
 ### **Regular Security Maintenance**
+
 - [ ] Weekly security updates
 - [ ] Monthly dependency audits
 - [ ] Quarterly security assessments
@@ -344,11 +374,13 @@ INCIDENT_RESPONSE_TEAM="incident@company.com"
 ## **📞 Security Support**
 
 ### **Reporting Security Issues**
+
 - **Email**: security@company.com
 - **Response Time**: 24 hours for critical issues
 - **Encryption**: Use PGP key for sensitive reports
 
 ### **Security Resources**
+
 - [OWASP Top 10](https://owasp.org/www-project-top-ten/)
 - [Node.js Security Best Practices](https://nodejs.org/en/docs/guides/security/)
 - [PostgreSQL Security](https://www.postgresql.org/docs/current/security.html)

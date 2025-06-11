@@ -39,14 +39,16 @@ interface DashboardStats {
 
 export default function StudentDashboard() {
   const [user, setUser] = useState<User | null>(null);
-  const [studentProfile, setStudentProfile] = useState<StudentProfile | null>(null);
+  const [studentProfile, setStudentProfile] = useState<StudentProfile | null>(
+    null
+  );
   const [stats, setStats] = useState<DashboardStats>({
     totalCourses: 0,
     totalServices: 0,
     currentMonthFee: 0,
     outstandingDues: 0,
     academicLogs: 0,
-    achievements: 0,
+    achievements: 0
   });
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('overview');
@@ -55,7 +57,7 @@ export default function StudentDashboard() {
   useEffect(() => {
     const token = localStorage.getItem('token');
     const userData = localStorage.getItem('user');
-    
+
     if (!token || !userData) {
       router.push('/');
       return;
@@ -74,10 +76,10 @@ export default function StudentDashboard() {
   const fetchStudentData = async () => {
     try {
       const token = localStorage.getItem('token');
-      
+
       // In a real implementation, you would fetch student-specific data
       // For now, we'll use mock data since we don't have student-specific APIs
-      
+
       // Mock student profile data
       setStudentProfile({
         id: 'student-1',
@@ -89,8 +91,8 @@ export default function StudentDashboard() {
         family: {
           name: 'The Johnson Family',
           email: 'johnson.family@email.com',
-          phone: '+1-217-555-0101',
-        },
+          phone: '+1-217-555-0101'
+        }
       });
 
       // Mock dashboard stats
@@ -100,9 +102,8 @@ export default function StudentDashboard() {
         currentMonthFee: 8500,
         outstandingDues: 0,
         academicLogs: 5,
-        achievements: 2,
+        achievements: 2
       });
-
     } catch (error) {
       console.error('Error fetching student data:', error);
     } finally {
@@ -119,32 +120,34 @@ export default function StudentDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      <div className='min-h-screen bg-gray-50 flex items-center justify-center'>
+        <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600'></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className='min-h-screen bg-gray-50'>
       {/* Header */}
-      <header className="bg-white shadow-sm border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <h1 className="text-2xl font-bold text-gray-900">RK Institute</h1>
-              <span className="ml-4 px-3 py-1 bg-gradient-to-r from-blue-100 to-purple-100 text-blue-800 text-sm font-medium rounded-full">
+      <header className='bg-white shadow-sm border-b border-gray-200'>
+        <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
+          <div className='flex justify-between items-center h-16'>
+            <div className='flex items-center'>
+              <h1 className='text-2xl font-bold text-gray-900'>RK Institute</h1>
+              <span className='ml-4 px-3 py-1 bg-gradient-to-r from-blue-100 to-purple-100 text-blue-800 text-sm font-medium rounded-full'>
                 🎓 Student Portal
               </span>
             </div>
-            <div className="flex items-center space-x-4">
-              <div className="text-right">
-                <p className="text-sm text-gray-600">Welcome,</p>
-                <p className="font-semibold text-gray-900">{studentProfile?.name}</p>
+            <div className='flex items-center space-x-4'>
+              <div className='text-right'>
+                <p className='text-sm text-gray-600'>Welcome,</p>
+                <p className='font-semibold text-gray-900'>
+                  {studentProfile?.name}
+                </p>
               </div>
               <button
                 onClick={handleLogout}
-                className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors"
+                className='bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors'
               >
                 Logout
               </button>
@@ -154,16 +157,16 @@ export default function StudentDashboard() {
       </header>
 
       {/* Navigation Tabs */}
-      <div className="bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <nav className="flex space-x-8">
+      <div className='bg-white border-b border-gray-200'>
+        <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
+          <nav className='flex space-x-8'>
             {[
               { id: 'overview', name: 'Dashboard', icon: '📊' },
               { id: 'my-courses', name: 'My Courses', icon: '📚' },
               { id: 'my-fees', name: 'Fees & Payments', icon: '💰' },
               { id: 'assignments', name: 'Assignments & Notes', icon: '📋' },
-              { id: 'academic-logs', name: 'Academic Progress', icon: '📝' },
-            ].map((tab) => (
+              { id: 'academic-logs', name: 'Academic Progress', icon: '📝' }
+            ].map(tab => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
@@ -173,7 +176,7 @@ export default function StudentDashboard() {
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                 }`}
               >
-                <span className="mr-2">{tab.icon}</span>
+                <span className='mr-2'>{tab.icon}</span>
                 {tab.name}
               </button>
             ))}
@@ -182,171 +185,238 @@ export default function StudentDashboard() {
       </div>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8'>
         {activeTab === 'overview' && (
-          <div className="space-y-8">
+          <div className='space-y-8'>
             {/* Welcome Section */}
-            <div className="bg-gradient-to-r from-blue-500 via-purple-600 to-indigo-600 rounded-xl shadow-lg p-8 text-white">
-              <h2 className="text-3xl font-bold mb-4">Welcome Back, {studentProfile?.name}!</h2>
-              <p className="text-lg opacity-90 mb-6">
-                Track your academic progress, view course materials, and stay updated with your learning journey
+            <div className='bg-gradient-to-r from-blue-500 via-purple-600 to-indigo-600 rounded-xl shadow-lg p-8 text-white'>
+              <h2 className='text-3xl font-bold mb-4'>
+                Welcome Back, {studentProfile?.name}!
+              </h2>
+              <p className='text-lg opacity-90 mb-6'>
+                Track your academic progress, view course materials, and stay
+                updated with your learning journey
               </p>
-              <div className="flex flex-wrap gap-4">
-                <div className="bg-white bg-opacity-20 rounded-lg px-4 py-2">
-                  <span className="text-sm font-medium">{studentProfile?.grade}</span>
+              <div className='flex flex-wrap gap-4'>
+                <div className='bg-white bg-opacity-20 rounded-lg px-4 py-2'>
+                  <span className='text-sm font-medium'>
+                    {studentProfile?.grade}
+                  </span>
                 </div>
-                <div className="bg-white bg-opacity-20 rounded-lg px-4 py-2">
-                  <span className="text-sm font-medium">{studentProfile?.studentId}</span>
+                <div className='bg-white bg-opacity-20 rounded-lg px-4 py-2'>
+                  <span className='text-sm font-medium'>
+                    {studentProfile?.studentId}
+                  </span>
                 </div>
-                <div className="bg-white bg-opacity-20 rounded-lg px-4 py-2">
-                  <span className="text-sm font-medium">{studentProfile?.family.name}</span>
+                <div className='bg-white bg-opacity-20 rounded-lg px-4 py-2'>
+                  <span className='text-sm font-medium'>
+                    {studentProfile?.family.name}
+                  </span>
                 </div>
               </div>
             </div>
 
             {/* Quick Stats */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
-                <div className="flex items-center justify-between">
+            <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
+              <div className='bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow'>
+                <div className='flex items-center justify-between'>
                   <div>
-                    <p className="text-sm font-medium text-gray-600">Enrolled Courses</p>
-                    <p className="text-3xl font-bold text-gray-900">{stats.totalCourses}</p>
-                    <p className="text-sm text-blue-600 mt-1">Active subjects</p>
+                    <p className='text-sm font-medium text-gray-600'>
+                      Enrolled Courses
+                    </p>
+                    <p className='text-3xl font-bold text-gray-900'>
+                      {stats.totalCourses}
+                    </p>
+                    <p className='text-sm text-blue-600 mt-1'>
+                      Active subjects
+                    </p>
                   </div>
-                  <div className="p-3 bg-blue-100 rounded-lg">
-                    <span className="text-3xl">📚</span>
+                  <div className='p-3 bg-blue-100 rounded-lg'>
+                    <span className='text-3xl'>📚</span>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
-                <div className="flex items-center justify-between">
+              <div className='bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow'>
+                <div className='flex items-center justify-between'>
                   <div>
-                    <p className="text-sm font-medium text-gray-600">Services</p>
-                    <p className="text-3xl font-bold text-gray-900">{stats.totalServices}</p>
-                    <p className="text-sm text-green-600 mt-1">Active services</p>
+                    <p className='text-sm font-medium text-gray-600'>
+                      Services
+                    </p>
+                    <p className='text-3xl font-bold text-gray-900'>
+                      {stats.totalServices}
+                    </p>
+                    <p className='text-sm text-green-600 mt-1'>
+                      Active services
+                    </p>
                   </div>
-                  <div className="p-3 bg-green-100 rounded-lg">
-                    <span className="text-3xl">🚌</span>
+                  <div className='p-3 bg-green-100 rounded-lg'>
+                    <span className='text-3xl'>🚌</span>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
-                <div className="flex items-center justify-between">
+              <div className='bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow'>
+                <div className='flex items-center justify-between'>
                   <div>
-                    <p className="text-sm font-medium text-gray-600">Monthly Fee</p>
-                    <p className="text-3xl font-bold text-gray-900">₹{stats.currentMonthFee.toLocaleString()}</p>
-                    <p className="text-sm text-purple-600 mt-1">Current month</p>
+                    <p className='text-sm font-medium text-gray-600'>
+                      Monthly Fee
+                    </p>
+                    <p className='text-3xl font-bold text-gray-900'>
+                      ₹{stats.currentMonthFee.toLocaleString()}
+                    </p>
+                    <p className='text-sm text-purple-600 mt-1'>
+                      Current month
+                    </p>
                   </div>
-                  <div className="p-3 bg-purple-100 rounded-lg">
-                    <span className="text-3xl">💰</span>
+                  <div className='p-3 bg-purple-100 rounded-lg'>
+                    <span className='text-3xl'>💰</span>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
-                <div className="flex items-center justify-between">
+              <div className='bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow'>
+                <div className='flex items-center justify-between'>
                   <div>
-                    <p className="text-sm font-medium text-gray-600">Outstanding Dues</p>
-                    <p className={`text-3xl font-bold ${stats.outstandingDues > 0 ? 'text-red-600' : 'text-green-600'}`}>
+                    <p className='text-sm font-medium text-gray-600'>
+                      Outstanding Dues
+                    </p>
+                    <p
+                      className={`text-3xl font-bold ${stats.outstandingDues > 0 ? 'text-red-600' : 'text-green-600'}`}
+                    >
                       ₹{stats.outstandingDues.toLocaleString()}
                     </p>
-                    <p className={`text-sm mt-1 ${stats.outstandingDues > 0 ? 'text-red-600' : 'text-green-600'}`}>
-                      {stats.outstandingDues > 0 ? 'Payment pending' : 'All clear!'}
+                    <p
+                      className={`text-sm mt-1 ${stats.outstandingDues > 0 ? 'text-red-600' : 'text-green-600'}`}
+                    >
+                      {stats.outstandingDues > 0
+                        ? 'Payment pending'
+                        : 'All clear!'}
                     </p>
                   </div>
-                  <div className={`p-3 rounded-lg ${stats.outstandingDues > 0 ? 'bg-red-100' : 'bg-green-100'}`}>
-                    <span className="text-3xl">{stats.outstandingDues > 0 ? '⚠️' : '✅'}</span>
+                  <div
+                    className={`p-3 rounded-lg ${stats.outstandingDues > 0 ? 'bg-red-100' : 'bg-green-100'}`}
+                  >
+                    <span className='text-3xl'>
+                      {stats.outstandingDues > 0 ? '⚠️' : '✅'}
+                    </span>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
-                <div className="flex items-center justify-between">
+              <div className='bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow'>
+                <div className='flex items-center justify-between'>
                   <div>
-                    <p className="text-sm font-medium text-gray-600">Academic Logs</p>
-                    <p className="text-3xl font-bold text-gray-900">{stats.academicLogs}</p>
-                    <p className="text-sm text-indigo-600 mt-1">Progress records</p>
+                    <p className='text-sm font-medium text-gray-600'>
+                      Academic Logs
+                    </p>
+                    <p className='text-3xl font-bold text-gray-900'>
+                      {stats.academicLogs}
+                    </p>
+                    <p className='text-sm text-indigo-600 mt-1'>
+                      Progress records
+                    </p>
                   </div>
-                  <div className="p-3 bg-indigo-100 rounded-lg">
-                    <span className="text-3xl">📝</span>
+                  <div className='p-3 bg-indigo-100 rounded-lg'>
+                    <span className='text-3xl'>📝</span>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
-                <div className="flex items-center justify-between">
+              <div className='bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow'>
+                <div className='flex items-center justify-between'>
                   <div>
-                    <p className="text-sm font-medium text-gray-600">Achievements</p>
-                    <p className="text-3xl font-bold text-yellow-600">{stats.achievements}</p>
-                    <p className="text-sm text-yellow-600 mt-1">Earned this term</p>
+                    <p className='text-sm font-medium text-gray-600'>
+                      Achievements
+                    </p>
+                    <p className='text-3xl font-bold text-yellow-600'>
+                      {stats.achievements}
+                    </p>
+                    <p className='text-sm text-yellow-600 mt-1'>
+                      Earned this term
+                    </p>
                   </div>
-                  <div className="p-3 bg-yellow-100 rounded-lg">
-                    <span className="text-3xl">🏆</span>
+                  <div className='p-3 bg-yellow-100 rounded-lg'>
+                    <span className='text-3xl'>🏆</span>
                   </div>
                 </div>
               </div>
             </div>
 
             {/* Quick Actions */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
               <button
                 onClick={() => setActiveTab('my-courses')}
-                className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-all border border-gray-200 text-left group"
+                className='bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-all border border-gray-200 text-left group'
               >
-                <div className="flex items-center">
-                  <div className="p-3 bg-blue-100 rounded-lg group-hover:bg-blue-200 transition-colors">
-                    <span className="text-2xl">📚</span>
+                <div className='flex items-center'>
+                  <div className='p-3 bg-blue-100 rounded-lg group-hover:bg-blue-200 transition-colors'>
+                    <span className='text-2xl'>📚</span>
                   </div>
-                  <div className="ml-4">
-                    <h3 className="text-lg font-semibold text-gray-900">View My Courses</h3>
-                    <p className="text-gray-600">Access course materials and schedules</p>
+                  <div className='ml-4'>
+                    <h3 className='text-lg font-semibold text-gray-900'>
+                      View My Courses
+                    </h3>
+                    <p className='text-gray-600'>
+                      Access course materials and schedules
+                    </p>
                   </div>
                 </div>
               </button>
 
               <button
                 onClick={() => setActiveTab('my-fees')}
-                className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-all border border-gray-200 text-left group"
+                className='bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-all border border-gray-200 text-left group'
               >
-                <div className="flex items-center">
-                  <div className="p-3 bg-green-100 rounded-lg group-hover:bg-green-200 transition-colors">
-                    <span className="text-2xl">💰</span>
+                <div className='flex items-center'>
+                  <div className='p-3 bg-green-100 rounded-lg group-hover:bg-green-200 transition-colors'>
+                    <span className='text-2xl'>💰</span>
                   </div>
-                  <div className="ml-4">
-                    <h3 className="text-lg font-semibold text-gray-900">Check Fees & Payments</h3>
-                    <p className="text-gray-600">View fee structure and payment history</p>
+                  <div className='ml-4'>
+                    <h3 className='text-lg font-semibold text-gray-900'>
+                      Check Fees & Payments
+                    </h3>
+                    <p className='text-gray-600'>
+                      View fee structure and payment history
+                    </p>
                   </div>
                 </div>
               </button>
 
               <button
                 onClick={() => setActiveTab('assignments')}
-                className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-all border border-gray-200 text-left group"
+                className='bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-all border border-gray-200 text-left group'
               >
-                <div className="flex items-center">
-                  <div className="p-3 bg-indigo-100 rounded-lg group-hover:bg-indigo-200 transition-colors">
-                    <span className="text-2xl">📋</span>
+                <div className='flex items-center'>
+                  <div className='p-3 bg-indigo-100 rounded-lg group-hover:bg-indigo-200 transition-colors'>
+                    <span className='text-2xl'>📋</span>
                   </div>
-                  <div className="ml-4">
-                    <h3 className="text-lg font-semibold text-gray-900">Assignments & Notes</h3>
-                    <p className="text-gray-600">View homework, projects, and study materials</p>
+                  <div className='ml-4'>
+                    <h3 className='text-lg font-semibold text-gray-900'>
+                      Assignments & Notes
+                    </h3>
+                    <p className='text-gray-600'>
+                      View homework, projects, and study materials
+                    </p>
                   </div>
                 </div>
               </button>
 
               <button
                 onClick={() => setActiveTab('academic-logs')}
-                className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-all border border-gray-200 text-left group"
+                className='bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-all border border-gray-200 text-left group'
               >
-                <div className="flex items-center">
-                  <div className="p-3 bg-purple-100 rounded-lg group-hover:bg-purple-200 transition-colors">
-                    <span className="text-2xl">📝</span>
+                <div className='flex items-center'>
+                  <div className='p-3 bg-purple-100 rounded-lg group-hover:bg-purple-200 transition-colors'>
+                    <span className='text-2xl'>📝</span>
                   </div>
-                  <div className="ml-4">
-                    <h3 className="text-lg font-semibold text-gray-900">Academic Progress</h3>
-                    <p className="text-gray-600">View progress reports and achievements</p>
+                  <div className='ml-4'>
+                    <h3 className='text-lg font-semibold text-gray-900'>
+                      Academic Progress
+                    </h3>
+                    <p className='text-gray-600'>
+                      View progress reports and achievements
+                    </p>
                   </div>
                 </div>
               </button>
@@ -354,35 +424,53 @@ export default function StudentDashboard() {
 
             {/* Student Profile Summary */}
             {studentProfile && (
-              <div className="bg-white rounded-xl border border-gray-200 p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Student Profile</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-3">
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Student ID:</span>
-                      <span className="font-medium">{studentProfile.studentId}</span>
+              <div className='bg-white rounded-xl border border-gray-200 p-6'>
+                <h3 className='text-lg font-semibold text-gray-900 mb-4'>
+                  Student Profile
+                </h3>
+                <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+                  <div className='space-y-3'>
+                    <div className='flex justify-between'>
+                      <span className='text-gray-600'>Student ID:</span>
+                      <span className='font-medium'>
+                        {studentProfile.studentId}
+                      </span>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Grade:</span>
-                      <span className="font-medium">{studentProfile.grade}</span>
+                    <div className='flex justify-between'>
+                      <span className='text-gray-600'>Grade:</span>
+                      <span className='font-medium'>
+                        {studentProfile.grade}
+                      </span>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Date of Birth:</span>
-                      <span className="font-medium">{new Date(studentProfile.dateOfBirth).toLocaleDateString()}</span>
+                    <div className='flex justify-between'>
+                      <span className='text-gray-600'>Date of Birth:</span>
+                      <span className='font-medium'>
+                        {new Date(
+                          studentProfile.dateOfBirth
+                        ).toLocaleDateString()}
+                      </span>
                     </div>
                   </div>
-                  <div className="space-y-3">
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Family:</span>
-                      <span className="font-medium">{studentProfile.family.name}</span>
+                  <div className='space-y-3'>
+                    <div className='flex justify-between'>
+                      <span className='text-gray-600'>Family:</span>
+                      <span className='font-medium'>
+                        {studentProfile.family.name}
+                      </span>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Enrollment Date:</span>
-                      <span className="font-medium">{new Date(studentProfile.enrollmentDate).toLocaleDateString()}</span>
+                    <div className='flex justify-between'>
+                      <span className='text-gray-600'>Enrollment Date:</span>
+                      <span className='font-medium'>
+                        {new Date(
+                          studentProfile.enrollmentDate
+                        ).toLocaleDateString()}
+                      </span>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Contact:</span>
-                      <span className="font-medium">{studentProfile.family.phone}</span>
+                    <div className='flex justify-between'>
+                      <span className='text-gray-600'>Contact:</span>
+                      <span className='font-medium'>
+                        {studentProfile.family.phone}
+                      </span>
                     </div>
                   </div>
                 </div>

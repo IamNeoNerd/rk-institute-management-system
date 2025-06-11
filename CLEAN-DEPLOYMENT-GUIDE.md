@@ -7,6 +7,7 @@ This guide helps you create a clean, production-ready deployment repository that
 ## **📁 What's Included in the Deployment Folder**
 
 ### **📋 Documentation**
+
 - `README.md` - Project overview and quick start guide
 - `DEPLOYMENT-GUIDE.md` - Complete deployment instructions
 - `SECURITY.md` - Security configuration and best practices
@@ -15,6 +16,7 @@ This guide helps you create a clean, production-ready deployment repository that
 - `CLEAN-DEPLOYMENT-GUIDE.md` - This guide
 
 ### **⚙️ Configuration Files**
+
 - `package.json` - Production dependencies only
 - `next.config.js` - Production-optimized Next.js configuration
 - `.env.example` - Environment variables template
@@ -23,9 +25,11 @@ This guide helps you create a clean, production-ready deployment repository that
 - `docker-compose.yml` - Complete Docker Compose setup
 
 ### **🗄️ Database**
+
 - `prisma/schema.prisma` - Production PostgreSQL schema
 
 ### **📦 Application Code**
+
 - `app/` - Next.js 14 app router (to be copied from source)
 - `components/` - React components (to be copied from source)
 - `lib/` - Core business logic (to be copied from source)
@@ -39,12 +43,14 @@ This guide helps you create a clean, production-ready deployment repository that
 #### **Option A: Manual Process**
 
 1. **Create a new directory for clean deployment:**
+
 ```bash
 mkdir ../rk-institute-production
 cd ../rk-institute-production
 ```
 
 2. **Copy deployment files:**
+
 ```bash
 # Copy all deployment configuration
 cp -r ../rk-managemet-augument/deployment/* .
@@ -57,6 +63,7 @@ cp -r ../rk-managemet-augument/public ./
 ```
 
 3. **Clean any remaining sensitive files:**
+
 ```bash
 # Remove any .env files except .env.example
 find . -name "*.env*" ! -name ".env.example" -delete
@@ -99,12 +106,14 @@ git commit -m "Initial production deployment
 ### **Step 3: Create New GitHub Repository**
 
 1. **Go to GitHub and create a new repository:**
+
    - Repository name: `rk-institute-production`
    - Description: "RK Institute Management System - Production Deployment"
    - Visibility: Private (recommended for production code)
    - Don't initialize with README (we already have one)
 
 2. **Push to the new repository:**
+
 ```bash
 git remote add origin https://github.com/IamNeoNerd/rk-institute-production.git
 git branch -M main
@@ -114,6 +123,7 @@ git push -u origin main
 ## **🔒 Security Benefits of Clean Deployment**
 
 ### **✅ What's Removed**
+
 - Development environment files (`.env.development`, etc.)
 - Test files and test data
 - Development dependencies
@@ -126,6 +136,7 @@ git push -u origin main
 - Log files with potentially sensitive information
 
 ### **✅ What's Secured**
+
 - All environment variables are templated
 - No hardcoded secrets or credentials
 - Production-optimized configurations
@@ -137,12 +148,14 @@ git push -u origin main
 ## **📊 Repository Comparison**
 
 ### **Original Development Repository**
+
 - **Size**: ~50MB+ (with node_modules, tests, etc.)
 - **Files**: 500+ files including development artifacts
 - **Security**: Contains development data and configurations
 - **Purpose**: Development and testing
 
 ### **Clean Production Repository**
+
 - **Size**: ~5MB (clean code only)
 - **Files**: ~100 essential files only
 - **Security**: No sensitive data, production-ready
@@ -151,6 +164,7 @@ git push -u origin main
 ## **🚀 Deployment Process**
 
 ### **1. Configure Environment**
+
 ```bash
 # Copy and configure environment variables
 cp .env.example .env.production
@@ -160,23 +174,27 @@ nano .env.production
 ```
 
 ### **2. Install Dependencies**
+
 ```bash
 npm ci --production
 ```
 
 ### **3. Database Setup**
+
 ```bash
 npx prisma generate
 npx prisma migrate deploy
 ```
 
 ### **4. Build and Deploy**
+
 ```bash
 npm run build
 npm start
 ```
 
 ### **5. Docker Deployment (Recommended)**
+
 ```bash
 docker-compose up -d
 ```
@@ -184,6 +202,7 @@ docker-compose up -d
 ## **📋 Post-Deployment Actions**
 
 ### **1. Remove Original Repository (Optional)**
+
 After confirming the clean deployment works:
 
 ```bash
@@ -195,11 +214,13 @@ git clone https://github.com/IamNeoNerd/rk-institute-management-system.git rk-in
 ```
 
 ### **2. Update Documentation**
+
 - Update any references to the old repository
 - Share the new production repository URL with team members
 - Update deployment documentation with the new repository
 
 ### **3. Set Up Monitoring**
+
 - Configure monitoring for the production deployment
 - Set up alerts for the new repository
 - Update backup procedures
@@ -207,12 +228,14 @@ git clone https://github.com/IamNeoNerd/rk-institute-management-system.git rk-in
 ## **🔄 Maintenance Workflow**
 
 ### **Development Process**
+
 1. Continue development in a separate development repository
 2. Test thoroughly in development/staging environments
 3. When ready for production, copy only the necessary files to the production repository
 4. Deploy from the clean production repository
 
 ### **Update Process**
+
 1. Make changes in development repository
 2. Test and validate changes
 3. Copy updated files to production repository
@@ -224,21 +247,25 @@ git clone https://github.com/IamNeoNerd/rk-institute-management-system.git rk-in
 ### **Common Issues**
 
 #### **Missing Files After Clean Deployment**
+
 - Check that all necessary source files were copied
 - Verify the file structure matches the original
 - Ensure all dependencies are listed in package.json
 
 #### **Environment Configuration Issues**
+
 - Verify all required environment variables are set
 - Check that database connection string is correct
 - Ensure SSL certificates are properly configured
 
 #### **Build Failures**
+
 - Check that all dependencies are installed
 - Verify Node.js version compatibility
 - Review build logs for specific errors
 
 ### **Getting Help**
+
 - Review the deployment documentation
 - Check the deployment checklist
 - Verify security configuration
@@ -247,6 +274,7 @@ git clone https://github.com/IamNeoNerd/rk-institute-management-system.git rk-in
 ## **✅ Final Verification**
 
 Before going live, ensure:
+
 - [ ] Clean repository contains only production files
 - [ ] No sensitive data in the repository
 - [ ] All environment variables are templated
@@ -259,6 +287,7 @@ Before going live, ensure:
 ## **🎉 Success!**
 
 You now have a clean, secure, production-ready deployment repository that:
+
 - Contains only necessary files for production
 - Has no development artifacts or sensitive data
 - Follows security best practices

@@ -10,7 +10,7 @@ export async function GET(
 ) {
   try {
     const subscriptions = await prisma.studentSubscription.findMany({
-      where: { 
+      where: {
         studentId: params.id,
         endDate: null // Active subscriptions only
       },
@@ -60,10 +60,7 @@ export async function POST(
     });
 
     if (!student) {
-      return NextResponse.json(
-        { error: 'Student not found' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'Student not found' }, { status: 404 });
     }
 
     // Check if subscription already exists
@@ -90,7 +87,7 @@ export async function POST(
         courseId: courseId || null,
         serviceId: serviceId || null,
         discountAmount: discountAmount ? parseFloat(discountAmount) : 0,
-        startDate: startDate ? new Date(startDate) : new Date(),
+        startDate: startDate ? new Date(startDate) : new Date()
       },
       include: {
         course: {

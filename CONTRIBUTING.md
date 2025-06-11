@@ -16,6 +16,7 @@ Welcome to the RK Institute Management System! We're excited that you're interes
 ## 🚀 **Getting Started**
 
 ### **Prerequisites**
+
 - Node.js 18+ and npm 8+
 - PostgreSQL database
 - Git knowledge
@@ -24,23 +25,27 @@ Welcome to the RK Institute Management System! We're excited that you're interes
 ### **Local Development Setup**
 
 1. **Clone the repository**
+
    ```bash
    git clone https://github.com/IamNeoNerd/rk-institute-management-system.git
    cd rk-institute-management-system
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm install
    ```
 
 3. **Set up environment variables**
+
    ```bash
    cp .env.example .env.local
    # Edit .env.local with your database credentials
    ```
 
 4. **Set up the database**
+
    ```bash
    npx prisma migrate dev
    npx prisma generate
@@ -87,6 +92,7 @@ type(scope): description
 ```
 
 **Types:**
+
 - `feat`: New feature
 - `fix`: Bug fix
 - `docs`: Documentation changes
@@ -96,6 +102,7 @@ type(scope): description
 - `chore`: Maintenance tasks
 
 **Examples:**
+
 ```
 feat(auth): add JWT token refresh mechanism
 fix(fees): resolve discount calculation edge case
@@ -107,18 +114,21 @@ docs(api): update authentication endpoint documentation
 ## 📏 **Code Standards**
 
 ### **TypeScript Guidelines**
+
 - Use strict TypeScript configuration
 - Define proper interfaces and types
 - Avoid `any` type unless absolutely necessary
 - Use meaningful variable and function names
 
 ### **React Best Practices**
+
 - Use functional components with hooks
 - Implement proper error boundaries
 - Follow component composition patterns
 - Use TypeScript for prop definitions
 
 ### **Code Style**
+
 - Follow ESLint and Prettier configurations
 - Use single quotes for strings
 - 2-space indentation
@@ -126,6 +136,7 @@ docs(api): update authentication endpoint documentation
 - No trailing commas
 
 ### **File Organization**
+
 ```
 src/
 ├── app/                 # Next.js app router
@@ -142,17 +153,20 @@ src/
 ## 🧪 **Testing Guidelines**
 
 ### **Testing Strategy**
+
 - **Unit Tests**: Test individual functions and components
 - **Integration Tests**: Test API endpoints and workflows
 - **E2E Tests**: Test complete user journeys
 
 ### **Testing Requirements**
+
 - All new features must include tests
 - Maintain minimum 70% code coverage
 - Test edge cases and error scenarios
 - Mock external dependencies
 
 ### **Running Tests**
+
 ```bash
 # Run all tests
 npm test
@@ -165,6 +179,7 @@ npm run test:coverage
 ```
 
 ### **Test File Naming**
+
 ```
 component.test.tsx       # Component tests
 service.test.ts         # Service/utility tests
@@ -178,6 +193,7 @@ api.test.ts            # API endpoint tests
 ### **Before Creating a PR**
 
 1. **Ensure your branch is up to date**
+
    ```bash
    git checkout develop
    git pull origin develop
@@ -186,6 +202,7 @@ api.test.ts            # API endpoint tests
    ```
 
 2. **Run quality checks**
+
    ```bash
    npm run lint
    npm run type-check
@@ -210,6 +227,7 @@ api.test.ts            # API endpoint tests
 ### **PR Review Process**
 
 1. **Automated Checks**
+
    - Build verification
    - TypeScript compilation
    - Linting and formatting
@@ -217,6 +235,7 @@ api.test.ts            # API endpoint tests
    - Security scanning
 
 2. **Manual Review**
+
    - Code quality and architecture
    - Business logic correctness
    - Security implications
@@ -233,21 +252,27 @@ api.test.ts            # API endpoint tests
 ## 🐛 **Issue Reporting**
 
 ### **Bug Reports**
+
 Use the bug report template and include:
+
 - Clear reproduction steps
 - Expected vs actual behavior
 - Environment details
 - Screenshots/videos if applicable
 
 ### **Feature Requests**
+
 Use the feature request template and include:
+
 - Business justification
 - User stories
 - Acceptance criteria
 - Technical considerations
 
 ### **Security Issues**
+
 For security vulnerabilities:
+
 - **DO NOT** create public issues
 - Email security concerns directly
 - Include detailed reproduction steps
@@ -258,12 +283,14 @@ For security vulnerabilities:
 ## 🔒 **Security Guidelines**
 
 ### **Sensitive Data**
+
 - Never commit secrets or credentials
 - Use environment variables for configuration
 - Sanitize all user inputs
 - Implement proper authentication/authorization
 
 ### **Code Security**
+
 - Follow OWASP security guidelines
 - Use parameterized queries
 - Implement rate limiting

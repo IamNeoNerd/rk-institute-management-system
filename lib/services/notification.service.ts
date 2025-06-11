@@ -35,9 +35,11 @@ export class NotificationService {
   /**
    * Send a notification (placeholder implementation)
    */
-  async sendNotification(payload: NotificationPayload): Promise<NotificationResult> {
+  async sendNotification(
+    payload: NotificationPayload
+  ): Promise<NotificationResult> {
     const timestamp = new Date();
-    
+
     try {
       // Log the notification attempt
       console.log(`[Notification Service] ${timestamp.toISOString()}`);
@@ -78,7 +80,7 @@ export class NotificationService {
     contactEmail: string
   ): Promise<NotificationResult> {
     const message = `Dear ${familyName}, this is a reminder that the monthly fee of ₹${amount} for ${studentName} is due on ${dueDate.toLocaleDateString()}. Please make the payment at your earliest convenience.`;
-    
+
     return this.sendNotification({
       to: contactEmail,
       subject: `Fee Reminder - ${studentName}`,
@@ -106,7 +108,7 @@ export class NotificationService {
     contactEmail: string
   ): Promise<NotificationResult> {
     const message = `Dear ${familyName}, the monthly bill for ${studentName} has been generated for ${month} ${year}. Amount: ₹${amount}. Please log in to your portal to view details and make payment.`;
-    
+
     return this.sendNotification({
       to: contactEmail,
       subject: `Monthly Bill Generated - ${studentName} (${month} ${year})`,
@@ -126,22 +128,28 @@ export class NotificationService {
   /**
    * Send bulk notifications
    */
-  async sendBulkNotifications(notifications: NotificationPayload[]): Promise<NotificationResult[]> {
+  async sendBulkNotifications(
+    notifications: NotificationPayload[]
+  ): Promise<NotificationResult[]> {
     const results: NotificationResult[] = [];
-    
-    console.log(`[Notification Service] Processing ${notifications.length} bulk notifications...`);
-    
+
+    console.log(
+      `[Notification Service] Processing ${notifications.length} bulk notifications...`
+    );
+
     for (const notification of notifications) {
       const result = await this.sendNotification(notification);
       results.push(result);
-      
+
       // Small delay between notifications to avoid overwhelming
       await new Promise(resolve => setTimeout(resolve, 50));
     }
-    
+
     const successCount = results.filter(r => r.success).length;
-    console.log(`[Notification Service] Bulk processing complete: ${successCount}/${notifications.length} successful`);
-    
+    console.log(
+      `[Notification Service] Bulk processing complete: ${successCount}/${notifications.length} successful`
+    );
+
     return results;
   }
 }

@@ -3,6 +3,7 @@
 ## **📋 Pre-Deployment Checklist**
 
 ### **🔒 Security Verification**
+
 - [ ] All environment variables configured in `.env.production`
 - [ ] JWT_SECRET is at least 32 characters and cryptographically secure
 - [ ] Database credentials are strong and unique
@@ -15,6 +16,7 @@
 - [ ] Audit logging enabled
 
 ### **🗄️ Database Setup**
+
 - [ ] PostgreSQL server installed and running
 - [ ] Production database created
 - [ ] Database user created with minimal privileges
@@ -26,6 +28,7 @@
 - [ ] Database monitoring enabled
 
 ### **🌐 Infrastructure Setup**
+
 - [ ] Server meets minimum requirements (2GB RAM, 10GB storage)
 - [ ] Node.js 18+ installed
 - [ ] PM2 or systemd service configured
@@ -36,6 +39,7 @@
 - [ ] Monitoring and alerting set up
 
 ### **📦 Application Configuration**
+
 - [ ] Production dependencies installed: `npm ci --production`
 - [ ] Application built successfully: `npm run build`
 - [ ] Environment variables validated
@@ -50,6 +54,7 @@
 ## **🚀 Deployment Steps**
 
 ### **Step 1: Server Preparation**
+
 ```bash
 # Update system packages
 sudo apt update && sudo apt upgrade -y
@@ -69,6 +74,7 @@ sudo apt-get install nginx
 ```
 
 ### **Step 2: Database Setup**
+
 ```bash
 # Create database and user
 sudo -u postgres psql
@@ -82,6 +88,7 @@ psql -h localhost -U rk_user -d rk_institute_prod
 ```
 
 ### **Step 3: Application Deployment**
+
 ```bash
 # Create application directory
 sudo mkdir -p /var/www/rk-institute
@@ -112,6 +119,7 @@ npm start
 ```
 
 ### **Step 4: Process Management**
+
 ```bash
 # Create PM2 ecosystem file
 cat > ecosystem.config.js << EOF
@@ -138,6 +146,7 @@ pm2 startup
 ```
 
 ### **Step 5: Nginx Configuration (Optional)**
+
 ```bash
 # Create Nginx configuration
 sudo tee /etc/nginx/sites-available/rk-institute << EOF
@@ -179,6 +188,7 @@ sudo systemctl reload nginx
 ## **🧪 Post-Deployment Testing**
 
 ### **Health Checks**
+
 ```bash
 # Application health
 curl https://your-domain.com/api/health
@@ -193,6 +203,7 @@ curl -X POST https://your-domain.com/api/auth/login \
 ```
 
 ### **Performance Testing**
+
 ```bash
 # Load testing with Apache Bench
 ab -n 100 -c 10 https://your-domain.com/api/health
@@ -206,6 +217,7 @@ df -h
 ```
 
 ### **Security Testing**
+
 ```bash
 # SSL certificate check
 openssl s_client -connect your-domain.com:443 -servername your-domain.com
@@ -222,6 +234,7 @@ for i in {1..10}; do curl https://your-domain.com/api/auth/login; done
 ## **📊 Monitoring Setup**
 
 ### **Application Monitoring**
+
 - [ ] PM2 monitoring dashboard configured
 - [ ] Application logs being collected
 - [ ] Error tracking implemented
@@ -229,6 +242,7 @@ for i in {1..10}; do curl https://your-domain.com/api/auth/login; done
 - [ ] Uptime monitoring configured
 
 ### **System Monitoring**
+
 - [ ] CPU and memory monitoring
 - [ ] Disk space monitoring
 - [ ] Network monitoring
@@ -236,6 +250,7 @@ for i in {1..10}; do curl https://your-domain.com/api/auth/login; done
 - [ ] SSL certificate expiry monitoring
 
 ### **Alerting**
+
 - [ ] Email alerts for critical errors
 - [ ] SMS alerts for downtime
 - [ ] Slack/Discord notifications configured
@@ -246,6 +261,7 @@ for i in {1..10}; do curl https://your-domain.com/api/auth/login; done
 ## **🔄 Maintenance Procedures**
 
 ### **Regular Maintenance**
+
 - [ ] Weekly security updates: `sudo apt update && sudo apt upgrade`
 - [ ] Monthly dependency audits: `npm audit`
 - [ ] Quarterly security assessments
@@ -254,6 +270,7 @@ for i in {1..10}; do curl https://your-domain.com/api/auth/login; done
 - [ ] SSL certificate renewal verification
 
 ### **Backup Procedures**
+
 - [ ] Daily automated database backups
 - [ ] Weekly full system backups
 - [ ] Monthly backup restoration tests
@@ -261,6 +278,7 @@ for i in {1..10}; do curl https://your-domain.com/api/auth/login; done
 - [ ] Backup encryption verified
 
 ### **Update Procedures**
+
 1. **Backup current system**
 2. **Test updates in staging environment**
 3. **Schedule maintenance window**
@@ -275,6 +293,7 @@ for i in {1..10}; do curl https://your-domain.com/api/auth/login; done
 ### **Common Issues**
 
 #### **Application Won't Start**
+
 ```bash
 # Check logs
 pm2 logs rk-institute
@@ -287,6 +306,7 @@ npx prisma db pull
 ```
 
 #### **Database Connection Issues**
+
 ```bash
 # Check PostgreSQL status
 sudo systemctl status postgresql
@@ -299,6 +319,7 @@ echo $DATABASE_URL
 ```
 
 #### **SSL Certificate Issues**
+
 ```bash
 # Check certificate status
 sudo certbot certificates
@@ -311,6 +332,7 @@ sudo nginx -t
 ```
 
 ### **Emergency Contacts**
+
 - **System Administrator**: admin@company.com
 - **Database Administrator**: dba@company.com
 - **Security Team**: security@company.com
@@ -321,6 +343,7 @@ sudo nginx -t
 ## **✅ Final Verification**
 
 ### **Deployment Complete Checklist**
+
 - [ ] Application accessible via HTTPS
 - [ ] All API endpoints responding correctly
 - [ ] Authentication working properly
@@ -333,6 +356,7 @@ sudo nginx -t
 - [ ] Team notified of deployment
 
 ### **Go-Live Approval**
+
 - [ ] Technical lead approval
 - [ ] Security team approval
 - [ ] Business stakeholder approval

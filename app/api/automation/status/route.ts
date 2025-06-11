@@ -7,10 +7,10 @@ export async function GET(request: Request) {
   try {
     // Get running jobs from automation engine
     const runningJobs = AutomationEngineService.getRunningJobs();
-    
+
     // Get scheduled jobs from scheduler
     const scheduledJobs = SchedulerService.getAllJobs();
-    
+
     // System health check
     const systemStatus = {
       automationEngine: 'operational',
@@ -28,7 +28,9 @@ export async function GET(request: Request) {
           status: job.status,
           startTime: job.startTime,
           endTime: job.endTime,
-          duration: job.endTime ? job.endTime.getTime() - job.startTime.getTime() : null
+          duration: job.endTime
+            ? job.endTime.getTime() - job.startTime.getTime()
+            : null
         })),
         scheduledJobs: scheduledJobs.map(job => ({
           id: job.id,
@@ -46,11 +48,10 @@ export async function GET(request: Request) {
         }
       }
     });
-
   } catch (error) {
     console.error('[API] Automation status error:', error);
     return NextResponse.json(
-      { 
+      {
         success: false,
         error: 'Failed to get automation status',
         details: error instanceof Error ? error.message : 'Unknown error'
@@ -79,17 +80,23 @@ export async function POST(request: Request) {
     switch (action) {
       case 'start':
         result = SchedulerService.startJob(jobId);
-        message = result ? `Job '${jobId}' started successfully` : `Failed to start job '${jobId}'`;
+        message = result
+          ? `Job '${jobId}' started successfully`
+          : `Failed to start job '${jobId}'`;
         break;
 
       case 'stop':
         result = SchedulerService.stopJob(jobId);
-        message = result ? `Job '${jobId}' stopped successfully` : `Failed to stop job '${jobId}'`;
+        message = result
+          ? `Job '${jobId}' stopped successfully`
+          : `Failed to stop job '${jobId}'`;
         break;
 
       case 'trigger':
         result = await SchedulerService.triggerJob(jobId);
-        message = result ? `Job '${jobId}' triggered successfully` : `Failed to trigger job '${jobId}'`;
+        message = result
+          ? `Job '${jobId}' triggered successfully`
+          : `Failed to trigger job '${jobId}'`;
         break;
 
       default:
@@ -106,11 +113,10 @@ export async function POST(request: Request) {
       jobId,
       timestamp: new Date().toISOString()
     });
-
   } catch (error) {
     console.error('[API] Automation control error:', error);
     return NextResponse.json(
-      { 
+      {
         success: false,
         error: 'Failed to control automation job',
         details: error instanceof Error ? error.message : 'Unknown error'

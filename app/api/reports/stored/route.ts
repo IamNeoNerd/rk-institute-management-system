@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
 
     const token = authHeader.substring(7);
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as any;
-    
+
     if (!decoded || decoded.role !== 'ADMIN') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -50,7 +50,6 @@ export async function GET(request: NextRequest) {
         total: statistics.totalReports
       }
     });
-
   } catch (error) {
     console.error('Error fetching stored reports:', error);
     return NextResponse.json(

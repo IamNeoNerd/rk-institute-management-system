@@ -19,9 +19,9 @@ export default function LoginPage() {
       const response = await fetch('/api/auth', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, password })
       });
 
       const data = await response.json();
@@ -62,76 +62,82 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen gradient-bg flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+    <div className='min-h-screen gradient-bg flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden'>
       {/* Background decorations */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-blue-400/20 to-purple-600/20 rounded-full blur-3xl"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-indigo-400/20 to-pink-600/20 rounded-full blur-3xl"></div>
+      <div className='absolute inset-0 overflow-hidden'>
+        <div className='absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-blue-400/20 to-purple-600/20 rounded-full blur-3xl'></div>
+        <div className='absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-indigo-400/20 to-pink-600/20 rounded-full blur-3xl'></div>
       </div>
 
-      <div className="max-w-md w-full space-y-8 relative z-10 animate-fade-in">
-        <div className="text-center">
-          <div className="mx-auto h-16 w-16 bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center mb-6 shadow-xl">
-            <span className="text-2xl font-bold text-white">RK</span>
+      <div className='max-w-md w-full space-y-8 relative z-10 animate-fade-in'>
+        <div className='text-center'>
+          <div className='mx-auto h-16 w-16 bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center mb-6 shadow-xl'>
+            <span className='text-2xl font-bold text-white'>RK</span>
           </div>
-          <h2 className="text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
+          <h2 className='text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent'>
             Welcome Back
           </h2>
-          <p className="mt-3 text-gray-600 font-medium">
+          <p className='mt-3 text-gray-600 font-medium'>
             Sign in to RK Institute Management System
           </p>
         </div>
-        <div className="card animate-slide-up">
-          <form className="space-y-6" onSubmit={handleLogin}>
-            <div className="space-y-4">
+        <div className='card animate-slide-up'>
+          <form className='space-y-6' onSubmit={handleLogin}>
+            <div className='space-y-4'>
               <div>
-                <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2">
+                <label
+                  htmlFor='email'
+                  className='block text-sm font-semibold text-gray-700 mb-2'
+                >
                   Email Address
                 </label>
                 <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  autoComplete="email"
+                  id='email'
+                  name='email'
+                  type='email'
+                  autoComplete='email'
                   required
-                  className="input-field"
-                  placeholder="Enter your email"
+                  className='input-field'
+                  placeholder='Enter your email'
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={e => setEmail(e.target.value)}
                 />
               </div>
               <div>
-                <label htmlFor="password" className="block text-sm font-semibold text-gray-700 mb-2">
+                <label
+                  htmlFor='password'
+                  className='block text-sm font-semibold text-gray-700 mb-2'
+                >
                   Password
                 </label>
                 <input
-                  id="password"
-                  name="password"
-                  type="password"
-                  autoComplete="current-password"
+                  id='password'
+                  name='password'
+                  type='password'
+                  autoComplete='current-password'
                   required
-                  className="input-field"
-                  placeholder="Enter your password"
+                  className='input-field'
+                  placeholder='Enter your password'
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={e => setPassword(e.target.value)}
                 />
               </div>
             </div>
 
             {error && (
-              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm">
+              <div className='bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm'>
                 {error}
               </div>
             )}
 
             <button
-              type="submit"
+              type='submit'
               disabled={isLoading}
-              className="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed"
+              className='btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed'
             >
               {isLoading ? (
-                <div className="flex items-center justify-center">
-                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                <div className='flex items-center justify-center'>
+                  <div className='animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2'></div>
                   Signing in...
                 </div>
               ) : (
@@ -139,10 +145,10 @@ export default function LoginPage() {
               )}
             </button>
 
-            <div className="text-center">
+            <div className='text-center'>
               <a
-                href="/forgot-password"
-                className="text-blue-600 hover:text-blue-700 text-sm font-medium transition-colors duration-200"
+                href='/forgot-password'
+                className='text-blue-600 hover:text-blue-700 text-sm font-medium transition-colors duration-200'
               >
                 Forgot your password?
               </a>

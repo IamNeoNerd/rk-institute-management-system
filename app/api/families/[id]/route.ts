@@ -16,31 +16,28 @@ export async function GET(
           select: {
             id: true,
             name: true,
-            grade: true,
-          },
+            grade: true
+          }
         },
         users: {
           select: {
             id: true,
             name: true,
             email: true,
-            role: true,
-          },
+            role: true
+          }
         },
         _count: {
           select: {
             students: true,
-            users: true,
-          },
-        },
-      },
+            users: true
+          }
+        }
+      }
     });
 
     if (!family) {
-      return NextResponse.json(
-        { error: 'Family not found' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'Family not found' }, { status: 404 });
     }
 
     return NextResponse.json(family);
@@ -78,31 +75,31 @@ export async function PUT(
         address: address || null,
         phone: phone || null,
         email: email || null,
-        discountAmount: discountAmount ? parseFloat(discountAmount) : 0,
+        discountAmount: discountAmount ? parseFloat(discountAmount) : 0
       },
       include: {
         students: {
           select: {
             id: true,
             name: true,
-            grade: true,
-          },
+            grade: true
+          }
         },
         users: {
           select: {
             id: true,
             name: true,
             email: true,
-            role: true,
-          },
+            role: true
+          }
         },
         _count: {
           select: {
             students: true,
-            users: true,
-          },
-        },
-      },
+            users: true
+          }
+        }
+      }
     });
 
     return NextResponse.json(family);
@@ -123,19 +120,22 @@ export async function DELETE(
   try {
     // Check if family has students
     const studentCount = await prisma.student.count({
-      where: { familyId: params.id },
+      where: { familyId: params.id }
     });
 
     if (studentCount > 0) {
       return NextResponse.json(
-        { error: 'Cannot delete family with existing students. Please delete students first.' },
+        {
+          error:
+            'Cannot delete family with existing students. Please delete students first.'
+        },
         { status: 400 }
       );
     }
 
     // Delete the family
     await prisma.family.delete({
-      where: { id: params.id },
+      where: { id: params.id }
     });
 
     return NextResponse.json({ message: 'Family deleted successfully' });

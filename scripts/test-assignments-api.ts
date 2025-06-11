@@ -13,24 +13,36 @@ class AssignmentsAPITester {
   private results: TestResult[] = [];
   private tokens: Record<string, string> = {};
 
-  async login(email: string, password: string, role: string): Promise<string | null> {
+  async login(
+    email: string,
+    password: string,
+    role: string
+  ): Promise<string | null> {
     try {
       const response = await fetch(`${BASE_URL}/api/auth`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, password })
       });
 
       if (response.ok) {
-        const data = await response.json() as any;
+        const data = (await response.json()) as any;
         this.tokens[role] = data.token;
-        this.addResult(`Login as ${role}`, 'PASS', `Successfully logged in as ${email}`);
+        this.addResult(
+          `Login as ${role}`,
+          'PASS',
+          `Successfully logged in as ${email}`
+        );
         return data.token;
       } else {
-        const error = await response.json() as any;
-        this.addResult(`Login as ${role}`, 'FAIL', `Login failed: ${error.error}`);
+        const error = (await response.json()) as any;
+        this.addResult(
+          `Login as ${role}`,
+          'FAIL',
+          `Login failed: ${error.error}`
+        );
         return null;
       }
     } catch (error) {
@@ -43,12 +55,12 @@ class AssignmentsAPITester {
     try {
       const response = await fetch(`${BASE_URL}/api/assignments`, {
         headers: {
-          'Authorization': `Bearer ${token}`,
-        },
+          Authorization: `Bearer ${token}`
+        }
       });
 
       if (response.ok) {
-        const data = await response.json() as any;
+        const data = (await response.json()) as any;
         this.addResult(
           `Get Assignments (${role})`,
           'PASS',
@@ -56,11 +68,19 @@ class AssignmentsAPITester {
           { count: data.assignments?.length }
         );
       } else {
-        const error = await response.json() as any;
-        this.addResult(`Get Assignments (${role})`, 'FAIL', `API error: ${error.error}`);
+        const error = (await response.json()) as any;
+        this.addResult(
+          `Get Assignments (${role})`,
+          'FAIL',
+          `API error: ${error.error}`
+        );
       }
     } catch (error) {
-      this.addResult(`Get Assignments (${role})`, 'FAIL', `Network error: ${error}`);
+      this.addResult(
+        `Get Assignments (${role})`,
+        'FAIL',
+        `Network error: ${error}`
+      );
     }
   }
 
@@ -68,12 +88,12 @@ class AssignmentsAPITester {
     try {
       const response = await fetch(`${BASE_URL}/api/assignments/stats`, {
         headers: {
-          'Authorization': `Bearer ${token}`,
-        },
+          Authorization: `Bearer ${token}`
+        }
       });
 
       if (response.ok) {
-        const data = await response.json() as any;
+        const data = (await response.json()) as any;
         this.addResult(
           `Get Assignment Stats (${role})`,
           'PASS',
@@ -81,11 +101,19 @@ class AssignmentsAPITester {
           data.stats
         );
       } else {
-        const error = await response.json() as any;
-        this.addResult(`Get Assignment Stats (${role})`, 'FAIL', `API error: ${error.error}`);
+        const error = (await response.json()) as any;
+        this.addResult(
+          `Get Assignment Stats (${role})`,
+          'FAIL',
+          `API error: ${error.error}`
+        );
       }
     } catch (error) {
-      this.addResult(`Get Assignment Stats (${role})`, 'FAIL', `Network error: ${error}`);
+      this.addResult(
+        `Get Assignment Stats (${role})`,
+        'FAIL',
+        `Network error: ${error}`
+      );
     }
   }
 
@@ -98,20 +126,20 @@ class AssignmentsAPITester {
         assignmentType: 'HOMEWORK',
         priority: 'MEDIUM',
         dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
-        grade: 'Grade 11',
+        grade: 'Grade 11'
       };
 
       const response = await fetch(`${BASE_URL}/api/assignments`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
         },
-        body: JSON.stringify(assignmentData),
+        body: JSON.stringify(assignmentData)
       });
 
       if (response.ok) {
-        const data = await response.json() as any;
+        const data = (await response.json()) as any;
         this.addResult(
           'Create Assignment (Teacher)',
           'PASS',
@@ -120,12 +148,20 @@ class AssignmentsAPITester {
         );
         return data.assignment.id;
       } else {
-        const error = await response.json() as any;
-        this.addResult('Create Assignment (Teacher)', 'FAIL', `API error: ${error.error}`);
+        const error = (await response.json()) as any;
+        this.addResult(
+          'Create Assignment (Teacher)',
+          'FAIL',
+          `API error: ${error.error}`
+        );
         return null;
       }
     } catch (error) {
-      this.addResult('Create Assignment (Teacher)', 'FAIL', `Network error: ${error}`);
+      this.addResult(
+        'Create Assignment (Teacher)',
+        'FAIL',
+        `Network error: ${error}`
+      );
       return null;
     }
   }
@@ -134,12 +170,12 @@ class AssignmentsAPITester {
     try {
       const response = await fetch(`${BASE_URL}/api/assignments/submissions`, {
         headers: {
-          'Authorization': `Bearer ${token}`,
-        },
+          Authorization: `Bearer ${token}`
+        }
       });
 
       if (response.ok) {
-        const data = await response.json() as any;
+        const data = (await response.json()) as any;
         this.addResult(
           `Get Submissions (${role})`,
           'PASS',
@@ -147,15 +183,28 @@ class AssignmentsAPITester {
           { count: data.submissions?.length }
         );
       } else {
-        const error = await response.json() as any;
-        this.addResult(`Get Submissions (${role})`, 'FAIL', `API error: ${error.error}`);
+        const error = (await response.json()) as any;
+        this.addResult(
+          `Get Submissions (${role})`,
+          'FAIL',
+          `API error: ${error.error}`
+        );
       }
     } catch (error) {
-      this.addResult(`Get Submissions (${role})`, 'FAIL', `Network error: ${error}`);
+      this.addResult(
+        `Get Submissions (${role})`,
+        'FAIL',
+        `Network error: ${error}`
+      );
     }
   }
 
-  private addResult(test: string, status: 'PASS' | 'FAIL', message: string, data?: any) {
+  private addResult(
+    test: string,
+    status: 'PASS' | 'FAIL',
+    message: string,
+    data?: any
+  ) {
     this.results.push({ test, status, message, data });
   }
 
@@ -188,7 +237,7 @@ class AssignmentsAPITester {
 
   private printResults() {
     console.log('\n📊 Test Results Summary:');
-    console.log('=' .repeat(60));
+    console.log('='.repeat(60));
 
     const passed = this.results.filter(r => r.status === 'PASS').length;
     const failed = this.results.filter(r => r.status === 'FAIL').length;
@@ -201,9 +250,9 @@ class AssignmentsAPITester {
       }
     });
 
-    console.log('\n' + '=' .repeat(60));
+    console.log('\n' + '='.repeat(60));
     console.log(`📈 Summary: ${passed} passed, ${failed} failed`);
-    
+
     if (failed === 0) {
       console.log('🎉 All tests passed! Assignments API is working correctly.');
     } else {

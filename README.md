@@ -59,34 +59,40 @@ deployment/
 ## **🚀 Quick Start**
 
 ### **Prerequisites**
-- Node.js 18+ 
+
+- Node.js 18+
 - PostgreSQL 14+
 - Redis (optional, for caching)
 
 ### **1. Environment Setup**
+
 ```bash
 cp .env.example .env.production
 # Edit .env.production with your configuration
 ```
 
 ### **2. Install Dependencies**
+
 ```bash
 npm install --production
 ```
 
 ### **3. Database Setup**
+
 ```bash
 npx prisma generate
 npx prisma migrate deploy
 ```
 
 ### **4. Start Production Server**
+
 ```bash
 npm run build
 npm start
 ```
 
 ### **5. Docker Deployment (Recommended)**
+
 ```bash
 docker-compose up -d
 ```
@@ -102,11 +108,13 @@ docker-compose up -d
 All configuration is done through environment variables. See `.env.example` for all available options.
 
 ### **Required Environment Variables**
+
 - `DATABASE_URL` - PostgreSQL connection string
 - `JWT_SECRET` - Secret key for JWT tokens (minimum 32 characters)
 - `NEXT_PUBLIC_APP_URL` - Your application URL
 
 ### **Optional Environment Variables**
+
 - `REDIS_URL` - Redis connection for caching
 - `EMAIL_SERVER` - SMTP server for notifications
 - `SMS_API_KEY` - SMS service configuration
@@ -120,6 +128,7 @@ All configuration is done through environment variables. See `.env.example` for 
 ## **📊 Monitoring**
 
 The application includes built-in monitoring endpoints:
+
 - Performance metrics
 - Error tracking
 - Audit logs
@@ -128,6 +137,7 @@ The application includes built-in monitoring endpoints:
 ## **🔄 Updates**
 
 To update the application:
+
 1. Download the new deployment package
 2. Run database migrations: `npx prisma migrate deploy`
 3. Restart the application
@@ -135,6 +145,7 @@ To update the application:
 ## **🆘 Support**
 
 For deployment support:
+
 1. Check the deployment guide
 2. Review logs: `docker-compose logs`
 3. Verify environment configuration

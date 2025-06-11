@@ -6,19 +6,21 @@ import SchedulerService from '@/lib/services/scheduler.service';
 export async function GET() {
   try {
     const timestamp = new Date().toISOString();
-    
+
     // Check automation engine
     const runningJobs = AutomationEngineService.getRunningJobs();
     const automationEngineStatus = 'operational';
-    
+
     // Check scheduler
     const scheduledJobs = SchedulerService.getAllJobs();
     const activeJobs = scheduledJobs.filter(job => job.isActive);
     const schedulerStatus = 'operational';
-    
+
     // Overall health
-    const isHealthy = automationEngineStatus === 'operational' && schedulerStatus === 'operational';
-    
+    const isHealthy =
+      automationEngineStatus === 'operational' &&
+      schedulerStatus === 'operational';
+
     const healthData = {
       status: isHealthy ? 'healthy' : 'unhealthy',
       timestamp,
@@ -53,20 +55,22 @@ export async function GET() {
     return NextResponse.json(healthData, {
       status: isHealthy ? 200 : 503
     });
-
   } catch (error) {
     console.error('[Health Check] Automation health check failed:', error);
-    
-    return NextResponse.json({
-      status: 'unhealthy',
-      timestamp: new Date().toISOString(),
-      error: error instanceof Error ? error.message : 'Unknown error',
-      components: {
-        automationEngine: { status: 'error' },
-        scheduler: { status: 'error' }
+
+    return NextResponse.json(
+      {
+        status: 'unhealthy',
+        timestamp: new Date().toISOString(),
+        error: error instanceof Error ? error.message : 'Unknown error',
+        components: {
+          automationEngine: { status: 'error' },
+          scheduler: { status: 'error' }
+        }
+      },
+      {
+        status: 503
       }
-    }, {
-      status: 503
-    });
+    );
   }
 }

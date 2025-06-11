@@ -5,7 +5,7 @@
   "structure": {
     "documentation": [
       "README.md",
-      "DEPLOYMENT-GUIDE.md", 
+      "DEPLOYMENT-GUIDE.md",
       "SECURITY.md",
       "API-DOCUMENTATION.md",
       "DEPLOYMENT-CHECKLIST.md",
@@ -19,13 +19,7 @@
       "docker-compose.yml",
       "prisma/schema.prisma"
     ],
-    "application": [
-      "app/",
-      "components/",
-      "lib/",
-      "public/",
-      "scripts/"
-    ]
+    "application": ["app/", "components/", "lib/", "public/", "scripts/"]
   },
   "features": {
     "modules": 8,
@@ -38,12 +32,7 @@
       "CORS Protection",
       "Audit Logging"
     ],
-    "deploymentOptions": [
-      "Docker",
-      "PM2",
-      "Systemd",
-      "Cloud Platforms"
-    ]
+    "deploymentOptions": ["Docker", "PM2", "Systemd", "Cloud Platforms"]
   },
   "security": {
     "sensitiveFilesRemoved": true,

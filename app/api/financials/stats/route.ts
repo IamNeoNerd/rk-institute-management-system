@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
 
     const token = authHeader.substring(7);
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as any;
-    
+
     if (!decoded || decoded.role !== 'ADMIN') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
     const now = new Date();
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
     const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-    
+
     // Get last 6 months for average calculation
     const sixMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 6, 1);
 
@@ -145,12 +145,13 @@ export async function GET(request: NextRequest) {
     ]);
 
     // Calculate collection efficiency
-    const collectionEfficiency = totalFeeAllocations > 0 
-      ? Math.round((paidAllocations / totalFeeAllocations) * 100)
-      : 0;
+    const collectionEfficiency =
+      totalFeeAllocations > 0
+        ? Math.round((paidAllocations / totalFeeAllocations) * 100)
+        : 0;
 
     // Calculate average monthly revenue
-    const avgMonthlyRevenue = averageMonthlyRevenue._sum.amount 
+    const avgMonthlyRevenue = averageMonthlyRevenue._sum.amount
       ? Math.round(averageMonthlyRevenue._sum.amount / 6)
       : 0;
 
@@ -278,7 +279,6 @@ export async function GET(request: NextRequest) {
     };
 
     return NextResponse.json(stats);
-
   } catch (error) {
     console.error('Error fetching financial statistics:', error);
     return NextResponse.json(

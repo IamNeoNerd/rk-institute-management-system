@@ -12,17 +12,17 @@ export async function GET(request: Request) {
     const status = searchParams.get('status');
 
     const whereClause: any = {};
-    
+
     if (studentId) {
       whereClause.studentId = studentId;
     }
-    
+
     if (familyId) {
       whereClause.student = {
         familyId: familyId
       };
     }
-    
+
     if (status) {
       whereClause.status = status;
     }
@@ -33,8 +33,8 @@ export async function GET(request: Request) {
         family: {
           select: {
             id: true,
-            name: true,
-          },
+            name: true
+          }
         },
         feeAllocations: {
           include: {
@@ -45,17 +45,17 @@ export async function GET(request: Request) {
                 family: {
                   select: {
                     id: true,
-                    name: true,
-                  },
-                },
-              },
-            },
-          },
-        },
+                    name: true
+                  }
+                }
+              }
+            }
+          }
+        }
       },
       orderBy: {
-        paymentDate: 'desc',
-      },
+        paymentDate: 'desc'
+      }
     });
 
     // Transform the data to match frontend expectations
@@ -66,15 +66,18 @@ export async function GET(request: Request) {
       referenceNumber: payment.reference,
       paymentDate: payment.paymentDate,
       status: 'COMPLETED', // Default status
-      student: payment.feeAllocations.length > 0 ? {
-        id: payment.feeAllocations[0].student.id,
-        name: payment.feeAllocations[0].student.name,
-        family: payment.feeAllocations[0].student.family,
-      } : {
-        id: '',
-        name: 'Unknown Student',
-        family: payment.family,
-      },
+      student:
+        payment.feeAllocations.length > 0
+          ? {
+              id: payment.feeAllocations[0].student.id,
+              name: payment.feeAllocations[0].student.name,
+              family: payment.feeAllocations[0].student.family
+            }
+          : {
+              id: '',
+              name: 'Unknown Student',
+              family: payment.family
+            },
       allocations: payment.feeAllocations.map(fa => ({
         id: fa.id,
         amount: fa.netAmount, // Use the fee allocation amount
@@ -82,10 +85,10 @@ export async function GET(request: Request) {
           id: fa.id,
           month: fa.month,
           year: fa.year,
-          netAmount: fa.netAmount,
-        },
+          netAmount: fa.netAmount
+        }
       })),
-      createdAt: payment.createdAt,
+      createdAt: payment.createdAt
     }));
 
     return NextResponse.json(transformedPayments);
@@ -125,7 +128,7 @@ export async function POST(request: Request) {
     if (studentId && !familyId) {
       const student = await prisma.student.findUnique({
         where: { id: studentId },
-        select: { familyId: true },
+        select: { familyId: true }
       });
       if (student) {
         targetFamilyId = student.familyId;
@@ -141,14 +144,11 @@ export async function POST(request: Request) {
 
     // Verify family exists
     const family = await prisma.family.findUnique({
-      where: { id: targetFamilyId },
+      where: { id: targetFamilyId }
     });
 
     if (!family) {
-      return NextResponse.json(
-        { error: 'Family not found' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'Family not found' }, { status: 404 });
     }
 
     // Create payment
@@ -158,16 +158,16 @@ export async function POST(request: Request) {
         amount: parseFloat(amount),
         paymentMethod,
         reference: referenceNumber || null,
-        paymentDate: paymentDate ? new Date(paymentDate) : new Date(),
+        paymentDate: paymentDate ? new Date(paymentDate) : new Date()
       },
       include: {
         family: {
           select: {
             id: true,
-            name: true,
-          },
-        },
-      },
+            name: true
+          }
+        }
+      }
     });
 
     // Update fee allocations if provided
@@ -179,8 +179,8 @@ export async function POST(request: Request) {
           data: {
             status: 'PAID',
             paidDate: new Date(),
-            paymentId: payment.id, // Link to the payment
-          },
+            paymentId: payment.id // Link to the payment
+          }
         });
       }
     }
@@ -192,8 +192,8 @@ export async function POST(request: Request) {
         family: {
           select: {
             id: true,
-            name: true,
-          },
+            name: true
+          }
         },
         feeAllocations: {
           include: {
@@ -204,14 +204,14 @@ export async function POST(request: Request) {
                 family: {
                   select: {
                     id: true,
-                    name: true,
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
+                    name: true
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     });
 
     // Transform response to match frontend expectations
@@ -222,15 +222,18 @@ export async function POST(request: Request) {
       referenceNumber: completePayment!.reference,
       paymentDate: completePayment!.paymentDate,
       status: 'COMPLETED',
-      student: completePayment!.feeAllocations.length > 0 ? {
-        id: completePayment!.feeAllocations[0].student.id,
-        name: completePayment!.feeAllocations[0].student.name,
-        family: completePayment!.feeAllocations[0].student.family,
-      } : {
-        id: '',
-        name: 'Unknown Student',
-        family: completePayment!.family,
-      },
+      student:
+        completePayment!.feeAllocations.length > 0
+          ? {
+              id: completePayment!.feeAllocations[0].student.id,
+              name: completePayment!.feeAllocations[0].student.name,
+              family: completePayment!.feeAllocations[0].student.family
+            }
+          : {
+              id: '',
+              name: 'Unknown Student',
+              family: completePayment!.family
+            },
       allocations: completePayment!.feeAllocations.map(fa => ({
         id: fa.id,
         amount: fa.netAmount,
@@ -238,10 +241,10 @@ export async function POST(request: Request) {
           id: fa.id,
           month: fa.month,
           year: fa.year,
-          netAmount: fa.netAmount,
-        },
+          netAmount: fa.netAmount
+        }
       })),
-      createdAt: completePayment!.createdAt,
+      createdAt: completePayment!.createdAt
     };
 
     return NextResponse.json(transformedPayment, { status: 201 });

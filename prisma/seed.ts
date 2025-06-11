@@ -18,8 +18,8 @@ async function main() {
       password: hashedPassword,
       name: 'System Administrator',
       role: 'ADMIN',
-      isActive: true,
-    },
+      isActive: true
+    }
   });
 
   // Create additional teachers
@@ -31,8 +31,8 @@ async function main() {
       password: hashedPassword,
       name: 'Dr. Sarah Johnson',
       role: 'TEACHER',
-      isActive: true,
-    },
+      isActive: true
+    }
   });
 
   const teacher2 = await prisma.user.upsert({
@@ -43,8 +43,8 @@ async function main() {
       password: hashedPassword,
       name: 'Prof. Michael Chen',
       role: 'TEACHER',
-      isActive: true,
-    },
+      isActive: true
+    }
   });
 
   console.log('✅ Admin and teacher users created');
@@ -58,7 +58,7 @@ async function main() {
       phone: '+1-217-555-0101',
       email: 'johnson.family@email.com',
       discountAmount: 500, // Family discount
-      isActive: true,
+      isActive: true
     },
     {
       id: 'family-2',
@@ -67,7 +67,7 @@ async function main() {
       phone: '+1-217-555-0102',
       email: 'chen.family@email.com',
       discountAmount: 0, // No family discount
-      isActive: true,
+      isActive: true
     },
     {
       id: 'family-3',
@@ -76,7 +76,7 @@ async function main() {
       phone: '+1-217-555-0103',
       email: 'rodriguez.family@email.com',
       discountAmount: 300, // Moderate family discount
-      isActive: true,
+      isActive: true
     },
     {
       id: 'family-4',
@@ -85,7 +85,7 @@ async function main() {
       phone: '+1-217-555-0104',
       email: 'williams.family@email.com',
       discountAmount: 0,
-      isActive: true,
+      isActive: true
     },
     {
       id: 'family-5',
@@ -94,8 +94,8 @@ async function main() {
       phone: '+1-217-555-0105',
       email: 'davis.family@email.com',
       discountAmount: 800, // Large family discount
-      isActive: true,
-    },
+      isActive: true
+    }
   ];
 
   const createdFamilies = [];
@@ -103,12 +103,14 @@ async function main() {
     const family = await prisma.family.upsert({
       where: { id: familyData.id },
       update: {},
-      create: familyData,
+      create: familyData
     });
     createdFamilies.push(family);
   }
 
-  console.log('✅ Created 5 diverse families with different discount scenarios');
+  console.log(
+    '✅ Created 5 diverse families with different discount scenarios'
+  );
 
   // Create parent user (linked to Johnson family)
   const parentUser = await prisma.user.upsert({
@@ -120,8 +122,8 @@ async function main() {
       name: 'Johnson Family Parent',
       role: 'PARENT',
       familyId: 'family-1', // Now exists
-      isActive: true,
-    },
+      isActive: true
+    }
   });
 
   // Create student user (Emma Johnson)
@@ -134,8 +136,8 @@ async function main() {
       name: 'Emma Johnson',
       role: 'STUDENT',
       familyId: 'family-1', // Now exists
-      isActive: true,
-    },
+      isActive: true
+    }
   });
 
   console.log('✅ Parent and student users created');
@@ -145,11 +147,12 @@ async function main() {
     {
       id: 'math-advanced',
       name: 'Advanced Mathematics',
-      description: 'Calculus, Statistics, and Advanced Algebra for high school students',
+      description:
+        'Calculus, Statistics, and Advanced Algebra for high school students',
       grade: 'Grade 11-12',
       isActive: true,
       capacity: 25,
-      teacherId: teacher1.id,
+      teacherId: teacher1.id
     },
     {
       id: 'math-basic',
@@ -158,7 +161,7 @@ async function main() {
       grade: 'Grade 8-10',
       isActive: true,
       capacity: 30,
-      teacherId: teacher1.id,
+      teacherId: teacher1.id
     },
     {
       id: 'science-physics',
@@ -167,7 +170,7 @@ async function main() {
       grade: 'Grade 11-12',
       isActive: true,
       capacity: 20,
-      teacherId: teacher2.id,
+      teacherId: teacher2.id
     },
     {
       id: 'science-chemistry',
@@ -176,7 +179,7 @@ async function main() {
       grade: 'Grade 10-12',
       isActive: true,
       capacity: 22,
-      teacherId: teacher2.id,
+      teacherId: teacher2.id
     },
     {
       id: 'english-literature',
@@ -185,7 +188,7 @@ async function main() {
       grade: 'Grade 9-12',
       isActive: true,
       capacity: 28,
-      teacherId: adminUser.id,
+      teacherId: adminUser.id
     },
     {
       id: 'computer-science',
@@ -194,7 +197,7 @@ async function main() {
       grade: 'Grade 10-12',
       isActive: true,
       capacity: 18,
-      teacherId: adminUser.id,
+      teacherId: adminUser.id
     },
     {
       id: 'art-design',
@@ -203,8 +206,8 @@ async function main() {
       grade: 'Grade 8-12',
       isActive: true,
       capacity: 15,
-      teacherId: teacher1.id,
-    },
+      teacherId: teacher1.id
+    }
   ];
 
   const createdCourses = [];
@@ -212,50 +215,52 @@ async function main() {
     const course = await prisma.course.upsert({
       where: { id: courseData.id },
       update: {},
-      create: courseData,
+      create: courseData
     });
     createdCourses.push(course);
   }
 
-  console.log('✅ Created 7 diverse courses across different subjects and grade levels');
+  console.log(
+    '✅ Created 7 diverse courses across different subjects and grade levels'
+  );
 
   // Create comprehensive services
   const services = [
     {
       id: 'transport-bus',
       name: 'Bus Transportation',
-      description: 'Daily school bus service with multiple routes',
+      description: 'Daily school bus service with multiple routes'
     },
     {
       id: 'transport-van',
       name: 'Van Transportation',
-      description: 'Smaller vehicle transport for specific areas',
+      description: 'Smaller vehicle transport for specific areas'
     },
     {
       id: 'meals-lunch',
       name: 'Lunch Service',
-      description: 'Nutritious daily lunch meals',
+      description: 'Nutritious daily lunch meals'
     },
     {
       id: 'meals-snacks',
       name: 'Snack Service',
-      description: 'Healthy morning and afternoon snacks',
+      description: 'Healthy morning and afternoon snacks'
     },
     {
       id: 'library-access',
       name: 'Library Access',
-      description: 'Extended library hours and digital resources',
+      description: 'Extended library hours and digital resources'
     },
     {
       id: 'sports-program',
       name: 'Sports Program',
-      description: 'After-school sports and physical activities',
+      description: 'After-school sports and physical activities'
     },
     {
       id: 'tutoring',
       name: 'Extra Tutoring',
-      description: 'One-on-one and small group tutoring sessions',
-    },
+      description: 'One-on-one and small group tutoring sessions'
+    }
   ];
 
   const createdServices = [];
@@ -263,12 +268,14 @@ async function main() {
     const service = await prisma.service.upsert({
       where: { id: serviceData.id },
       update: {},
-      create: serviceData,
+      create: serviceData
     });
     createdServices.push(service);
   }
 
-  console.log('✅ Created 7 diverse services covering transportation, meals, and activities');
+  console.log(
+    '✅ Created 7 diverse services covering transportation, meals, and activities'
+  );
 
   // Create comprehensive fee structures for all courses and services
   const feeStructures = [
@@ -288,7 +295,7 @@ async function main() {
     { amount: 600, billingCycle: 'MONTHLY', serviceId: 'meals-snacks' },
     { amount: 400, billingCycle: 'MONTHLY', serviceId: 'library-access' },
     { amount: 700, billingCycle: 'MONTHLY', serviceId: 'sports-program' },
-    { amount: 1200, billingCycle: 'MONTHLY', serviceId: 'tutoring' },
+    { amount: 1200, billingCycle: 'MONTHLY', serviceId: 'tutoring' }
   ];
 
   for (const feeData of feeStructures) {
@@ -299,8 +306,8 @@ async function main() {
         create: {
           amount: feeData.amount,
           billingCycle: feeData.billingCycle,
-          courseId: feeData.courseId,
-        },
+          courseId: feeData.courseId
+        }
       });
     } else if (feeData.serviceId) {
       await prisma.feeStructure.upsert({
@@ -309,13 +316,15 @@ async function main() {
         create: {
           amount: feeData.amount,
           billingCycle: feeData.billingCycle,
-          serviceId: feeData.serviceId,
-        },
+          serviceId: feeData.serviceId
+        }
       });
     }
   }
 
-  console.log('✅ Created comprehensive fee structures for all 7 courses and 7 services');
+  console.log(
+    '✅ Created comprehensive fee structures for all 7 courses and 7 services'
+  );
 
   // Create diverse students across different families and grade levels
   const students = [
@@ -328,7 +337,7 @@ async function main() {
       enrollmentDate: new Date('2023-08-15'),
       isActive: true,
       studentId: 'STU001',
-      familyId: 'family-1',
+      familyId: 'family-1'
     },
     {
       id: 'student-2',
@@ -338,7 +347,7 @@ async function main() {
       enrollmentDate: new Date('2023-08-15'),
       isActive: true,
       studentId: 'STU002',
-      familyId: 'family-1',
+      familyId: 'family-1'
     },
     // Chen Family - 1 child
     {
@@ -349,7 +358,7 @@ async function main() {
       enrollmentDate: new Date('2023-08-15'),
       isActive: true,
       studentId: 'STU003',
-      familyId: 'family-2',
+      familyId: 'family-2'
     },
     // Rodriguez Family - 3 children
     {
@@ -360,7 +369,7 @@ async function main() {
       enrollmentDate: new Date('2023-08-15'),
       isActive: true,
       studentId: 'STU004',
-      familyId: 'family-3',
+      familyId: 'family-3'
     },
     {
       id: 'student-5',
@@ -370,7 +379,7 @@ async function main() {
       enrollmentDate: new Date('2023-08-15'),
       isActive: true,
       studentId: 'STU005',
-      familyId: 'family-3',
+      familyId: 'family-3'
     },
     {
       id: 'student-6',
@@ -380,7 +389,7 @@ async function main() {
       enrollmentDate: new Date('2023-08-15'),
       isActive: true,
       studentId: 'STU006',
-      familyId: 'family-3',
+      familyId: 'family-3'
     },
     // Williams Family - 1 child
     {
@@ -391,7 +400,7 @@ async function main() {
       enrollmentDate: new Date('2023-08-15'),
       isActive: true,
       studentId: 'STU007',
-      familyId: 'family-4',
+      familyId: 'family-4'
     },
     // Davis Family - 4 children (large family)
     {
@@ -402,7 +411,7 @@ async function main() {
       enrollmentDate: new Date('2023-08-15'),
       isActive: true,
       studentId: 'STU008',
-      familyId: 'family-5',
+      familyId: 'family-5'
     },
     {
       id: 'student-9',
@@ -412,7 +421,7 @@ async function main() {
       enrollmentDate: new Date('2023-08-15'),
       isActive: true,
       studentId: 'STU009',
-      familyId: 'family-5',
+      familyId: 'family-5'
     },
     {
       id: 'student-10',
@@ -422,7 +431,7 @@ async function main() {
       enrollmentDate: new Date('2023-08-15'),
       isActive: true,
       studentId: 'STU010',
-      familyId: 'family-5',
+      familyId: 'family-5'
     },
     {
       id: 'student-11',
@@ -432,8 +441,8 @@ async function main() {
       enrollmentDate: new Date('2023-08-15'),
       isActive: true,
       studentId: 'STU011',
-      familyId: 'family-5',
-    },
+      familyId: 'family-5'
+    }
   ];
 
   const createdStudents = [];
@@ -441,15 +450,22 @@ async function main() {
     const student = await prisma.student.upsert({
       where: { id: studentData.id },
       update: {},
-      create: studentData,
+      create: studentData
     });
     createdStudents.push(student);
   }
 
-  console.log('✅ Created 11 students across 5 families with diverse grade levels');
+  console.log(
+    '✅ Created 11 students across 5 families with diverse grade levels'
+  );
 
   // Import and run comprehensive data creation
-  const { createStudentSubscriptionsAndFees, createFeeAllocationsAndPayments, createPaymentHistory, createAcademicLogs } = await import('./comprehensive-seed');
+  const {
+    createStudentSubscriptionsAndFees,
+    createFeeAllocationsAndPayments,
+    createPaymentHistory,
+    createAcademicLogs
+  } = await import('./comprehensive-seed');
 
   await createStudentSubscriptionsAndFees();
   await createFeeAllocationsAndPayments();
@@ -480,7 +496,9 @@ async function main() {
   console.log('   Teacher 1: teacher1@rkinstitute.com / admin123');
   console.log('   Teacher 2: teacher2@rkinstitute.com / admin123');
   console.log('');
-  console.log('🔗 Access the application at: https://rk-institute-management-system.vercel.app');
+  console.log(
+    '🔗 Access the application at: https://rk-institute-management-system.vercel.app'
+  );
   console.log('');
   console.log('📈 Reports Dashboard will now show:');
   console.log('   💵 Monthly revenue from payments');
@@ -491,7 +509,7 @@ async function main() {
 }
 
 main()
-  .catch((e) => {
+  .catch(e => {
     console.error('❌ Error during seeding:', e);
     process.exit(1);
   })

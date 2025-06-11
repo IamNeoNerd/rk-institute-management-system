@@ -11,13 +11,13 @@ export async function GET() {
         feeStructure: true,
         _count: {
           select: {
-            subscriptions: true,
-          },
-        },
+            subscriptions: true
+          }
+        }
       },
       orderBy: {
-        createdAt: 'desc',
-      },
+        createdAt: 'desc'
+      }
     });
 
     return NextResponse.json(services);
@@ -48,8 +48,8 @@ export async function POST(request: Request) {
     const service = await prisma.service.create({
       data: {
         name,
-        description: description || null,
-      },
+        description: description || null
+      }
     });
 
     // Create fee structure if provided
@@ -58,8 +58,8 @@ export async function POST(request: Request) {
         data: {
           amount: parseFloat(feeStructure.amount),
           billingCycle: feeStructure.billingCycle || 'MONTHLY',
-          serviceId: service.id,
-        },
+          serviceId: service.id
+        }
       });
     }
 
@@ -70,10 +70,10 @@ export async function POST(request: Request) {
         feeStructure: true,
         _count: {
           select: {
-            subscriptions: true,
-          },
-        },
-      },
+            subscriptions: true
+          }
+        }
+      }
     });
 
     return NextResponse.json(completeService, { status: 201 });

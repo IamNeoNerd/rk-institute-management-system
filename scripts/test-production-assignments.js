@@ -10,12 +10,12 @@ async function testProductionAssignments() {
     const authResponse = await fetch(`${PRODUCTION_URL}/api/auth`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         email: 'admin@rkinstitute.com',
-        password: 'admin123',
-      }),
+        password: 'admin123'
+      })
     });
 
     if (!authResponse.ok) {
@@ -29,15 +29,20 @@ async function testProductionAssignments() {
 
     // Test 2: Check assignments API
     console.log('\n2. Testing Assignments API...');
-    const assignmentsResponse = await fetch(`${PRODUCTION_URL}/api/assignments`, {
-      headers: {
-        'Authorization': `Bearer ${token}`,
-      },
-    });
+    const assignmentsResponse = await fetch(
+      `${PRODUCTION_URL}/api/assignments`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
 
     if (assignmentsResponse.ok) {
       const assignmentsData = await assignmentsResponse.json();
-      console.log(`✅ Assignments API working - Found ${assignmentsData.assignments?.length || 0} assignments`);
+      console.log(
+        `✅ Assignments API working - Found ${assignmentsData.assignments?.length || 0} assignments`
+      );
     } else {
       console.log('❌ Assignments API failed');
       const error = await assignmentsResponse.text();
@@ -46,11 +51,14 @@ async function testProductionAssignments() {
 
     // Test 3: Check assignment stats API
     console.log('\n3. Testing Assignment Stats API...');
-    const statsResponse = await fetch(`${PRODUCTION_URL}/api/assignments/stats`, {
-      headers: {
-        'Authorization': `Bearer ${token}`,
-      },
-    });
+    const statsResponse = await fetch(
+      `${PRODUCTION_URL}/api/assignments/stats`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
 
     if (statsResponse.ok) {
       const statsData = await statsResponse.json();
@@ -62,21 +70,25 @@ async function testProductionAssignments() {
 
     // Test 4: Check submissions API
     console.log('\n4. Testing Submissions API...');
-    const submissionsResponse = await fetch(`${PRODUCTION_URL}/api/assignments/submissions`, {
-      headers: {
-        'Authorization': `Bearer ${token}`,
-      },
-    });
+    const submissionsResponse = await fetch(
+      `${PRODUCTION_URL}/api/assignments/submissions`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
 
     if (submissionsResponse.ok) {
       const submissionsData = await submissionsResponse.json();
-      console.log(`✅ Submissions API working - Found ${submissionsData.submissions?.length || 0} submissions`);
+      console.log(
+        `✅ Submissions API working - Found ${submissionsData.submissions?.length || 0} submissions`
+      );
     } else {
       console.log('❌ Submissions API failed');
     }
 
     console.log('\n🎉 Production testing completed!');
-
   } catch (error) {
     console.error('❌ Test failed with error:', error.message);
   }

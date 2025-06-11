@@ -7,12 +7,14 @@ This document provides comprehensive documentation for all API endpoints in the 
 ## **🔐 Authentication**
 
 ### **Base URL**
+
 ```
 Production: https://your-domain.com/api
 Development: http://localhost:3000/api
 ```
 
 ### **Authentication Method**
+
 - **Type**: JWT Bearer Token
 - **Header**: `Authorization: Bearer <token>`
 - **Token Expiry**: 4 hours (configurable)
@@ -20,9 +22,11 @@ Development: http://localhost:3000/api
 ### **Authentication Endpoints**
 
 #### **POST /auth/login**
+
 Authenticate user and receive JWT token.
 
 **Request Body:**
+
 ```json
 {
   "email": "user@example.com",
@@ -31,6 +35,7 @@ Authenticate user and receive JWT token.
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -45,11 +50,13 @@ Authenticate user and receive JWT token.
 ```
 
 #### **POST /auth/logout**
+
 Invalidate current session.
 
 **Headers:** `Authorization: Bearer <token>`
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -58,11 +65,13 @@ Invalidate current session.
 ```
 
 #### **GET /auth/me**
+
 Get current user information.
 
 **Headers:** `Authorization: Bearer <token>`
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -81,14 +90,17 @@ Get current user information.
 ## **👨‍👩‍👧‍👦 Family Management**
 
 #### **GET /families**
+
 Get all families (paginated).
 
 **Query Parameters:**
+
 - `page` (optional): Page number (default: 1)
 - `limit` (optional): Items per page (default: 10)
 - `search` (optional): Search by family name
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -113,9 +125,11 @@ Get all families (paginated).
 ```
 
 #### **POST /families**
+
 Create a new family.
 
 **Request Body:**
+
 ```json
 {
   "name": "Johnson Family",
@@ -127,12 +141,15 @@ Create a new family.
 ```
 
 #### **GET /families/:id**
+
 Get family details by ID.
 
 #### **PUT /families/:id**
+
 Update family information.
 
 #### **DELETE /families/:id**
+
 Delete a family (soft delete).
 
 ---
@@ -140,17 +157,21 @@ Delete a family (soft delete).
 ## **🎓 Student Management**
 
 #### **GET /students**
+
 Get all students (paginated).
 
 **Query Parameters:**
+
 - `page`, `limit`, `search`
 - `familyId` (optional): Filter by family
 - `grade` (optional): Filter by grade
 
 #### **POST /students**
+
 Create a new student.
 
 **Request Body:**
+
 ```json
 {
   "name": "Alice Johnson",
@@ -162,12 +183,15 @@ Create a new student.
 ```
 
 #### **GET /students/:id**
+
 Get student details with subscriptions and fee allocations.
 
 #### **PUT /students/:id**
+
 Update student information.
 
 #### **DELETE /students/:id**
+
 Delete a student (soft delete).
 
 ---
@@ -175,12 +199,15 @@ Delete a student (soft delete).
 ## **📚 Course Management**
 
 #### **GET /courses**
+
 Get all courses.
 
 #### **POST /courses**
+
 Create a new course.
 
 **Request Body:**
+
 ```json
 {
   "name": "Advanced Mathematics",
@@ -196,12 +223,15 @@ Create a new course.
 ```
 
 #### **GET /courses/:id**
+
 Get course details with enrolled students.
 
 #### **PUT /courses/:id**
+
 Update course information.
 
 #### **DELETE /courses/:id**
+
 Delete a course.
 
 ---
@@ -209,12 +239,15 @@ Delete a course.
 ## **🛠️ Service Management**
 
 #### **GET /services**
+
 Get all services.
 
 #### **POST /services**
+
 Create a new service.
 
 **Request Body:**
+
 ```json
 {
   "name": "Transportation",
@@ -231,9 +264,11 @@ Create a new service.
 ## **💰 Fee Management**
 
 #### **POST /fees/calculate**
+
 Calculate monthly fees for a student.
 
 **Request Body:**
+
 ```json
 {
   "studentId": "uuid",
@@ -243,6 +278,7 @@ Calculate monthly fees for a student.
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -274,9 +310,11 @@ Calculate monthly fees for a student.
 ```
 
 #### **POST /fees/allocate**
+
 Generate fee allocations for students.
 
 **Request Body:**
+
 ```json
 {
   "studentIds": ["uuid1", "uuid2"],
@@ -286,9 +324,11 @@ Generate fee allocations for students.
 ```
 
 #### **GET /fees/allocations**
+
 Get fee allocations with filters.
 
 **Query Parameters:**
+
 - `studentId`, `familyId`, `month`, `year`, `status`
 
 ---
@@ -296,12 +336,15 @@ Get fee allocations with filters.
 ## **💳 Payment Management**
 
 #### **GET /payments**
+
 Get all payments (paginated).
 
 #### **POST /payments**
+
 Record a new payment.
 
 **Request Body:**
+
 ```json
 {
   "familyId": "uuid",
@@ -313,6 +356,7 @@ Record a new payment.
 ```
 
 #### **GET /payments/:id**
+
 Get payment details.
 
 ---
@@ -320,17 +364,21 @@ Get payment details.
 ## **📊 Reports**
 
 #### **GET /reports/financial**
+
 Generate financial reports.
 
 **Query Parameters:**
+
 - `startDate`, `endDate`
 - `familyId` (optional)
 - `format` (json, csv, pdf)
 
 #### **GET /reports/students**
+
 Generate student reports.
 
 #### **GET /reports/attendance**
+
 Generate attendance reports.
 
 ---
@@ -338,12 +386,15 @@ Generate attendance reports.
 ## **👥 User Management**
 
 #### **GET /users**
+
 Get all users (Admin only).
 
 #### **POST /users**
+
 Create a new user (Admin only).
 
 **Request Body:**
+
 ```json
 {
   "name": "Jane Teacher",
@@ -358,9 +409,11 @@ Create a new user (Admin only).
 ## **🏥 Health & Monitoring**
 
 #### **GET /health**
+
 Application health check.
 
 **Response:**
+
 ```json
 {
   "status": "healthy",
@@ -376,9 +429,11 @@ Application health check.
 ```
 
 #### **GET /health/database**
+
 Database connectivity check.
 
 #### **GET /status**
+
 System status and metrics.
 
 ---
@@ -386,19 +441,24 @@ System status and metrics.
 ## **🔒 Security Features**
 
 ### **Rate Limiting**
+
 - **Authentication endpoints**: 5 requests per 15 minutes
 - **General API endpoints**: 100 requests per 15 minutes
 - **Admin endpoints**: 10 requests per minute
 
 ### **Input Validation**
+
 All endpoints validate input data using Zod schemas:
+
 - Email format validation
 - Password complexity requirements
 - UUID format validation
 - Numeric range validation
 
 ### **Error Responses**
+
 Standardized error format:
+
 ```json
 {
   "success": false,
@@ -416,6 +476,7 @@ Standardized error format:
 ```
 
 ### **Common Error Codes**
+
 - `AUTHENTICATION_REQUIRED` (401)
 - `INSUFFICIENT_PERMISSIONS` (403)
 - `RESOURCE_NOT_FOUND` (404)
@@ -430,6 +491,7 @@ Standardized error format:
 ### **Complete Fee Calculation Workflow**
 
 1. **Create Family**
+
 ```bash
 curl -X POST https://your-domain.com/api/families \
   -H "Authorization: Bearer <token>" \
@@ -438,6 +500,7 @@ curl -X POST https://your-domain.com/api/families \
 ```
 
 2. **Create Student**
+
 ```bash
 curl -X POST https://your-domain.com/api/students \
   -H "Authorization: Bearer <token>" \
@@ -446,6 +509,7 @@ curl -X POST https://your-domain.com/api/students \
 ```
 
 3. **Calculate Fees**
+
 ```bash
 curl -X POST https://your-domain.com/api/fees/calculate \
   -H "Authorization: Bearer <token>" \
@@ -458,13 +522,16 @@ curl -X POST https://your-domain.com/api/fees/calculate \
 ## **🔧 Development & Testing**
 
 ### **API Testing**
+
 Use tools like Postman, Insomnia, or curl for testing endpoints.
 
 ### **Authentication for Testing**
+
 1. Login to get token: `POST /auth/login`
 2. Use token in subsequent requests: `Authorization: Bearer <token>`
 
 ### **Environment Variables**
+
 Ensure proper environment configuration for API functionality.
 
 ---
