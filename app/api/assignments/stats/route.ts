@@ -4,6 +4,8 @@ import jwt from 'jsonwebtoken';
 
 const prisma = new PrismaClient();
 
+export const dynamic = 'force-dynamic';
+
 // GET /api/assignments/stats - Get assignment statistics
 export async function GET(request: NextRequest) {
   try {
