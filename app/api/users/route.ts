@@ -4,6 +4,8 @@ import bcrypt from 'bcryptjs';
 
 const prisma = new PrismaClient();
 
+export const dynamic = 'force-dynamic';
+
 // GET - Fetch users with optional role filter
 export async function GET(request: Request) {
   try {

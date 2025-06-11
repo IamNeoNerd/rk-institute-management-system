@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { FeeCalculationService } from '@/lib/feeCalculationService';
 
+export const dynamic = 'force-dynamic';
+
 // POST - Calculate fees for student or family
 export async function POST(request: Request) {
   try {
