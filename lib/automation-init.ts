@@ -15,15 +15,19 @@ export function initializeAutomation() {
 
   try {
     console.log('[Automation Init] Starting automation system...');
-    
+
     // Initialize the scheduler service
     SchedulerService.initialize();
-    
+
     isInitialized = true;
-    console.log('[Automation Init] ✅ Automation system initialized successfully');
-    
+    console.log(
+      '[Automation Init] ✅ Automation system initialized successfully'
+    );
   } catch (error) {
-    console.error('[Automation Init] ❌ Failed to initialize automation system:', error);
+    console.error(
+      '[Automation Init] ❌ Failed to initialize automation system:',
+      error
+    );
   }
 }
 
@@ -35,15 +39,17 @@ export function shutdownAutomation() {
 
   try {
     console.log('[Automation Init] Shutting down automation system...');
-    
+
     // Shutdown the scheduler service
     SchedulerService.shutdown();
-    
+
     isInitialized = false;
     console.log('[Automation Init] ✅ Automation system shutdown complete');
-    
   } catch (error) {
-    console.error('[Automation Init] ❌ Failed to shutdown automation system:', error);
+    console.error(
+      '[Automation Init] ❌ Failed to shutdown automation system:',
+      error
+    );
   }
 }
 

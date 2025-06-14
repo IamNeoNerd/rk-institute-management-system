@@ -21,13 +21,13 @@ main (production)
 
 ### **Branch Purposes**
 
-| Branch | Purpose | Protection Level | Deployment |
-|--------|---------|------------------|------------|
-| `main` | Production-ready code | 🔴 Strict | Production (Vercel) |
-| `develop` | Integration branch | 🟡 Moderate | Staging |
-| `feature/*` | New features | 🟢 Basic | None |
-| `bugfix/*` | Bug fixes | 🟢 Basic | None |
-| `hotfix/*` | Critical fixes | 🟡 Moderate | Direct to main |
+| Branch      | Purpose               | Protection Level | Deployment          |
+| ----------- | --------------------- | ---------------- | ------------------- |
+| `main`      | Production-ready code | 🔴 Strict        | Production (Vercel) |
+| `develop`   | Integration branch    | 🟡 Moderate      | Staging             |
+| `feature/*` | New features          | 🟢 Basic         | None                |
+| `bugfix/*`  | Bug fixes             | 🟢 Basic         | None                |
+| `hotfix/*`  | Critical fixes        | 🟡 Moderate      | Direct to main      |
 
 ---
 
@@ -101,22 +101,19 @@ git push origin feature/your-feature-name --force-with-lease
 Triggered on: Push to `main`/`develop`, Pull Requests
 
 **Pipeline Steps:**
+
 1. 🔍 **Code Quality & Linting**
    - ESLint checks
    - Prettier formatting verification
-   
 2. 📝 **TypeScript Compilation**
    - Type checking
    - Prisma client generation
-   
 3. 🏗️ **Build Verification**
    - Next.js build process
    - Asset optimization
-   
 4. 🔒 **Security Scanning**
    - npm audit for vulnerabilities
    - Dependency security checks
-   
 5. 🧪 **Test Execution**
    - Unit tests
    - Integration tests
@@ -125,11 +122,13 @@ Triggered on: Push to `main`/`develop`, Pull Requests
 ### **Continuous Deployment (CD)**
 
 **Staging Deployment** (develop branch):
+
 - Automatic deployment to staging environment
 - Health checks and smoke tests
 - Preview URL generation
 
 **Production Deployment** (main branch):
+
 - Automatic deployment to production
 - Zero-downtime deployment
 - Post-deployment health checks
@@ -140,14 +139,14 @@ Triggered on: Push to `main`/`develop`, Pull Requests
 
 ### **Automated Checks**
 
-| Check | Tool | Failure Action |
-|-------|------|----------------|
-| Linting | ESLint | ❌ Block merge |
-| Formatting | Prettier | ❌ Block merge |
+| Check       | Tool       | Failure Action |
+| ----------- | ---------- | -------------- |
+| Linting     | ESLint     | ❌ Block merge |
+| Formatting  | Prettier   | ❌ Block merge |
 | Type Safety | TypeScript | ❌ Block merge |
-| Build | Next.js | ❌ Block merge |
-| Tests | Jest | ⚠️ Warning |
-| Security | npm audit | ⚠️ Warning |
+| Build       | Next.js    | ❌ Block merge |
+| Tests       | Jest       | ⚠️ Warning     |
+| Security    | npm audit  | ⚠️ Warning     |
 
 ### **Manual Review Requirements**
 
@@ -161,6 +160,7 @@ Triggered on: Push to `main`/`develop`, Pull Requests
 ## 🔒 **Branch Protection Rules**
 
 ### **Main Branch Protection**
+
 - ✅ Require pull request reviews (2 approvals)
 - ✅ Dismiss stale reviews when new commits are pushed
 - ✅ Require review from code owners
@@ -171,6 +171,7 @@ Triggered on: Push to `main`/`develop`, Pull Requests
 - ❌ Allow deletions
 
 ### **Develop Branch Protection**
+
 - ✅ Require pull request reviews (1 approval)
 - ✅ Dismiss stale reviews when new commits are pushed
 - ✅ Require review from code owners
@@ -187,6 +188,7 @@ Triggered on: Push to `main`/`develop`, Pull Requests
 ### **Semantic Versioning**
 
 We follow [Semantic Versioning](https://semver.org/):
+
 - **MAJOR** (X.0.0): Breaking changes
 - **MINOR** (0.X.0): New features (backward compatible)
 - **PATCH** (0.0.X): Bug fixes (backward compatible)
@@ -194,11 +196,13 @@ We follow [Semantic Versioning](https://semver.org/):
 ### **Automated Releases**
 
 Releases are automatically created when:
+
 1. Changes are merged to `main` branch
 2. Commit messages follow conventional format
 3. Version is automatically determined from commit types
 
 **Release Process:**
+
 1. 🔍 Analyze commit messages since last release
 2. 📈 Determine version bump (major/minor/patch)
 3. 📝 Generate changelog from commit messages
@@ -271,6 +275,7 @@ git cherry-pick <hotfix-commit-hash>
 ### **Rollback Process**
 
 If deployment issues occur:
+
 1. 🚨 Identify problematic commit
 2. 🔄 Revert commit on main branch
 3. 🚀 Automatic deployment of rollback
@@ -281,6 +286,7 @@ If deployment issues occur:
 ## 📊 **Monitoring & Metrics**
 
 ### **Workflow Metrics**
+
 - Build success rate
 - Average PR review time
 - Deployment frequency
@@ -288,6 +294,7 @@ If deployment issues occur:
 - Mean time to recovery
 
 ### **Quality Metrics**
+
 - Code coverage percentage
 - Linting error trends
 - Security vulnerability count
@@ -298,6 +305,7 @@ If deployment issues occur:
 ## 🎯 **Best Practices**
 
 ### **Do's ✅**
+
 - Use descriptive branch names
 - Write clear commit messages
 - Keep PRs focused and small
@@ -306,6 +314,7 @@ If deployment issues occur:
 - Respond to review comments promptly
 
 ### **Don'ts ❌**
+
 - Force push to protected branches
 - Merge without reviews
 - Skip CI checks
@@ -320,16 +329,19 @@ If deployment issues occur:
 ### **Common Issues**
 
 **CI Checks Failing:**
+
 - Check build logs in GitHub Actions
 - Run checks locally first
 - Ensure all dependencies are installed
 
 **Merge Conflicts:**
+
 - Rebase feature branch on latest develop
 - Resolve conflicts manually
 - Test after conflict resolution
 
 **Permission Denied:**
+
 - Ensure you have repository access
 - Check if branch protection rules apply
 - Contact repository administrator

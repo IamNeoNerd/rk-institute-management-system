@@ -8,11 +8,11 @@ name: 🚀 Deployment Pipeline
 
 on:
   push:
-    branches: 
-      - main        # Production deployment
-      - develop     # Staging deployment
+    branches:
+      - main # Production deployment
+      - develop # Staging deployment
   workflow_run:
-    workflows: ["🔄 Continuous Integration"]
+    workflows: ['🔄 Continuous Integration']
     types: [completed]
     branches: [main, develop]
 
@@ -29,15 +29,15 @@ jobs:
     name: 🔍 Pre-deployment Checks
     runs-on: ubuntu-latest
     if: github.event.workflow_run.conclusion == 'success' || github.event_name == 'push'
-    
+
     outputs:
       environment: ${{ steps.determine-env.outputs.environment }}
       deploy-url: ${{ steps.determine-env.outputs.deploy-url }}
-      
+
     steps:
       - name: 📥 Checkout code
         uses: actions/checkout@v4
-        
+
       - name: 🎯 Determine deployment environment
         id: determine-env
         run: |
@@ -48,7 +48,7 @@ jobs:
             echo "environment=staging" >> $GITHUB_OUTPUT
             echo "deploy-url=https://rk-institute-management-system-staging.vercel.app" >> $GITHUB_OUTPUT
           fi
-          
+
       - name: 📊 Display deployment info
         run: |
           echo "🎯 Target Environment: ${{ steps.determine-env.outputs.environment }}"
@@ -64,29 +64,29 @@ jobs:
     runs-on: ubuntu-latest
     needs: pre-deployment
     if: needs.pre-deployment.outputs.environment == 'production'
-    environment: 
+    environment:
       name: production
       url: ${{ needs.pre-deployment.outputs.deploy-url }}
-      
+
     steps:
       - name: 📥 Checkout code
         uses: actions/checkout@v4
-        
+
       - name: 📦 Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
           cache: 'npm'
-          
+
       - name: 📥 Install dependencies
         run: npm ci
-        
+
       - name: 🔧 Generate Prisma client
         run: npx prisma generate
-        
+
       - name: 🏗️ Build application
         run: npm run build
-        
+
       - name: 🚀 Deploy to Vercel (Production)
         uses: amondnet/vercel-action@v25
         with:
@@ -95,7 +95,7 @@ jobs:
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
           vercel-args: '--prod'
           working-directory: ./
-          
+
       - name: 📊 Deployment success notification
         run: |
           echo "🎉 Production deployment successful!"
@@ -110,29 +110,29 @@ jobs:
     runs-on: ubuntu-latest
     needs: pre-deployment
     if: needs.pre-deployment.outputs.environment == 'staging'
-    environment: 
+    environment:
       name: staging
       url: ${{ needs.pre-deployment.outputs.deploy-url }}
-      
+
     steps:
       - name: 📥 Checkout code
         uses: actions/checkout@v4
-        
+
       - name: 📦 Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
           cache: 'npm'
-          
+
       - name: 📥 Install dependencies
         run: npm ci
-        
+
       - name: 🔧 Generate Prisma client
         run: npx prisma generate
-        
+
       - name: 🏗️ Build application
         run: npm run build
-        
+
       - name: 🧪 Deploy to Vercel (Staging)
         uses: amondnet/vercel-action@v25
         with:
@@ -140,7 +140,7 @@ jobs:
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
           working-directory: ./
-          
+
       - name: 📊 Staging deployment notification
         run: |
           echo "🧪 Staging deployment successful!"
@@ -155,16 +155,16 @@ jobs:
     runs-on: ubuntu-latest
     needs: [pre-deployment, deploy-production, deploy-staging]
     if: always() && (needs.deploy-production.result == 'success' || needs.deploy-staging.result == 'success')
-    
+
     steps:
       - name: 🏥 Wait for deployment to be ready
         run: sleep 30
-        
+
       - name: 🔍 Health check endpoint
         run: |
           URL="${{ needs.pre-deployment.outputs.deploy-url }}"
           echo "🔍 Checking health of: $URL"
-          
+
           # Basic connectivity check
           if curl -f -s "$URL" > /dev/null; then
             echo "✅ Application is responding"
@@ -172,7 +172,7 @@ jobs:
             echo "❌ Application health check failed"
             exit 1
           fi
-          
+
       - name: 📊 Deployment summary
         run: |
           echo "🎯 Environment: ${{ needs.pre-deployment.outputs.environment }}"

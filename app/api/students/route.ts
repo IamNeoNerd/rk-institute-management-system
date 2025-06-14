@@ -12,8 +12,8 @@ export async function GET() {
           select: {
             id: true,
             name: true,
-            discountAmount: true,
-          },
+            discountAmount: true
+          }
         },
         subscriptions: {
           include: {
@@ -21,30 +21,30 @@ export async function GET() {
               select: {
                 id: true,
                 name: true,
-                feeStructure: true,
-              },
+                feeStructure: true
+              }
             },
             service: {
               select: {
                 id: true,
                 name: true,
-                feeStructure: true,
-              },
-            },
+                feeStructure: true
+              }
+            }
           },
           where: {
-            endDate: null, // Active subscriptions only
-          },
+            endDate: null // Active subscriptions only
+          }
         },
         _count: {
           select: {
-            subscriptions: true,
-          },
-        },
+            subscriptions: true
+          }
+        }
       },
       orderBy: {
-        createdAt: 'desc',
-      },
+        createdAt: 'desc'
+      }
     });
 
     return NextResponse.json(students);
@@ -73,14 +73,11 @@ export async function POST(request: Request) {
 
     // Verify family exists
     const family = await prisma.family.findUnique({
-      where: { id: familyId },
+      where: { id: familyId }
     });
 
     if (!family) {
-      return NextResponse.json(
-        { error: 'Family not found' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'Family not found' }, { status: 404 });
     }
 
     // Create student
@@ -90,15 +87,15 @@ export async function POST(request: Request) {
         grade: grade || null,
         dateOfBirth: dateOfBirth ? new Date(dateOfBirth) : null,
         enrollmentDate: enrollmentDate ? new Date(enrollmentDate) : new Date(),
-        familyId,
+        familyId
       },
       include: {
         family: {
           select: {
             id: true,
             name: true,
-            discountAmount: true,
-          },
+            discountAmount: true
+          }
         },
         subscriptions: {
           include: {
@@ -106,27 +103,27 @@ export async function POST(request: Request) {
               select: {
                 id: true,
                 name: true,
-                feeStructure: true,
-              },
+                feeStructure: true
+              }
             },
             service: {
               select: {
                 id: true,
                 name: true,
-                feeStructure: true,
-              },
-            },
+                feeStructure: true
+              }
+            }
           },
           where: {
-            endDate: null,
-          },
+            endDate: null
+          }
         },
         _count: {
           select: {
-            subscriptions: true,
-          },
-        },
-      },
+            subscriptions: true
+          }
+        }
+      }
     });
 
     return NextResponse.json(student, { status: 201 });

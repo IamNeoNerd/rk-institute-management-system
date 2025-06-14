@@ -30,7 +30,9 @@ export class FeeCalculationService {
   /**
    * Calculate monthly fee for a specific student
    */
-  static async calculateStudentMonthlyFee(studentId: string): Promise<FeeCalculation> {
+  static async calculateStudentMonthlyFee(
+    studentId: string
+  ): Promise<FeeCalculation> {
     // Get student with all subscriptions and family info
     const student = await prisma.student.findUnique({
       where: { id: studentId },
@@ -67,7 +69,7 @@ export class FeeCalculationService {
           subscription.course.feeStructure.amount,
           subscription.course.feeStructure.billingCycle
         );
-        
+
         grossMonthlyFee += monthlyAmount;
         itemDiscounts += subscription.discountAmount || 0;
 
@@ -84,7 +86,7 @@ export class FeeCalculationService {
           subscription.service.feeStructure.amount,
           subscription.service.feeStructure.billingCycle
         );
-        
+
         grossMonthlyFee += monthlyAmount;
         itemDiscounts += subscription.discountAmount || 0;
 
@@ -125,7 +127,10 @@ export class FeeCalculationService {
   /**
    * Calculate family discount share for a specific student
    */
-  static async calculateFamilyDiscountShare(familyId: string, studentId: string): Promise<number> {
+  static async calculateFamilyDiscountShare(
+    familyId: string,
+    studentId: string
+  ): Promise<number> {
     const family = await prisma.family.findUnique({
       where: { id: familyId },
       include: {
@@ -170,7 +175,7 @@ export class FeeCalculationService {
       }
 
       totalFamilyGrossFee += studentGrossFee;
-      
+
       if (student.id === studentId) {
         thisStudentGrossFee = studentGrossFee;
       }
@@ -206,7 +211,9 @@ export class FeeCalculationService {
   /**
    * Calculate fees for all students in a family
    */
-  static async calculateFamilyFees(familyId: string): Promise<FeeCalculation[]> {
+  static async calculateFamilyFees(
+    familyId: string
+  ): Promise<FeeCalculation[]> {
     const family = await prisma.family.findUnique({
       where: { id: familyId },
       include: {
@@ -219,7 +226,7 @@ export class FeeCalculationService {
     }
 
     const calculations: FeeCalculation[] = [];
-    
+
     for (const student of family.students) {
       const calculation = await this.calculateStudentMonthlyFee(student.id);
       calculations.push(calculation);
@@ -245,7 +252,7 @@ export class FeeCalculationService {
     for (const student of students) {
       if (student.subscriptions.length > 0) {
         const calculation = await this.calculateStudentMonthlyFee(student.id);
-        
+
         // Create or update fee allocation
         const monthDate = new Date(year, month - 1, 1); // Convert to Date object
         const allocation = await prisma.studentFeeAllocation.upsert({
@@ -260,7 +267,7 @@ export class FeeCalculationService {
             grossAmount: calculation.grossMonthlyFee,
             discountAmount: calculation.totalDiscount,
             netAmount: calculation.netMonthlyFee,
-            dueDate: new Date(year, month - 1, 15), // 15th of the month
+            dueDate: new Date(year, month - 1, 15) // 15th of the month
           },
           create: {
             studentId: student.id,

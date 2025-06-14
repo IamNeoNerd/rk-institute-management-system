@@ -16,8 +16,8 @@ export async function GET(
           select: {
             id: true,
             name: true,
-            discountAmount: true,
-          },
+            discountAmount: true
+          }
         },
         subscriptions: {
           include: {
@@ -25,34 +25,31 @@ export async function GET(
               select: {
                 id: true,
                 name: true,
-                feeStructure: true,
-              },
+                feeStructure: true
+              }
             },
             service: {
               select: {
                 id: true,
                 name: true,
-                feeStructure: true,
-              },
-            },
+                feeStructure: true
+              }
+            }
           },
           where: {
-            endDate: null,
-          },
+            endDate: null
+          }
         },
         _count: {
           select: {
-            subscriptions: true,
-          },
-        },
-      },
+            subscriptions: true
+          }
+        }
+      }
     });
 
     if (!student) {
-      return NextResponse.json(
-        { error: 'Student not found' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'Student not found' }, { status: 404 });
     }
 
     return NextResponse.json(student);
@@ -84,14 +81,11 @@ export async function PUT(
 
     // Verify family exists
     const family = await prisma.family.findUnique({
-      where: { id: familyId },
+      where: { id: familyId }
     });
 
     if (!family) {
-      return NextResponse.json(
-        { error: 'Family not found' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'Family not found' }, { status: 404 });
     }
 
     // Update student
@@ -102,15 +96,15 @@ export async function PUT(
         grade: grade || null,
         dateOfBirth: dateOfBirth ? new Date(dateOfBirth) : null,
         enrollmentDate: enrollmentDate ? new Date(enrollmentDate) : undefined,
-        familyId,
+        familyId
       },
       include: {
         family: {
           select: {
             id: true,
             name: true,
-            discountAmount: true,
-          },
+            discountAmount: true
+          }
         },
         subscriptions: {
           include: {
@@ -118,27 +112,27 @@ export async function PUT(
               select: {
                 id: true,
                 name: true,
-                feeStructure: true,
-              },
+                feeStructure: true
+              }
             },
             service: {
               select: {
                 id: true,
                 name: true,
-                feeStructure: true,
-              },
-            },
+                feeStructure: true
+              }
+            }
           },
           where: {
-            endDate: null,
-          },
+            endDate: null
+          }
         },
         _count: {
           select: {
-            subscriptions: true,
-          },
-        },
-      },
+            subscriptions: true
+          }
+        }
+      }
     });
 
     return NextResponse.json(student);
@@ -159,22 +153,25 @@ export async function DELETE(
   try {
     // Check if student has active subscriptions
     const subscriptionCount = await prisma.studentSubscription.count({
-      where: { 
+      where: {
         studentId: params.id,
-        endDate: null,
-      },
+        endDate: null
+      }
     });
 
     if (subscriptionCount > 0) {
       return NextResponse.json(
-        { error: 'Cannot delete student with active subscriptions. Please end subscriptions first.' },
+        {
+          error:
+            'Cannot delete student with active subscriptions. Please end subscriptions first.'
+        },
         { status: 400 }
       );
     }
 
     // Delete the student
     await prisma.student.delete({
-      where: { id: params.id },
+      where: { id: params.id }
     });
 
     return NextResponse.json({ message: 'Student deleted successfully' });

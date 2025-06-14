@@ -4,6 +4,8 @@ import jwt from 'jsonwebtoken';
 
 const prisma = new PrismaClient();
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: NextRequest) {
   try {
     // Verify authentication
@@ -14,7 +16,7 @@ export async function GET(request: NextRequest) {
 
     const token = authHeader.substring(7);
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as any;
-    
+
     if (!decoded || decoded.role !== 'ADMIN') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -30,13 +32,13 @@ export async function GET(request: NextRequest) {
     ] = await Promise.all([
       // Total students count
       prisma.student.count(),
-      
+
       // Total families count
       prisma.family.count(),
-      
+
       // Total users count
       prisma.user.count(),
-      
+
       // Active students (those with recent activity or current enrollments)
       prisma.student.count({
         where: {
@@ -50,7 +52,7 @@ export async function GET(request: NextRequest) {
           }
         }
       }),
-      
+
       // Recent enrollments (last 30 days)
       prisma.student.count({
         where: {
@@ -59,7 +61,7 @@ export async function GET(request: NextRequest) {
           }
         }
       }),
-      
+
       // Pending users (placeholder - could be users without verified email, etc.)
       prisma.user.count({
         where: {
@@ -91,7 +93,7 @@ export async function GET(request: NextRequest) {
           }
         }
       }),
-      
+
       // Families with multiple children
       prisma.family.count({
         where: {
@@ -104,7 +106,7 @@ export async function GET(request: NextRequest) {
           }
         }
       }),
-      
+
       // Calculate average family size
       prisma.family.findMany({
         include: {
@@ -118,9 +120,15 @@ export async function GET(request: NextRequest) {
     ]);
 
     // Calculate average family size
-    const avgFamilySize = averageFamilySize.length > 0 
-      ? (averageFamilySize.reduce((sum, family) => sum + family._count.students, 0) / averageFamilySize.length).toFixed(1)
-      : '0';
+    const avgFamilySize =
+      averageFamilySize.length > 0
+        ? (
+            averageFamilySize.reduce(
+              (sum, family) => sum + family._count.students,
+              0
+            ) / averageFamilySize.length
+          ).toFixed(1)
+        : '0';
 
     // Get recent activity data
     const recentStudents = await prisma.student.findMany({
@@ -159,12 +167,12 @@ export async function GET(request: NextRequest) {
       activeStudents,
       recentEnrollments,
       pendingUsers,
-      
+
       // Additional insights
       studentsWithMultipleCourses,
       familiesWithMultipleChildren,
       averageFamilySize: parseFloat(avgFamilySize),
-      
+
       // Recent activity
       recentActivity: {
         students: recentStudents.map(student => ({
@@ -183,7 +191,6 @@ export async function GET(request: NextRequest) {
     };
 
     return NextResponse.json(stats);
-
   } catch (error) {
     console.error('Error fetching people statistics:', error);
     return NextResponse.json(

@@ -18,22 +18,22 @@ export async function GET() {
             family: {
               select: {
                 id: true,
-                name: true,
-              },
-            },
-          },
+                name: true
+              }
+            }
+          }
         },
         teacher: {
           select: {
             id: true,
             name: true,
-            email: true,
-          },
-        },
+            email: true
+          }
+        }
       },
       orderBy: {
-        createdAt: 'desc',
-      },
+        createdAt: 'desc'
+      }
     });
 
     return NextResponse.json(logs);
@@ -50,7 +50,15 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { title, content, logType, subject, isPrivate, studentId, teacherId } = body;
+    const {
+      title,
+      content,
+      logType,
+      subject,
+      isPrivate,
+      studentId,
+      teacherId
+    } = body;
 
     // Validate required fields
     if (!title || !content || !logType || !studentId || !teacherId) {
@@ -62,26 +70,20 @@ export async function POST(request: Request) {
 
     // Verify student exists
     const student = await prisma.student.findUnique({
-      where: { id: studentId },
+      where: { id: studentId }
     });
 
     if (!student) {
-      return NextResponse.json(
-        { error: 'Student not found' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'Student not found' }, { status: 404 });
     }
 
     // Verify teacher exists
     const teacher = await prisma.user.findUnique({
-      where: { id: teacherId },
+      where: { id: teacherId }
     });
 
     if (!teacher) {
-      return NextResponse.json(
-        { error: 'Teacher not found' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'Teacher not found' }, { status: 404 });
     }
 
     // Create academic log
@@ -93,7 +95,7 @@ export async function POST(request: Request) {
         subject: subject || null,
         isPrivate: isPrivate || false,
         studentId,
-        teacherId,
+        teacherId
       },
       include: {
         student: {
@@ -104,19 +106,19 @@ export async function POST(request: Request) {
             family: {
               select: {
                 id: true,
-                name: true,
-              },
-            },
-          },
+                name: true
+              }
+            }
+          }
         },
         teacher: {
           select: {
             id: true,
             name: true,
-            email: true,
-          },
-        },
-      },
+            email: true
+          }
+        }
+      }
     });
 
     return NextResponse.json(academicLog, { status: 201 });

@@ -31,7 +31,7 @@ export default function TeacherDashboard() {
     totalLogs: 0,
     achievements: 0,
     concerns: 0,
-    progressReports: 0,
+    progressReports: 0
   });
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('overview');
@@ -40,7 +40,7 @@ export default function TeacherDashboard() {
   useEffect(() => {
     const token = localStorage.getItem('token');
     const userData = localStorage.getItem('user');
-    
+
     if (!token || !userData) {
       router.push('/');
       return;
@@ -59,18 +59,18 @@ export default function TeacherDashboard() {
   const fetchDashboardStats = async () => {
     try {
       const token = localStorage.getItem('token');
-      
+
       // Fetch dashboard statistics
       const [studentsRes, coursesRes, logsRes] = await Promise.all([
         fetch('/api/students', {
-          headers: { 'Authorization': `Bearer ${token}` },
+          headers: { Authorization: `Bearer ${token}` }
         }),
         fetch('/api/courses', {
-          headers: { 'Authorization': `Bearer ${token}` },
+          headers: { Authorization: `Bearer ${token}` }
         }),
         fetch('/api/academic-logs', {
-          headers: { 'Authorization': `Bearer ${token}` },
-        }),
+          headers: { Authorization: `Bearer ${token}` }
+        })
       ]);
 
       let totalStudents = 0;
@@ -93,9 +93,15 @@ export default function TeacherDashboard() {
       if (logsRes.ok) {
         const logsData = await logsRes.json();
         totalLogs = logsData.length;
-        achievements = logsData.filter((log: any) => log.logType === 'ACHIEVEMENT').length;
-        concerns = logsData.filter((log: any) => log.logType === 'CONCERN').length;
-        progressReports = logsData.filter((log: any) => log.logType === 'PROGRESS').length;
+        achievements = logsData.filter(
+          (log: any) => log.logType === 'ACHIEVEMENT'
+        ).length;
+        concerns = logsData.filter(
+          (log: any) => log.logType === 'CONCERN'
+        ).length;
+        progressReports = logsData.filter(
+          (log: any) => log.logType === 'PROGRESS'
+        ).length;
       }
 
       setStats({
@@ -104,7 +110,7 @@ export default function TeacherDashboard() {
         totalLogs,
         achievements,
         concerns,
-        progressReports,
+        progressReports
       });
     } catch (error) {
       console.error('Error fetching dashboard stats:', error);
@@ -122,32 +128,32 @@ export default function TeacherDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-600"></div>
+      <div className='min-h-screen bg-gray-50 flex items-center justify-center'>
+        <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-teal-600'></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className='min-h-screen bg-gray-50'>
       {/* Header */}
-      <header className="bg-white shadow-sm border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <h1 className="text-2xl font-bold text-gray-900">RK Institute</h1>
-              <span className="ml-4 px-3 py-1 bg-gradient-to-r from-teal-100 to-blue-100 text-teal-800 text-sm font-medium rounded-full">
+      <header className='bg-white shadow-sm border-b border-gray-200'>
+        <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
+          <div className='flex justify-between items-center h-16'>
+            <div className='flex items-center'>
+              <h1 className='text-2xl font-bold text-gray-900'>RK Institute</h1>
+              <span className='ml-4 px-3 py-1 bg-gradient-to-r from-teal-100 to-blue-100 text-teal-800 text-sm font-medium rounded-full'>
                 🎓 Teacher&apos;s Toolkit
               </span>
             </div>
-            <div className="flex items-center space-x-4">
-              <div className="text-right">
-                <p className="text-sm text-gray-600">Welcome back,</p>
-                <p className="font-semibold text-gray-900">{user?.name}</p>
+            <div className='flex items-center space-x-4'>
+              <div className='text-right'>
+                <p className='text-sm text-gray-600'>Welcome back,</p>
+                <p className='font-semibold text-gray-900'>{user?.name}</p>
               </div>
               <button
                 onClick={handleLogout}
-                className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors"
+                className='bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors'
               >
                 Logout
               </button>
@@ -157,16 +163,16 @@ export default function TeacherDashboard() {
       </header>
 
       {/* Navigation Tabs */}
-      <div className="bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <nav className="flex space-x-8">
+      <div className='bg-white border-b border-gray-200'>
+        <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
+          <nav className='flex space-x-8'>
             {[
               { id: 'overview', name: 'Dashboard Overview', icon: '📊' },
               { id: 'assignments', name: 'Assignments & Notes', icon: '📋' },
               { id: 'academic-logs', name: 'Academic Logs', icon: '📝' },
               { id: 'my-students', name: 'My Students', icon: '👨‍🎓' },
-              { id: 'my-courses', name: 'My Courses', icon: '📚' },
-            ].map((tab) => (
+              { id: 'my-courses', name: 'My Courses', icon: '📚' }
+            ].map(tab => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
@@ -176,7 +182,7 @@ export default function TeacherDashboard() {
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                 }`}
               >
-                <span className="mr-2">{tab.icon}</span>
+                <span className='mr-2'>{tab.icon}</span>
                 {tab.name}
               </button>
             ))}
@@ -185,167 +191,224 @@ export default function TeacherDashboard() {
       </div>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8'>
         {activeTab === 'overview' && (
-          <div className="space-y-8">
+          <div className='space-y-8'>
             {/* Welcome Section */}
-            <div className="bg-gradient-to-r from-teal-500 via-blue-600 to-purple-600 rounded-xl shadow-lg p-8 text-white">
-              <h2 className="text-3xl font-bold mb-4">Teacher&apos;s Dashboard</h2>
-              <p className="text-lg opacity-90 mb-6">
-                Empower student success through comprehensive academic tracking and progress management
+            <div className='bg-gradient-to-r from-teal-500 via-blue-600 to-purple-600 rounded-xl shadow-lg p-8 text-white'>
+              <h2 className='text-3xl font-bold mb-4'>
+                Teacher&apos;s Dashboard
+              </h2>
+              <p className='text-lg opacity-90 mb-6'>
+                Empower student success through comprehensive academic tracking
+                and progress management
               </p>
-              <div className="flex flex-wrap gap-4">
-                <div className="bg-white bg-opacity-20 rounded-lg px-4 py-2">
-                  <span className="text-sm font-medium">Academic Excellence</span>
+              <div className='flex flex-wrap gap-4'>
+                <div className='bg-white bg-opacity-20 rounded-lg px-4 py-2'>
+                  <span className='text-sm font-medium'>
+                    Academic Excellence
+                  </span>
                 </div>
-                <div className="bg-white bg-opacity-20 rounded-lg px-4 py-2">
-                  <span className="text-sm font-medium">Progress Tracking</span>
+                <div className='bg-white bg-opacity-20 rounded-lg px-4 py-2'>
+                  <span className='text-sm font-medium'>Progress Tracking</span>
                 </div>
-                <div className="bg-white bg-opacity-20 rounded-lg px-4 py-2">
-                  <span className="text-sm font-medium">Student Development</span>
+                <div className='bg-white bg-opacity-20 rounded-lg px-4 py-2'>
+                  <span className='text-sm font-medium'>
+                    Student Development
+                  </span>
                 </div>
               </div>
             </div>
 
             {/* Quick Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
-                <div className="flex items-center justify-between">
+            <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
+              <div className='bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow'>
+                <div className='flex items-center justify-between'>
                   <div>
-                    <p className="text-sm font-medium text-gray-600">Total Students</p>
-                    <p className="text-3xl font-bold text-gray-900">{stats.totalStudents}</p>
-                    <p className="text-sm text-green-600 mt-1">Active learners</p>
+                    <p className='text-sm font-medium text-gray-600'>
+                      Total Students
+                    </p>
+                    <p className='text-3xl font-bold text-gray-900'>
+                      {stats.totalStudents}
+                    </p>
+                    <p className='text-sm text-green-600 mt-1'>
+                      Active learners
+                    </p>
                   </div>
-                  <div className="p-3 bg-blue-100 rounded-lg">
-                    <span className="text-3xl">👨‍🎓</span>
+                  <div className='p-3 bg-blue-100 rounded-lg'>
+                    <span className='text-3xl'>👨‍🎓</span>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
-                <div className="flex items-center justify-between">
+              <div className='bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow'>
+                <div className='flex items-center justify-between'>
                   <div>
-                    <p className="text-sm font-medium text-gray-600">My Courses</p>
-                    <p className="text-3xl font-bold text-gray-900">{stats.totalCourses}</p>
-                    <p className="text-sm text-blue-600 mt-1">Teaching subjects</p>
+                    <p className='text-sm font-medium text-gray-600'>
+                      My Courses
+                    </p>
+                    <p className='text-3xl font-bold text-gray-900'>
+                      {stats.totalCourses}
+                    </p>
+                    <p className='text-sm text-blue-600 mt-1'>
+                      Teaching subjects
+                    </p>
                   </div>
-                  <div className="p-3 bg-green-100 rounded-lg">
-                    <span className="text-3xl">📚</span>
+                  <div className='p-3 bg-green-100 rounded-lg'>
+                    <span className='text-3xl'>📚</span>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
-                <div className="flex items-center justify-between">
+              <div className='bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow'>
+                <div className='flex items-center justify-between'>
                   <div>
-                    <p className="text-sm font-medium text-gray-600">Academic Logs</p>
-                    <p className="text-3xl font-bold text-gray-900">{stats.totalLogs}</p>
-                    <p className="text-sm text-purple-600 mt-1">Progress records</p>
+                    <p className='text-sm font-medium text-gray-600'>
+                      Academic Logs
+                    </p>
+                    <p className='text-3xl font-bold text-gray-900'>
+                      {stats.totalLogs}
+                    </p>
+                    <p className='text-sm text-purple-600 mt-1'>
+                      Progress records
+                    </p>
                   </div>
-                  <div className="p-3 bg-purple-100 rounded-lg">
-                    <span className="text-3xl">📝</span>
+                  <div className='p-3 bg-purple-100 rounded-lg'>
+                    <span className='text-3xl'>📝</span>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
-                <div className="flex items-center justify-between">
+              <div className='bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow'>
+                <div className='flex items-center justify-between'>
                   <div>
-                    <p className="text-sm font-medium text-gray-600">Achievements</p>
-                    <p className="text-3xl font-bold text-green-600">{stats.achievements}</p>
-                    <p className="text-sm text-green-600 mt-1">Student successes</p>
+                    <p className='text-sm font-medium text-gray-600'>
+                      Achievements
+                    </p>
+                    <p className='text-3xl font-bold text-green-600'>
+                      {stats.achievements}
+                    </p>
+                    <p className='text-sm text-green-600 mt-1'>
+                      Student successes
+                    </p>
                   </div>
-                  <div className="p-3 bg-yellow-100 rounded-lg">
-                    <span className="text-3xl">⭐</span>
+                  <div className='p-3 bg-yellow-100 rounded-lg'>
+                    <span className='text-3xl'>⭐</span>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
-                <div className="flex items-center justify-between">
+              <div className='bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow'>
+                <div className='flex items-center justify-between'>
                   <div>
-                    <p className="text-sm font-medium text-gray-600">Progress Reports</p>
-                    <p className="text-3xl font-bold text-blue-600">{stats.progressReports}</p>
-                    <p className="text-sm text-blue-600 mt-1">Regular updates</p>
+                    <p className='text-sm font-medium text-gray-600'>
+                      Progress Reports
+                    </p>
+                    <p className='text-3xl font-bold text-blue-600'>
+                      {stats.progressReports}
+                    </p>
+                    <p className='text-sm text-blue-600 mt-1'>
+                      Regular updates
+                    </p>
                   </div>
-                  <div className="p-3 bg-indigo-100 rounded-lg">
-                    <span className="text-3xl">📊</span>
+                  <div className='p-3 bg-indigo-100 rounded-lg'>
+                    <span className='text-3xl'>📊</span>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
-                <div className="flex items-center justify-between">
+              <div className='bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow'>
+                <div className='flex items-center justify-between'>
                   <div>
-                    <p className="text-sm font-medium text-gray-600">Concerns</p>
-                    <p className="text-3xl font-bold text-red-600">{stats.concerns}</p>
-                    <p className="text-sm text-red-600 mt-1">Need attention</p>
+                    <p className='text-sm font-medium text-gray-600'>
+                      Concerns
+                    </p>
+                    <p className='text-3xl font-bold text-red-600'>
+                      {stats.concerns}
+                    </p>
+                    <p className='text-sm text-red-600 mt-1'>Need attention</p>
                   </div>
-                  <div className="p-3 bg-red-100 rounded-lg">
-                    <span className="text-3xl">⚠️</span>
+                  <div className='p-3 bg-red-100 rounded-lg'>
+                    <span className='text-3xl'>⚠️</span>
                   </div>
                 </div>
               </div>
             </div>
 
             {/* Quick Actions */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
               <button
                 onClick={() => setActiveTab('assignments')}
-                className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-all border border-gray-200 text-left group"
+                className='bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-all border border-gray-200 text-left group'
               >
-                <div className="flex items-center">
-                  <div className="p-3 bg-indigo-100 rounded-lg group-hover:bg-indigo-200 transition-colors">
-                    <span className="text-2xl">📋</span>
+                <div className='flex items-center'>
+                  <div className='p-3 bg-indigo-100 rounded-lg group-hover:bg-indigo-200 transition-colors'>
+                    <span className='text-2xl'>📋</span>
                   </div>
-                  <div className="ml-4">
-                    <h3 className="text-lg font-semibold text-gray-900">Manage Assignments</h3>
-                    <p className="text-gray-600">Create homework, projects, and study materials</p>
+                  <div className='ml-4'>
+                    <h3 className='text-lg font-semibold text-gray-900'>
+                      Manage Assignments
+                    </h3>
+                    <p className='text-gray-600'>
+                      Create homework, projects, and study materials
+                    </p>
                   </div>
                 </div>
               </button>
 
               <button
                 onClick={() => setActiveTab('academic-logs')}
-                className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-all border border-gray-200 text-left group"
+                className='bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-all border border-gray-200 text-left group'
               >
-                <div className="flex items-center">
-                  <div className="p-3 bg-teal-100 rounded-lg group-hover:bg-teal-200 transition-colors">
-                    <span className="text-2xl">📝</span>
+                <div className='flex items-center'>
+                  <div className='p-3 bg-teal-100 rounded-lg group-hover:bg-teal-200 transition-colors'>
+                    <span className='text-2xl'>📝</span>
                   </div>
-                  <div className="ml-4">
-                    <h3 className="text-lg font-semibold text-gray-900">Manage Academic Logs</h3>
-                    <p className="text-gray-600">Create, view, and manage student progress records</p>
+                  <div className='ml-4'>
+                    <h3 className='text-lg font-semibold text-gray-900'>
+                      Manage Academic Logs
+                    </h3>
+                    <p className='text-gray-600'>
+                      Create, view, and manage student progress records
+                    </p>
                   </div>
                 </div>
               </button>
 
               <button
                 onClick={() => setActiveTab('my-students')}
-                className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-all border border-gray-200 text-left group"
+                className='bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-all border border-gray-200 text-left group'
               >
-                <div className="flex items-center">
-                  <div className="p-3 bg-blue-100 rounded-lg group-hover:bg-blue-200 transition-colors">
-                    <span className="text-2xl">👥</span>
+                <div className='flex items-center'>
+                  <div className='p-3 bg-blue-100 rounded-lg group-hover:bg-blue-200 transition-colors'>
+                    <span className='text-2xl'>👥</span>
                   </div>
-                  <div className="ml-4">
-                    <h3 className="text-lg font-semibold text-gray-900">View My Students</h3>
-                    <p className="text-gray-600">Access student information and academic history</p>
+                  <div className='ml-4'>
+                    <h3 className='text-lg font-semibold text-gray-900'>
+                      View My Students
+                    </h3>
+                    <p className='text-gray-600'>
+                      Access student information and academic history
+                    </p>
                   </div>
                 </div>
               </button>
 
               <button
                 onClick={() => setActiveTab('my-courses')}
-                className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-all border border-gray-200 text-left group"
+                className='bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-all border border-gray-200 text-left group'
               >
-                <div className="flex items-center">
-                  <div className="p-3 bg-purple-100 rounded-lg group-hover:bg-purple-200 transition-colors">
-                    <span className="text-2xl">📚</span>
+                <div className='flex items-center'>
+                  <div className='p-3 bg-purple-100 rounded-lg group-hover:bg-purple-200 transition-colors'>
+                    <span className='text-2xl'>📚</span>
                   </div>
-                  <div className="ml-4">
-                    <h3 className="text-lg font-semibold text-gray-900">Manage My Courses</h3>
-                    <p className="text-gray-600">View course details and student enrollments</p>
+                  <div className='ml-4'>
+                    <h3 className='text-lg font-semibold text-gray-900'>
+                      Manage My Courses
+                    </h3>
+                    <p className='text-gray-600'>
+                      View course details and student enrollments
+                    </p>
                   </div>
                 </div>
               </button>

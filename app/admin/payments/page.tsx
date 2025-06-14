@@ -53,7 +53,9 @@ interface FeeAllocation {
 
 export default function PaymentsPage() {
   const [payments, setPayments] = useState<Payment[]>([]);
-  const [pendingAllocations, setPendingAllocations] = useState<FeeAllocation[]>([]);
+  const [pendingAllocations, setPendingAllocations] = useState<FeeAllocation[]>(
+    []
+  );
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState<string>('');
@@ -69,8 +71,8 @@ export default function PaymentsPage() {
       const token = localStorage.getItem('token');
       const response = await fetch('/api/payments', {
         headers: {
-          'Authorization': `Bearer ${token}`,
-        },
+          Authorization: `Bearer ${token}`
+        }
       });
 
       if (response.ok) {
@@ -89,8 +91,8 @@ export default function PaymentsPage() {
       const token = localStorage.getItem('token');
       const response = await fetch('/api/allocations?status=PENDING', {
         headers: {
-          'Authorization': `Bearer ${token}`,
-        },
+          Authorization: `Bearer ${token}`
+        }
       });
 
       if (response.ok) {
@@ -115,9 +117,9 @@ export default function PaymentsPage() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
+          Authorization: `Bearer ${token}`
         },
-        body: JSON.stringify({ month, year }),
+        body: JSON.stringify({ month, year })
       });
 
       if (response.ok) {
@@ -152,8 +154,8 @@ export default function PaymentsPage() {
   if (loading) {
     return (
       <AdminLayout>
-        <div className="flex items-center justify-center h-64">
-          <div className="text-lg">Loading payments...</div>
+        <div className='flex items-center justify-center h-64'>
+          <div className='text-lg'>Loading payments...</div>
         </div>
       </AdminLayout>
     );
@@ -161,39 +163,58 @@ export default function PaymentsPage() {
 
   return (
     <AdminLayout>
-      <div className="space-y-8">
-        <div className="flex justify-between items-center animate-fade-in">
+      <div className='space-y-8'>
+        <div className='flex justify-between items-center animate-fade-in'>
           <div>
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">Payments</h1>
-            <p className="mt-2 text-lg text-gray-600">
+            <h1 className='text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent'>
+              Payments
+            </h1>
+            <p className='mt-2 text-lg text-gray-600'>
               Record payments and manage fee allocations
             </p>
           </div>
-          <div className="flex space-x-4">
+          <div className='flex space-x-4'>
             <button
               onClick={generateCurrentMonthAllocations}
-              className="btn-success"
+              className='btn-success'
             >
-              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+              <svg
+                className='w-5 h-5 mr-2'
+                fill='none'
+                stroke='currentColor'
+                viewBox='0 0 24 24'
+              >
+                <path
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  strokeWidth={2}
+                  d='M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1'
+                />
               </svg>
               Generate This Month&apos;s Bills
             </button>
-            <button
-              onClick={() => setShowForm(true)}
-              className="btn-primary"
-            >
-              <span className="mr-2">+</span>
+            <button onClick={() => setShowForm(true)} className='btn-primary'>
+              <span className='mr-2'>+</span>
               Record Payment
             </button>
           </div>
         </div>
 
         {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-6 py-4 rounded-xl animate-fade-in">
-            <div className="flex items-center">
-              <svg className="w-5 h-5 text-red-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          <div className='bg-red-50 border border-red-200 text-red-700 px-6 py-4 rounded-xl animate-fade-in'>
+            <div className='flex items-center'>
+              <svg
+                className='w-5 h-5 text-red-500 mr-2'
+                fill='none'
+                stroke='currentColor'
+                viewBox='0 0 24 24'
+              >
+                <path
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  strokeWidth={2}
+                  d='M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z'
+                />
               </svg>
               {error}
             </div>
@@ -201,8 +222,10 @@ export default function PaymentsPage() {
         )}
 
         {showForm && (
-          <div className="card animate-slide-up">
-            <h3 className="text-2xl font-bold text-gray-900 mb-6">Record New Payment</h3>
+          <div className='card animate-slide-up'>
+            <h3 className='text-2xl font-bold text-gray-900 mb-6'>
+              Record New Payment
+            </h3>
             <PaymentForm
               selectedStudentId={selectedStudent}
               onSuccess={handlePaymentSuccess}
@@ -213,54 +236,73 @@ export default function PaymentsPage() {
 
         {/* Pending Allocations */}
         {pendingAllocations.length > 0 && (
-          <div className="card animate-slide-up">
-            <h3 className="text-2xl font-bold text-gray-900 mb-6">Pending Fee Payments</h3>
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+          <div className='card animate-slide-up'>
+            <h3 className='text-2xl font-bold text-gray-900 mb-6'>
+              Pending Fee Payments
+            </h3>
+            <div className='overflow-x-auto'>
+              <table className='min-w-full divide-y divide-gray-200'>
+                <thead className='bg-gray-50'>
                   <tr>
-                    <th className="table-header">Student</th>
-                    <th className="table-header">Family</th>
-                    <th className="table-header">Month/Year</th>
-                    <th className="table-header">Amount Due</th>
-                    <th className="table-header">Due Date</th>
-                    <th className="table-header">Actions</th>
+                    <th className='table-header'>Student</th>
+                    <th className='table-header'>Family</th>
+                    <th className='table-header'>Month/Year</th>
+                    <th className='table-header'>Amount Due</th>
+                    <th className='table-header'>Due Date</th>
+                    <th className='table-header'>Actions</th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {pendingAllocations.map((allocation) => (
-                    <tr key={allocation.id} className="hover:bg-gray-50 transition-colors duration-200">
-                      <td className="table-cell">
-                        <div className="font-medium text-gray-900">{allocation.student.name}</div>
+                <tbody className='bg-white divide-y divide-gray-200'>
+                  {pendingAllocations.map(allocation => (
+                    <tr
+                      key={allocation.id}
+                      className='hover:bg-gray-50 transition-colors duration-200'
+                    >
+                      <td className='table-cell'>
+                        <div className='font-medium text-gray-900'>
+                          {allocation.student.name}
+                        </div>
                       </td>
-                      <td className="table-cell">
-                        <div className="text-gray-900">{allocation.student.family.name}</div>
+                      <td className='table-cell'>
+                        <div className='text-gray-900'>
+                          {allocation.student.family.name}
+                        </div>
                       </td>
-                      <td className="table-cell">
-                        <div className="font-medium">
-                          {new Date(allocation.year, allocation.month - 1).toLocaleDateString('en-US', { 
-                            month: 'long', 
-                            year: 'numeric' 
+                      <td className='table-cell'>
+                        <div className='font-medium'>
+                          {new Date(
+                            allocation.year,
+                            allocation.month - 1
+                          ).toLocaleDateString('en-US', {
+                            month: 'long',
+                            year: 'numeric'
                           })}
                         </div>
                       </td>
-                      <td className="table-cell">
-                        <div className="font-bold text-green-600">₹{allocation.netAmount.toFixed(2)}</div>
+                      <td className='table-cell'>
+                        <div className='font-bold text-green-600'>
+                          ₹{allocation.netAmount.toFixed(2)}
+                        </div>
                         {allocation.discountAmount > 0 && (
-                          <div className="text-sm text-gray-500">
-                            (₹{allocation.grossAmount.toFixed(2)} - ₹{allocation.discountAmount.toFixed(2)})
+                          <div className='text-sm text-gray-500'>
+                            (₹{allocation.grossAmount.toFixed(2)} - ₹
+                            {allocation.discountAmount.toFixed(2)})
                           </div>
                         )}
                       </td>
-                      <td className="table-cell">
-                        <div className={`text-sm ${new Date(allocation.dueDate) < new Date() ? 'text-red-600 font-medium' : 'text-gray-600'}`}>
+                      <td className='table-cell'>
+                        <div
+                          className={`text-sm ${new Date(allocation.dueDate) < new Date() ? 'text-red-600 font-medium' : 'text-gray-600'}`}
+                        >
                           {new Date(allocation.dueDate).toLocaleDateString()}
                         </div>
                       </td>
-                      <td className="table-cell">
+                      <td className='table-cell'>
                         <button
-                          onClick={() => handleRecordPayment(allocation.student.id)}
-                          className="bg-green-100 hover:bg-green-200 text-green-700 px-3 py-1 rounded-lg text-sm font-medium transition-colors duration-200"
+                          onClick={() =>
+                            handleRecordPayment(allocation.student.id)
+                          }
+                          className='bg-green-100 hover:bg-green-200 text-green-700 px-3 py-1 rounded-lg text-sm font-medium transition-colors duration-200'
                         >
                           Record Payment
                         </button>
@@ -274,60 +316,78 @@ export default function PaymentsPage() {
         )}
 
         {/* Recent Payments */}
-        <div className="table-container animate-slide-up">
-          <div className="px-6 py-4 border-b border-gray-200">
-            <h3 className="text-lg font-semibold text-gray-900">Recent Payments</h3>
+        <div className='table-container animate-slide-up'>
+          <div className='px-6 py-4 border-b border-gray-200'>
+            <h3 className='text-lg font-semibold text-gray-900'>
+              Recent Payments
+            </h3>
           </div>
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+          <table className='min-w-full divide-y divide-gray-200'>
+            <thead className='bg-gray-50'>
               <tr>
-                <th className="table-header">Student</th>
-                <th className="table-header">Family</th>
-                <th className="table-header">Amount</th>
-                <th className="table-header">Payment Method</th>
-                <th className="table-header">Reference</th>
-                <th className="table-header">Date</th>
-                <th className="table-header">Status</th>
+                <th className='table-header'>Student</th>
+                <th className='table-header'>Family</th>
+                <th className='table-header'>Amount</th>
+                <th className='table-header'>Payment Method</th>
+                <th className='table-header'>Reference</th>
+                <th className='table-header'>Date</th>
+                <th className='table-header'>Status</th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody className='bg-white divide-y divide-gray-200'>
               {payments.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="table-cell text-center text-gray-500">
+                  <td
+                    colSpan={7}
+                    className='table-cell text-center text-gray-500'
+                  >
                     No payments recorded yet.
                   </td>
                 </tr>
               ) : (
-                payments.map((payment) => (
-                  <tr key={payment.id} className="hover:bg-gray-50 transition-colors duration-200">
-                    <td className="table-cell">
-                      <div className="font-medium text-gray-900">{payment.student.name}</div>
+                payments.map(payment => (
+                  <tr
+                    key={payment.id}
+                    className='hover:bg-gray-50 transition-colors duration-200'
+                  >
+                    <td className='table-cell'>
+                      <div className='font-medium text-gray-900'>
+                        {payment.student.name}
+                      </div>
                     </td>
-                    <td className="table-cell">
-                      <div className="text-gray-900">{payment.student.family.name}</div>
+                    <td className='table-cell'>
+                      <div className='text-gray-900'>
+                        {payment.student.family.name}
+                      </div>
                     </td>
-                    <td className="table-cell">
-                      <div className="font-bold text-green-600">₹{payment.amount.toFixed(2)}</div>
+                    <td className='table-cell'>
+                      <div className='font-bold text-green-600'>
+                        ₹{payment.amount.toFixed(2)}
+                      </div>
                     </td>
-                    <td className="table-cell">
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                    <td className='table-cell'>
+                      <span className='inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800'>
                         {payment.paymentMethod}
                       </span>
                     </td>
-                    <td className="table-cell">
-                      <div className="text-sm text-gray-600">{payment.referenceNumber || '-'}</div>
+                    <td className='table-cell'>
+                      <div className='text-sm text-gray-600'>
+                        {payment.referenceNumber || '-'}
+                      </div>
                     </td>
-                    <td className="table-cell">
-                      <div className="text-sm text-gray-900">
+                    <td className='table-cell'>
+                      <div className='text-sm text-gray-900'>
                         {new Date(payment.paymentDate).toLocaleDateString()}
                       </div>
                     </td>
-                    <td className="table-cell">
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                        payment.status === 'COMPLETED' 
-                          ? 'bg-green-100 text-green-800' 
-                          : 'bg-yellow-100 text-yellow-800'
-                      }`}>
+                    <td className='table-cell'>
+                      <span
+                        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                          payment.status === 'COMPLETED'
+                            ? 'bg-green-100 text-green-800'
+                            : 'bg-yellow-100 text-yellow-800'
+                        }`}
+                      >
                         {payment.status}
                       </span>
                     </td>

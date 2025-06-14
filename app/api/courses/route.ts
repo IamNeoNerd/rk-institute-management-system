@@ -12,8 +12,8 @@ export async function GET() {
           select: {
             id: true,
             name: true,
-            email: true,
-          },
+            email: true
+          }
         },
         feeStructure: true,
         subscriptions: {
@@ -26,22 +26,22 @@ export async function GET() {
                 studentId: true,
                 family: {
                   select: {
-                    name: true,
-                  },
-                },
-              },
-            },
-          },
+                    name: true
+                  }
+                }
+              }
+            }
+          }
         },
         _count: {
           select: {
-            subscriptions: true,
-          },
-        },
+            subscriptions: true
+          }
+        }
       },
       orderBy: {
-        createdAt: 'desc',
-      },
+        createdAt: 'desc'
+      }
     });
 
     return NextResponse.json(courses);
@@ -73,7 +73,7 @@ export async function POST(request: Request) {
       name,
       description: description || null,
       grade: grade || null,
-      teacherId: teacherId || null,
+      teacherId: teacherId || null
     };
 
     const course = await prisma.course.create({
@@ -83,10 +83,10 @@ export async function POST(request: Request) {
           select: {
             id: true,
             name: true,
-            email: true,
-          },
-        },
-      },
+            email: true
+          }
+        }
+      }
     });
 
     // Create fee structure if provided
@@ -95,8 +95,8 @@ export async function POST(request: Request) {
         data: {
           amount: parseFloat(feeStructure.amount),
           billingCycle: feeStructure.billingCycle || 'MONTHLY',
-          courseId: course.id,
-        },
+          courseId: course.id
+        }
       });
     }
 
@@ -108,16 +108,16 @@ export async function POST(request: Request) {
           select: {
             id: true,
             name: true,
-            email: true,
-          },
+            email: true
+          }
         },
         feeStructure: true,
         _count: {
           select: {
-            subscriptions: true,
-          },
-        },
-      },
+            subscriptions: true
+          }
+        }
+      }
     });
 
     return NextResponse.json(completeCourse, { status: 201 });

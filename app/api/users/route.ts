@@ -25,13 +25,13 @@ export async function GET(request: Request) {
         family: {
           select: {
             id: true,
-            name: true,
-          },
-        },
+            name: true
+          }
+        }
       },
       orderBy: {
-        createdAt: 'desc',
-      },
+        createdAt: 'desc'
+      }
     });
 
     return NextResponse.json(users);
@@ -60,7 +60,7 @@ export async function POST(request: Request) {
 
     // Check if user already exists
     const existingUser = await prisma.user.findUnique({
-      where: { email },
+      where: { email }
     });
 
     if (existingUser) {
@@ -81,7 +81,7 @@ export async function POST(request: Request) {
         password: hashedPassword,
         role,
         familyId: familyId || null,
-        isActive: isActive !== undefined ? isActive : true,
+        isActive: isActive !== undefined ? isActive : true
       },
       select: {
         id: true,
@@ -94,10 +94,10 @@ export async function POST(request: Request) {
         family: {
           select: {
             id: true,
-            name: true,
-          },
-        },
-      },
+            name: true
+          }
+        }
+      }
     });
 
     return NextResponse.json(user, { status: 201 });

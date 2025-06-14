@@ -20,33 +20,33 @@ export default function DashboardLayout({
   subtitle,
   headerActions,
   user,
-  onLogout,
+  onLogout
 }: DashboardLayoutProps) {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className='min-h-screen bg-gray-50'>
       {/* Header */}
-      <header className="bg-white shadow-sm border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <h1 className="text-2xl font-bold text-gray-900">RK Institute</h1>
+      <header className='bg-white shadow-sm border-b border-gray-200'>
+        <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
+          <div className='flex justify-between items-center h-16'>
+            <div className='flex items-center'>
+              <h1 className='text-2xl font-bold text-gray-900'>RK Institute</h1>
               {subtitle && (
-                <span className="ml-4 px-3 py-1 bg-gradient-to-r from-blue-100 to-purple-100 text-blue-800 text-sm font-medium rounded-full">
+                <span className='ml-4 px-3 py-1 bg-gradient-to-r from-blue-100 to-purple-100 text-blue-800 text-sm font-medium rounded-full'>
                   {subtitle}
                 </span>
               )}
             </div>
-            <div className="flex items-center space-x-4">
+            <div className='flex items-center space-x-4'>
               {headerActions}
               {user && (
-                <div className="text-right">
-                  <p className="text-sm text-gray-600">Welcome,</p>
-                  <p className="font-semibold text-gray-900">{user.name}</p>
+                <div className='text-right'>
+                  <p className='text-sm text-gray-600'>Welcome,</p>
+                  <p className='font-semibold text-gray-900'>{user.name}</p>
                 </div>
               )}
               <button
                 onClick={onLogout}
-                className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors"
+                className='bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors'
               >
                 Logout
               </button>
@@ -56,12 +56,10 @@ export default function DashboardLayout({
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8">
-          <h2 className="text-3xl font-bold text-gray-900">{title}</h2>
-          {subtitle && (
-            <p className="text-gray-600 mt-2">{subtitle}</p>
-          )}
+      <main className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8'>
+        <div className='mb-8'>
+          <h2 className='text-3xl font-bold text-gray-900'>{title}</h2>
+          {subtitle && <p className='text-gray-600 mt-2'>{subtitle}</p>}
         </div>
         {children}
       </main>

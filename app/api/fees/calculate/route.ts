@@ -8,17 +8,22 @@ export async function POST(request: Request) {
     const { studentId, familyId, type } = body;
 
     if (type === 'student' && studentId) {
-      const calculation = await FeeCalculationService.calculateStudentMonthlyFee(studentId);
+      const calculation =
+        await FeeCalculationService.calculateStudentMonthlyFee(studentId);
       return NextResponse.json(calculation);
     }
 
     if (type === 'family' && familyId) {
-      const calculations = await FeeCalculationService.calculateFamilyFees(familyId);
+      const calculations =
+        await FeeCalculationService.calculateFamilyFees(familyId);
       return NextResponse.json(calculations);
     }
 
     return NextResponse.json(
-      { error: 'Invalid request. Provide studentId or familyId with appropriate type.' },
+      {
+        error:
+          'Invalid request. Provide studentId or familyId with appropriate type.'
+      },
       { status: 400 }
     );
   } catch (error) {
@@ -44,7 +49,10 @@ export async function GET(request: Request) {
       );
     }
 
-    const allocations = await FeeCalculationService.generateMonthlyAllocations(month, year);
+    const allocations = await FeeCalculationService.generateMonthlyAllocations(
+      month,
+      year
+    );
     return NextResponse.json(allocations);
   } catch (error) {
     console.error('Error generating allocations:', error);

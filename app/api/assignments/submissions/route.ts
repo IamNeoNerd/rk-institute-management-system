@@ -13,8 +13,11 @@ export async function GET(request: NextRequest) {
     }
 
     const token = authHeader.substring(7);
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallback-secret') as any;
-    
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET || 'fallback-secret'
+    ) as any;
+
     const { searchParams } = new URL(request.url);
     const assignmentId = searchParams.get('assignmentId');
     const studentId = searchParams.get('studentId');
@@ -28,7 +31,10 @@ export async function GET(request: NextRequest) {
       });
 
       if (!student) {
-        return NextResponse.json({ error: 'Student not found' }, { status: 404 });
+        return NextResponse.json(
+          { error: 'Student not found' },
+          { status: 404 }
+        );
       }
 
       submissions = await prisma.assignmentSubmission.findMany({
@@ -57,7 +63,10 @@ export async function GET(request: NextRequest) {
       });
 
       if (!family) {
-        return NextResponse.json({ error: 'Family not found' }, { status: 404 });
+        return NextResponse.json(
+          { error: 'Family not found' },
+          { status: 404 }
+        );
       }
 
       const studentIds = family.students.map(s => s.id);
@@ -130,7 +139,10 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ submissions });
   } catch (error) {
     console.error('Error fetching submissions:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
   }
 }
 
@@ -143,17 +155,26 @@ export async function POST(request: NextRequest) {
     }
 
     const token = authHeader.substring(7);
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallback-secret') as any;
-    
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET || 'fallback-secret'
+    ) as any;
+
     if (decoded.role !== 'STUDENT') {
-      return NextResponse.json({ error: 'Only students can submit assignments' }, { status: 403 });
+      return NextResponse.json(
+        { error: 'Only students can submit assignments' },
+        { status: 403 }
+      );
     }
 
     const body = await request.json();
     const { assignmentId, content, attachmentUrl, attachmentName } = body;
 
     if (!assignmentId) {
-      return NextResponse.json({ error: 'Assignment ID is required' }, { status: 400 });
+      return NextResponse.json(
+        { error: 'Assignment ID is required' },
+        { status: 400 }
+      );
     }
 
     const student = await prisma.student.findFirst({
@@ -170,13 +191,20 @@ export async function POST(request: NextRequest) {
     });
 
     if (!assignment || !assignment.isActive) {
-      return NextResponse.json({ error: 'Assignment not found or inactive' }, { status: 404 });
+      return NextResponse.json(
+        { error: 'Assignment not found or inactive' },
+        { status: 404 }
+      );
     }
 
     // Check if student is eligible for this assignment
-    const isEligible = assignment.grade === student.grade || assignment.studentId === student.id;
+    const isEligible =
+      assignment.grade === student.grade || assignment.studentId === student.id;
     if (!isEligible) {
-      return NextResponse.json({ error: 'Not eligible for this assignment' }, { status: 403 });
+      return NextResponse.json(
+        { error: 'Not eligible for this assignment' },
+        { status: 403 }
+      );
     }
 
     // Check if already submitted
@@ -190,7 +218,10 @@ export async function POST(request: NextRequest) {
     });
 
     if (existingSubmission) {
-      return NextResponse.json({ error: 'Assignment already submitted' }, { status: 400 });
+      return NextResponse.json(
+        { error: 'Assignment already submitted' },
+        { status: 400 }
+      );
     }
 
     // Determine if submission is late
@@ -221,6 +252,9 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ submission }, { status: 201 });
   } catch (error) {
     console.error('Error submitting assignment:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
   }
 }

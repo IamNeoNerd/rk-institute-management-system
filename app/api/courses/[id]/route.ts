@@ -16,23 +16,20 @@ export async function GET(
           select: {
             id: true,
             name: true,
-            email: true,
-          },
+            email: true
+          }
         },
         feeStructure: true,
         _count: {
           select: {
-            subscriptions: true,
-          },
-        },
-      },
+            subscriptions: true
+          }
+        }
+      }
     });
 
     if (!course) {
-      return NextResponse.json(
-        { error: 'Course not found' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'Course not found' }, { status: 404 });
     }
 
     return NextResponse.json(course);
@@ -69,14 +66,14 @@ export async function PUT(
         name,
         description: description || null,
         grade: grade || null,
-        teacherId: teacherId || null,
-      },
+        teacherId: teacherId || null
+      }
     });
 
     // Handle fee structure update
     if (feeStructure) {
       const existingFeeStructure = await prisma.feeStructure.findUnique({
-        where: { courseId: params.id },
+        where: { courseId: params.id }
       });
 
       if (existingFeeStructure) {
@@ -85,8 +82,8 @@ export async function PUT(
           where: { courseId: params.id },
           data: {
             amount: parseFloat(feeStructure.amount),
-            billingCycle: feeStructure.billingCycle || 'MONTHLY',
-          },
+            billingCycle: feeStructure.billingCycle || 'MONTHLY'
+          }
         });
       } else if (feeStructure.amount) {
         // Create new fee structure
@@ -94,8 +91,8 @@ export async function PUT(
           data: {
             amount: parseFloat(feeStructure.amount),
             billingCycle: feeStructure.billingCycle || 'MONTHLY',
-            courseId: params.id,
-          },
+            courseId: params.id
+          }
         });
       }
     }
@@ -108,16 +105,16 @@ export async function PUT(
           select: {
             id: true,
             name: true,
-            email: true,
-          },
+            email: true
+          }
         },
         feeStructure: true,
         _count: {
           select: {
-            subscriptions: true,
-          },
-        },
-      },
+            subscriptions: true
+          }
+        }
+      }
     });
 
     return NextResponse.json(updatedCourse);
@@ -138,10 +135,10 @@ export async function DELETE(
   try {
     // Check if course has active subscriptions
     const subscriptionCount = await prisma.studentSubscription.count({
-      where: { 
+      where: {
         courseId: params.id,
-        endDate: null, // Active subscriptions
-      },
+        endDate: null // Active subscriptions
+      }
     });
 
     if (subscriptionCount > 0) {
@@ -153,12 +150,12 @@ export async function DELETE(
 
     // Delete fee structure first (if exists)
     await prisma.feeStructure.deleteMany({
-      where: { courseId: params.id },
+      where: { courseId: params.id }
     });
 
     // Delete the course
     await prisma.course.delete({
-      where: { id: params.id },
+      where: { id: params.id }
     });
 
     return NextResponse.json({ message: 'Course deleted successfully' });

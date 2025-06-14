@@ -16,6 +16,7 @@
 ## **🔧 Prerequisites**
 
 ### **System Requirements**
+
 - **OS**: Linux (Ubuntu 20.04+ recommended), macOS, or Windows Server
 - **Node.js**: Version 18.0 or higher
 - **PostgreSQL**: Version 14.0 or higher
@@ -23,6 +24,7 @@
 - **Storage**: Minimum 10GB free space
 
 ### **Required Software**
+
 ```bash
 # Install Node.js (Ubuntu/Debian)
 curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
@@ -40,11 +42,13 @@ npm install -g pm2
 ## **🌍 Environment Setup**
 
 ### **1. Create Environment File**
+
 ```bash
 cp .env.example .env.production
 ```
 
 ### **2. Configure Environment Variables**
+
 Edit `.env.production` with your settings:
 
 ```bash
@@ -85,6 +89,7 @@ REDIS_ENABLED="true"
 ## **🗄️ Database Configuration**
 
 ### **1. Create Database**
+
 ```bash
 sudo -u postgres psql
 CREATE DATABASE rk_institute_prod;
@@ -94,7 +99,9 @@ GRANT ALL PRIVILEGES ON DATABASE rk_institute_prod TO rk_user;
 ```
 
 ### **2. Configure PostgreSQL**
+
 Edit `/etc/postgresql/14/main/postgresql.conf`:
+
 ```bash
 # Performance Settings
 shared_buffers = 256MB
@@ -108,6 +115,7 @@ effective_io_concurrency = 200
 ```
 
 ### **3. Run Database Migrations**
+
 ```bash
 npx prisma generate
 npx prisma migrate deploy
@@ -120,16 +128,19 @@ npx prisma migrate deploy
 ### **Method 1: Direct Deployment**
 
 #### **1. Install Dependencies**
+
 ```bash
 npm ci --production
 ```
 
 #### **2. Build Application**
+
 ```bash
 npm run build
 ```
 
 #### **3. Start with PM2**
+
 ```bash
 # Create PM2 ecosystem file
 cat > ecosystem.config.js << EOF
@@ -165,6 +176,7 @@ pm2 startup
 ### **Method 2: Systemd Service**
 
 #### **1. Create Service File**
+
 ```bash
 sudo tee /etc/systemd/system/rk-institute.service << EOF
 [Unit]
@@ -187,6 +199,7 @@ EOF
 ```
 
 #### **2. Enable and Start Service**
+
 ```bash
 sudo systemctl daemon-reload
 sudo systemctl enable rk-institute
@@ -199,6 +212,7 @@ sudo systemctl status rk-institute
 ## **🐳 Docker Deployment**
 
 ### **1. Using Docker Compose (Recommended)**
+
 ```bash
 # Start all services
 docker-compose up -d
@@ -211,6 +225,7 @@ docker-compose down
 ```
 
 ### **2. Manual Docker Build**
+
 ```bash
 # Build image
 docker build -t rk-institute .
@@ -228,6 +243,7 @@ docker run -d \
 ## **☁️ Cloud Deployment**
 
 ### **Vercel Deployment**
+
 ```bash
 # Install Vercel CLI
 npm i -g vercel
@@ -242,6 +258,7 @@ vercel env add JWT_SECRET
 ```
 
 ### **AWS EC2 Deployment**
+
 ```bash
 # 1. Launch EC2 instance (t3.medium recommended)
 # 2. Install dependencies
@@ -251,28 +268,29 @@ vercel env add JWT_SECRET
 ```
 
 ### **DigitalOcean App Platform**
+
 ```yaml
 # app.yaml
 name: rk-institute
 services:
-- name: web
-  source_dir: /
-  github:
-    repo: your-username/rk-institute-deployment
-    branch: main
-  run_command: npm start
-  environment_slug: node-js
-  instance_count: 1
-  instance_size_slug: basic-xxs
-  env:
-  - key: NODE_ENV
-    value: production
-  - key: DATABASE_URL
-    value: ${db.DATABASE_URL}
+  - name: web
+    source_dir: /
+    github:
+      repo: your-username/rk-institute-deployment
+      branch: main
+    run_command: npm start
+    environment_slug: node-js
+    instance_count: 1
+    instance_size_slug: basic-xxs
+    env:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        value: ${db.DATABASE_URL}
 databases:
-- name: db
-  engine: PG
-  version: "14"
+  - name: db
+    engine: PG
+    version: '14'
 ```
 
 ---
@@ -280,6 +298,7 @@ databases:
 ## **🔒 SSL Configuration**
 
 ### **Using Let's Encrypt (Certbot)**
+
 ```bash
 # Install Certbot
 sudo apt install certbot python3-certbot-nginx
@@ -293,6 +312,7 @@ sudo crontab -e
 ```
 
 ### **Nginx Configuration**
+
 ```nginx
 server {
     listen 80;
@@ -326,6 +346,7 @@ server {
 ## **📊 Monitoring & Maintenance**
 
 ### **Health Checks**
+
 ```bash
 # Application health
 curl https://your-domain.com/api/health
@@ -335,6 +356,7 @@ curl https://your-domain.com/api/health/database
 ```
 
 ### **Log Management**
+
 ```bash
 # PM2 logs
 pm2 logs
@@ -347,6 +369,7 @@ docker-compose logs -f
 ```
 
 ### **Database Backup**
+
 ```bash
 # Create backup script
 cat > backup.sh << EOF
@@ -364,6 +387,7 @@ crontab -e
 ```
 
 ### **Performance Monitoring**
+
 ```bash
 # Install monitoring tools
 npm install -g clinic
@@ -377,6 +401,7 @@ clinic doctor -- npm start
 ## **🔄 Updates & Maintenance**
 
 ### **Application Updates**
+
 ```bash
 # 1. Backup database
 ./backup.sh
@@ -394,6 +419,7 @@ pm2 start rk-institute
 ```
 
 ### **Security Updates**
+
 ```bash
 # Update system packages
 sudo apt update && sudo apt upgrade
@@ -409,11 +435,13 @@ npm audit fix
 ### **Common Issues**
 
 1. **Database Connection Failed**
+
    - Check PostgreSQL service: `sudo systemctl status postgresql`
    - Verify connection string in `.env.production`
    - Check firewall settings
 
 2. **Application Won't Start**
+
    - Check logs: `pm2 logs` or `sudo journalctl -u rk-institute`
    - Verify environment variables
    - Check port availability: `sudo netstat -tlnp | grep :3000`
@@ -423,6 +451,7 @@ npm audit fix
    - Check Nginx configuration: `sudo nginx -t`
 
 ### **Support Commands**
+
 ```bash
 # Check application status
 pm2 status

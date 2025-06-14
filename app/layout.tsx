@@ -1,26 +1,24 @@
-import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
-import './globals.css'
+import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
+import './globals.css';
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: 'RK Institute Management System',
-  description: 'Comprehensive management system for RK Institute',
-}
+  description: 'Comprehensive management system for RK Institute'
+};
 
 export default function RootLayout({
-  children,
+  children
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang='en'>
       <body className={inter.className}>
-        <div className="min-h-screen">
-          {children}
-        </div>
+        <div className='min-h-screen'>{children}</div>
       </body>
     </html>
-  )
+  );
 }
