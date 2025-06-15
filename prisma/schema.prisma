@@ -21,6 +21,8 @@ model User {
   familyId       String?
   teacherCourses Course[]      @relation("TeacherCourses")
   academicLogs   AcademicLog[]
+  assignments    Assignment[]  @relation("TeacherAssignments")
+  gradedSubmissions AssignmentSubmission[] @relation("GradedSubmissions")
 }
 
 // Role values: ADMIN, TEACHER, PARENT, STUDENT
@@ -58,6 +60,8 @@ model Student {
   feeAllocations        StudentFeeAllocation[]
   academicLogs          AcademicLog[]
   attendanceRecords     AttendanceRecord[]
+  assignments           Assignment[]           @relation("StudentAssignments")
+  submissions           AssignmentSubmission[]
 }
 
 model Course {
@@ -217,11 +221,90 @@ model SystemSettings {
 model Report {
   id                String          @id @default(uuid())
   name              String
-  type              String          // FINANCIAL, ACADEMIC, ATTENDANCE, CUSTOM
+  type              String          // WEEKLY, MONTHLY, OUTSTANDING, FINANCIAL, ACADEMIC, ATTENDANCE, CUSTOM
+  category          String          @default("AUTOMATION") // AUTOMATION, MANUAL, SCHEDULED
   parameters        String?         // JSON string of report parameters
+  data              String?         // JSON string of report data
   generatedBy       String
   filePath          String?
+  fileSize          Int?            // File size in bytes
+  format            String          @default("JSON") // JSON, PDF, EXCEL, CSV
   status            String          @default("GENERATING") // GENERATING, COMPLETED, FAILED
+  executionTime     Int?            // Execution time in milliseconds
+  errorMessage      String?         // Error details if failed
+  downloadCount     Int             @default(0)
+  isArchived        Boolean         @default(false)
   createdAt         DateTime        @default(now())
   updatedAt         DateTime        @updatedAt
+}
+
+// Assignment and Homework Management System
+
+model Assignment {
+  id              String            @id @default(uuid())
+  title           String
+  description     String
+  subject         String
+  assignmentType  String            @default("HOMEWORK") // HOMEWORK, PROJECT, QUIZ, EXAM, NOTE
+  priority        String            @default("MEDIUM") // LOW, MEDIUM, HIGH, URGENT
+  dueDate         DateTime?
+  attachmentUrl   String?
+  attachmentName  String?
+  isActive        Boolean           @default(true)
+
+  // Assignment targeting
+  grade           String?           // For grade-specific assignments
+  studentId       String?           // For student-specific assignments
+  teacherId       String
+
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  // Relations
+  teacher         User              @relation("TeacherAssignments", fields: [teacherId], references: [id], onDelete: Cascade)
+  student         Student?          @relation("StudentAssignments", fields: [studentId], references: [id], onDelete: Cascade)
+  submissions     AssignmentSubmission[]
+
+  @@map("assignments")
+}
+
+model AssignmentSubmission {
+  id              String            @id @default(uuid())
+  assignmentId    String
+  studentId       String
+  content         String?
+  attachmentUrl   String?
+  attachmentName  String?
+  status          String            @default("PENDING") // PENDING, SUBMITTED, GRADED, LATE
+  submittedAt     DateTime?
+  grade           String?
+  feedback        String?
+  gradedAt        DateTime?
+  gradedBy        String?
+
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  // Relations
+  assignment      Assignment        @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  student         Student           @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  grader          User?             @relation("GradedSubmissions", fields: [gradedBy], references: [id])
+
+  @@unique([assignmentId, studentId])
+  @@map("assignment_submissions")
+}
+
+// Stored Reports for FIFO Management
+model StoredReport {
+  id              String          @id @default(uuid())
+  title           String
+  type            String          // student, financial, academic, operational
+  fileName        String
+  recordCount     Int             @default(0)
+  status          String          @default("completed") // generating, completed, failed
+  generatedAt     DateTime        @default(now())
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  @@map("stored_reports")
 }

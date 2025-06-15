@@ -1,10 +1,11 @@
 {
   "name": "rk-institute-management-system",
-  "version": "1.0.0",
-  "description": "RK Institute Management System - Production Ready",
+  "version": "1.1.0",
+  "description": "RK Institute Management System - Production Ready with Assignments",
   "private": true,
   "scripts": {
-    "build": "next build",
+    "build": "prisma migrate deploy && prisma generate && next build",
+    "build:local": "prisma generate && next build",
     "start": "next start",
     "dev": "next dev",
     "postinstall": "prisma generate",
@@ -19,26 +20,41 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
-    "test:ci": "jest --ci --coverage --watchAll=false"
+    "test:ci": "jest --ci --coverage --watchAll=false",
+    "db:seed": "tsx prisma/seed.ts"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
+    "@heroicons/react": "^2.2.0",
     "@prisma/client": "^5.7.1",
     "@types/bcryptjs": "^2.4.6",
     "@types/jsonwebtoken": "^9.0.5",
     "@types/node": "^20.10.5",
+    "@types/node-cron": "^3.0.11",
+    "@types/nodemailer": "^6.4.17",
     "@types/react": "^18.2.45",
     "@types/react-dom": "^18.2.18",
     "autoprefixer": "^10.0.1",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "express-rate-limit": "^7.1.5",
+    "framer-motion": "^12.18.1",
     "helmet": "^7.1.0",
+    "html2canvas": "^1.4.1",
     "jsonwebtoken": "^9.0.2",
+    "jspdf": "^3.0.1",
+    "lucide-react": "^0.515.0",
     "next": "14.0.4",
+    "node-cron": "^4.1.0",
+    "nodemailer": "^7.0.3",
     "postcss": "^8",
     "prisma": "^5.7.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-hot-toast": "^2.5.2",
+    "recharts": "^2.15.3",
     "tailwindcss": "^3.3.0",
     "typescript": "^5.3.3",
     "zod": "^3.22.4"
@@ -51,7 +67,8 @@
     "eslint-config-next": "14.0.4",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
-    "prettier": "^3.1.0"
+    "prettier": "^3.1.0",
+    "tsx": "^4.6.2"
   },
   "engines": {
     "node": ">=18.0.0",

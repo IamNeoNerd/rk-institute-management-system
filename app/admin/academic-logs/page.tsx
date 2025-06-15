@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useEffect, Suspense } from 'react';
+import { useState, useEffect, useCallback, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
-import AdminLayout from '@/components/ui/AdminLayout';
+import AdminLayout from '@/components/layout/AdminLayout';
 import Link from 'next/link';
 
 interface AcademicLog {
@@ -120,11 +120,7 @@ function AdminAcademicLogsContent() {
     if (search) setSearchTerm(search);
   }, [searchParams]);
 
-  useEffect(() => {
-    applyFilters();
-  }, [logs, searchTerm, filterStudent, filterTeacher, filterCourse, filterLogType, filterPrivacy, sortBy, sortOrder]);
-
-  const applyFilters = () => {
+  const applyFilters = useCallback(() => {
     let filtered = [...logs];
 
     // Search filter
@@ -187,7 +183,11 @@ function AdminAcademicLogsContent() {
     });
 
     setFilteredLogs(filtered);
-  };
+  }, [logs, searchTerm, filterStudent, filterTeacher, filterLogType, filterPrivacy, sortBy, sortOrder]);
+
+  useEffect(() => {
+    applyFilters();
+  }, [applyFilters]);
 
   const clearFilters = () => {
     setSearchTerm('');
