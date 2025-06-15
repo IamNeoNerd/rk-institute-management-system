@@ -9,6 +9,7 @@ import ProfessionalBarChart from '@/components/charts/ProfessionalBarChart';
 import ReportGenerator from '@/components/reports/ReportGenerator';
 import { motion } from 'framer-motion';
 import { Toaster } from 'react-hot-toast';
+import { Users, UserCheck, Shield, Search, FileText } from 'lucide-react';
 import Link from 'next/link';
 
 interface PeopleStats {
@@ -164,15 +165,17 @@ export default function PeopleHubPage() {
           <div className="flex space-x-4">
             <Link
               href="/admin/people/search"
-              className="bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 shadow-lg hover:shadow-xl"
+              className="flex items-center space-x-2 bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 shadow-lg hover:shadow-xl"
             >
-              🔍 Advanced Search
+              <Search className="w-4 h-4" />
+              <span>Advanced Search</span>
             </Link>
             <Link
               href="/admin/people/reports"
-              className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 shadow-lg hover:shadow-xl"
+              className="flex items-center space-x-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 shadow-lg hover:shadow-xl"
             >
-              📊 People Reports
+              <FileText className="w-4 h-4" />
+              <span>People Reports</span>
             </Link>
           </div>
         </motion.div>
@@ -235,6 +238,111 @@ export default function PeopleHubPage() {
               isPositive: true
             }}
           />
+        </div>
+
+        {/* Primary Management Actions */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: 0.1 }}
+          >
+            <Link
+              href="/admin/students"
+              className="group block bg-white p-6 rounded-2xl border border-blue-200 hover:border-blue-300 transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
+            >
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center justify-center w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl shadow-lg">
+                  <Users className="w-7 h-7 text-white" />
+                </div>
+                <div className="text-blue-600 group-hover:translate-x-2 transition-transform duration-300">
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                  </svg>
+                </div>
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
+                Manage Students
+              </h3>
+              <p className="text-gray-600 leading-relaxed">
+                View, edit, and manage student records, enrollments, and academic progress
+              </p>
+              <div className="mt-4 flex items-center text-sm text-blue-600 font-medium">
+                <span>Access Student Management</span>
+                <svg className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </div>
+            </Link>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: 0.2 }}
+          >
+            <Link
+              href="/admin/families"
+              className="group block bg-white p-6 rounded-2xl border border-green-200 hover:border-green-300 transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
+            >
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center justify-center w-14 h-14 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl shadow-lg">
+                  <UserCheck className="w-7 h-7 text-white" />
+                </div>
+                <div className="text-green-600 group-hover:translate-x-2 transition-transform duration-300">
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                  </svg>
+                </div>
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-green-600 transition-colors">
+                Manage Families
+              </h3>
+              <p className="text-gray-600 leading-relaxed">
+                Handle family profiles, relationships, contact information, and billing
+              </p>
+              <div className="mt-4 flex items-center text-sm text-green-600 font-medium">
+                <span>Access Family Management</span>
+                <svg className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </div>
+            </Link>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: 0.3 }}
+          >
+            <Link
+              href="/admin/users"
+              className="group block bg-white p-6 rounded-2xl border border-purple-200 hover:border-purple-300 transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
+            >
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center justify-center w-14 h-14 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl shadow-lg">
+                  <Shield className="w-7 h-7 text-white" />
+                </div>
+                <div className="text-purple-600 group-hover:translate-x-2 transition-transform duration-300">
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                  </svg>
+                </div>
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-purple-600 transition-colors">
+                Manage Users
+              </h3>
+              <p className="text-gray-600 leading-relaxed">
+                Control user accounts, roles, permissions, and access management
+              </p>
+              <div className="mt-4 flex items-center text-sm text-purple-600 font-medium">
+                <span>Access User Management</span>
+                <svg className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </div>
+            </Link>
+          </motion.div>
         </div>
 
         {/* Data Insights */}
@@ -339,50 +447,7 @@ export default function PeopleHubPage() {
           />
         )}
 
-        {/* Quick Management Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Link
-            href="/admin/students"
-            className="group bg-gradient-to-br from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 p-6 rounded-xl border border-blue-200 transition-all duration-300 hover:shadow-lg"
-          >
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center justify-center w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl">
-                <span className="text-white text-xl">👨‍🎓</span>
-              </div>
-              <span className="text-blue-600 group-hover:translate-x-1 transition-transform">→</span>
-            </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Manage Students</h3>
-            <p className="text-sm text-gray-600">View, edit, and manage student records and enrollments</p>
-          </Link>
 
-          <Link
-            href="/admin/families"
-            className="group bg-gradient-to-br from-green-50 to-green-100 hover:from-green-100 hover:to-green-200 p-6 rounded-xl border border-green-200 transition-all duration-300 hover:shadow-lg"
-          >
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center justify-center w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl">
-                <span className="text-white text-xl">👨‍👩‍👧‍👦</span>
-              </div>
-              <span className="text-green-600 group-hover:translate-x-1 transition-transform">→</span>
-            </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Manage Families</h3>
-            <p className="text-sm text-gray-600">Handle family profiles, relationships, and contact information</p>
-          </Link>
-
-          <Link
-            href="/admin/users"
-            className="group bg-gradient-to-br from-purple-50 to-purple-100 hover:from-purple-100 hover:to-purple-200 p-6 rounded-xl border border-purple-200 transition-all duration-300 hover:shadow-lg"
-          >
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center justify-center w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl">
-                <span className="text-white text-xl">👤</span>
-              </div>
-              <span className="text-purple-600 group-hover:translate-x-1 transition-transform">→</span>
-            </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Manage Users</h3>
-            <p className="text-sm text-gray-600">Control user accounts, roles, and access permissions</p>
-          </Link>
-        </div>
       </div>
     </AdminLayout>
   );
