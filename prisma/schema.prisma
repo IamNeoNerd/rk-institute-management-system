@@ -293,3 +293,18 @@ model AssignmentSubmission {
   @@unique([assignmentId, studentId])
   @@map("assignment_submissions")
 }
+
+// Stored Reports for FIFO Management
+model StoredReport {
+  id              String          @id @default(uuid())
+  title           String
+  type            String          // student, financial, academic, operational
+  fileName        String
+  recordCount     Int             @default(0)
+  status          String          @default("completed") // generating, completed, failed
+  generatedAt     DateTime        @default(now())
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  @@map("stored_reports")
+}
