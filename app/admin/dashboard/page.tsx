@@ -54,7 +54,7 @@ export default function AdminDashboard() {
         />
 
         {/* Key Metrics */}
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 animate-slide-up">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 animate-slide-up">
           <ProfessionalMetricCard
             title="Total Students"
             value={stats?.totalStudents || 0}
@@ -103,7 +103,7 @@ export default function AdminDashboard() {
           <h3 className="text-2xl font-bold text-gray-900 mb-6">
             Priority Insights
           </h3>
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3">
             <DataInsightCard
               title="Students with Overdue Fees"
               description="Students requiring immediate fee collection attention"
@@ -158,7 +158,7 @@ export default function AdminDashboard() {
           <h3 className="text-2xl font-bold text-gray-900 mb-6">
             Today&apos;s Focus
           </h3>
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4">
             <ActionCard
               title="Generate Monthly Report"
               description="Create comprehensive monthly performance report"

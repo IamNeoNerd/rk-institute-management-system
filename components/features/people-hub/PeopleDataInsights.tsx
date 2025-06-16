@@ -16,7 +16,7 @@ interface PeopleDataInsightsProps {
 export default function PeopleDataInsights({ stats, loading }: PeopleDataInsightsProps) {
   if (loading) {
     return (
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {[...Array(3)].map((_, i) => (
           <div key={i} className="animate-pulse bg-gray-200 rounded-xl h-64"></div>
         ))}
@@ -25,7 +25,7 @@ export default function PeopleDataInsights({ stats, loading }: PeopleDataInsight
   }
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-8">
       <DataInsightCard
         title="Students with Overdue Fees"
         description="Students requiring immediate fee collection attention"

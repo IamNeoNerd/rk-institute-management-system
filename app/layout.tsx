@@ -38,12 +38,13 @@ export default function RootLayout({
             .card{background:rgba(255,255,255,.8);backdrop-filter:blur(4px);border-radius:1rem;box-shadow:0 25px 50px -12px rgba(0,0,0,.25);border:1px solid #f3f4f6;padding:2rem;transition:all .3s ease}
             .animate-spin{animation:spin 1s linear infinite}
             @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-            .grid{display:grid}.grid-cols-1{grid-template-columns:repeat(1,minmax(0,1fr))}.grid-cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}.grid-cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}.grid-cols-4{grid-template-columns:repeat(4,minmax(0,1fr))}
+            .grid{display:grid}.grid-cols-1{grid-template-columns:repeat(1,minmax(0,1fr))}
             .gap-4{gap:1rem}.gap-6{gap:1.5rem}.gap-8{gap:2rem}
             .flex{display:flex}.items-center{align-items:center}.justify-center{justify-content:center}.justify-between{justify-content:space-between}
             .space-y-8>*+*{margin-top:2rem}
             .text-lg{font-size:1.125rem;line-height:1.75rem}.text-2xl{font-size:1.5rem;line-height:2rem}.font-bold{font-weight:700}.text-gray-900{color:#111827}.text-white{color:#fff}
             @media (min-width:640px){.sm\\:grid-cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}}
+            @media (min-width:768px){.md\\:grid-cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}.md\\:grid-cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}}
             @media (min-width:1024px){.lg\\:grid-cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}.lg\\:grid-cols-4{grid-template-columns:repeat(4,minmax(0,1fr))}}
           `
         }} />
@@ -56,21 +57,7 @@ export default function RootLayout({
         {/* Performance monitoring */}
         <WebVitalsReporter />
 
-        {/* Load non-critical CSS asynchronously */}
-        <Script
-          id="load-non-critical-css"
-          strategy="afterInteractive"
-          dangerouslySetInnerHTML={{
-            __html: `
-              const link = document.createElement('link');
-              link.rel = 'stylesheet';
-              link.href = '/globals.css';
-              link.media = 'print';
-              link.onload = function() { this.media = 'all'; };
-              document.head.appendChild(link);
-            `
-          }}
-        />
+        {/* Tailwind CSS loads normally through Next.js */}
       </body>
     </html>
   )

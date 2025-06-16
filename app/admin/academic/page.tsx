@@ -89,7 +89,7 @@ export default function AcademicsHubPage() {
         )}
 
         {/* Key Metrics */}
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4">
           <ProfessionalMetricCard
             title="Total Courses"
             value={stats?.totalCourses || 0}
@@ -168,7 +168,7 @@ export default function AcademicsHubPage() {
           <h3 className="text-2xl font-bold text-gray-900 mb-6">
             Academic Insights
           </h3>
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3">
             <DataInsightCard
               title="Course Completion Rate"
               description="Students completing courses successfully"

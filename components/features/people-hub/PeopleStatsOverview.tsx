@@ -11,7 +11,7 @@ interface PeopleStatsOverviewProps {
 export default function PeopleStatsOverview({ stats, loading }: PeopleStatsOverviewProps) {
   if (loading) {
     return (
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4">
         {[...Array(4)].map((_, i) => (
           <div key={i} className="animate-pulse bg-gray-200 rounded-xl h-32"></div>
         ))}
@@ -20,7 +20,7 @@ export default function PeopleStatsOverview({ stats, loading }: PeopleStatsOverv
   }
 
   return (
-    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4">
       <ProfessionalMetricCard
         title="Total Students"
         value={stats?.totalStudents || 0}

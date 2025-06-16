@@ -223,7 +223,7 @@ export default function ReportsPage() {
         {activeTab === 'dashboard' && reportData && (
           <>
             {/* Key Metrics */}
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4">
               <ProfessionalMetricCard
                 title="Total Students"
                 value={reportData.totalStudents}
@@ -328,7 +328,7 @@ export default function ReportsPage() {
               <h3 className="text-2xl font-bold text-gray-900 mb-6">
                 Performance Insights
               </h3>
-              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3">
                 <DataInsightCard
                   title="Student Growth"
                   description="Total active student enrollments"
