@@ -198,3 +198,63 @@ export async function GET(request: NextRequest) {
     );
   }
 }
+
+// POST - Create new report and manage FIFO
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json();
+    const { title, type, fileName, generatedAt, recordCount } = body;
+
+    // Validate required fields
+    if (!title || !type || !fileName) {
+      return NextResponse.json(
+        { success: false, error: 'Missing required fields' },
+        { status: 400 }
+      );
+    }
+
+    // Check current report count
+    const currentCount = await prisma.storedReport.count();
+    const maxReports = 20; // FIFO limit
+
+    // If we're at the limit, delete the oldest report
+    if (currentCount >= maxReports) {
+      const oldestReport = await prisma.storedReport.findFirst({
+        orderBy: {
+          generatedAt: 'asc'
+        }
+      });
+
+      if (oldestReport) {
+        await prisma.storedReport.delete({
+          where: {
+            id: oldestReport.id
+          }
+        });
+      }
+    }
+
+    // Create new report
+    const newReport = await prisma.storedReport.create({
+      data: {
+        title,
+        type,
+        fileName,
+        generatedAt: new Date(generatedAt),
+        recordCount: recordCount || 0,
+        status: 'completed'
+      }
+    });
+
+    return NextResponse.json({
+      success: true,
+      data: newReport
+    });
+  } catch (error) {
+    console.error('Error creating report:', error);
+    return NextResponse.json(
+      { success: false, error: 'Failed to create report' },
+      { status: 500 }
+    );
+  }
+}

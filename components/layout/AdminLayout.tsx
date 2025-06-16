@@ -195,22 +195,20 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
       {/* Main content */}
       <div className="md:pl-72 flex flex-col flex-1">
-        <div className="sticky top-0 z-10 md:hidden pl-1 pt-1 sm:pl-3 sm:pt-3">
-          <button
-            type="button"
-            className="-ml-0.5 -mt-0.5 h-12 w-12 inline-flex items-center justify-center rounded-xl bg-white/80 backdrop-blur-sm text-gray-600 hover:text-gray-900 focus:outline-none focus:ring-4 focus:ring-blue-500/25 shadow-lg"
-            onClick={() => setSidebarOpen(true)}
-          >
-            <span className="sr-only">Open sidebar</span>
-            <span className="text-xl">☰</span>
-          </button>
-        </div>
-
-        {/* Top bar */}
-        <div className="bg-white/80 backdrop-blur-md shadow-lg border-b border-gray-200/50">
+        {/* Top bar - includes mobile menu button */}
+        <div className="bg-white/80 backdrop-blur-md shadow-lg border-b border-gray-200/50 sticky top-0 z-10">
           <div className="px-6 lg:px-8">
             <div className="flex justify-between h-20">
               <div className="flex items-center">
+                {/* Mobile menu button */}
+                <button
+                  type="button"
+                  className="md:hidden mr-4 h-10 w-10 inline-flex items-center justify-center rounded-xl bg-white/80 backdrop-blur-sm text-gray-600 hover:text-gray-900 focus:outline-none focus:ring-4 focus:ring-blue-500/25 shadow-lg"
+                  onClick={() => setSidebarOpen(true)}
+                >
+                  <span className="sr-only">Open sidebar</span>
+                  <span className="text-xl">☰</span>
+                </button>
                 <h2 className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">Admin Panel</h2>
               </div>
               <div className="flex items-center space-x-6">

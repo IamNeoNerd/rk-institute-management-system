@@ -1,96 +1,48 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import dynamic from 'next/dynamic';
 import AdminLayout from '@/components/layout/AdminLayout';
-import CourseForm from '@/components/forms/CourseForm';
 
-interface Course {
-  id: string;
-  name: string;
-  description?: string;
-  grade?: string;
-  teacher?: {
-    id: string;
-    name: string;
-    email: string;
-  };
-  feeStructure?: {
-    id: string;
-    amount: number;
-    billingCycle: string;
-  };
-  _count: {
-    subscriptions: number;
-  };
-  createdAt: string;
-}
+// Custom hook for data management
+import { useCoursesData } from '@/hooks/courses/useCoursesData';
+
+// Shared UI components
+import ErrorAlert from '@/components/ui/feedback/ErrorAlert';
+import LoadingSpinner from '@/components/ui/feedback/LoadingSpinner';
+import AccessibleHeading from '@/components/ui/typography/AccessibleHeading';
+
+// Types
+import { Course } from '@/components/features/courses/types';
+
+// Dynamic import for the form to reduce initial bundle size
+const CourseForm = dynamic(() => import('@/components/forms/CourseForm'), {
+  loading: () => (
+    <div className="p-8 text-center">
+      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+      <p className="mt-4 text-gray-600">Loading form...</p>
+    </div>
+  )
+});
 
 export default function CoursesPage() {
-  const [courses, setCourses] = useState<Course[]>([]);
-  const [loading, setLoading] = useState(true);
+  // Use custom hook for all data management
+  const {
+    courses,
+    loading,
+    error,
+    addCourse,
+    updateCourse,
+    deleteCourse
+  } = useCoursesData();
+
+  // Local UI state
   const [showForm, setShowForm] = useState(false);
   const [editingCourse, setEditingCourse] = useState<Course | null>(null);
-  const [error, setError] = useState('');
 
-  useEffect(() => {
-    fetchCourses();
-  }, []);
-
-  const fetchCourses = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      const response = await fetch('/api/courses', {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setCourses(data);
-      } else {
-        setError('Failed to fetch courses');
-      }
-    } catch (error) {
-      setError('Network error');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleDelete = async (courseId: string) => {
-    if (!confirm('Are you sure you want to delete this course?')) {
-      return;
-    }
-
-    try {
-      const token = localStorage.getItem('token');
-      const response = await fetch(`/api/courses/${courseId}`, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
-
-      if (response.ok) {
-        setCourses(courses.filter(course => course.id !== courseId));
-      } else {
-        const data = await response.json();
-        alert(data.error || 'Failed to delete course');
-      }
-    } catch (error) {
-      alert('Network error');
-    }
-  };
-
-  const handleFormSuccess = (course: Course) => {
-    if (editingCourse) {
-      setCourses(courses.map(c => c.id === course.id ? course : c));
-    } else {
-      setCourses([course, ...courses]);
-    }
-    setShowForm(false);
+  const handleAddCourse = () => {
     setEditingCourse(null);
+    setShowForm(true);
   };
 
   const handleEdit = (course: Course) => {
@@ -98,16 +50,33 @@ export default function CoursesPage() {
     setShowForm(true);
   };
 
+  const handleFormSuccess = (course: Course) => {
+    if (editingCourse) {
+      updateCourse(course);
+    } else {
+      addCourse(course);
+    }
+    setShowForm(false);
+    setEditingCourse(null);
+  };
+
   const handleCancel = () => {
     setShowForm(false);
     setEditingCourse(null);
   };
 
+  const handleDelete = async (courseId: string) => {
+    if (confirm('Are you sure you want to delete this course?')) {
+      await deleteCourse(courseId);
+    }
+  };
+
+  // Loading state with improved UX
   if (loading) {
     return (
       <AdminLayout>
         <div className="flex items-center justify-center h-64">
-          <div className="text-lg">Loading courses...</div>
+          <LoadingSpinner size="lg" message="Loading courses..." />
         </div>
       </AdminLayout>
     );
@@ -118,34 +87,42 @@ export default function CoursesPage() {
       <div className="space-y-8">
         <div className="flex justify-between items-center animate-fade-in">
           <div>
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">Courses</h1>
+            <AccessibleHeading
+              level={1}
+              className="bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent"
+            >
+              Courses
+            </AccessibleHeading>
             <p className="mt-2 text-lg text-gray-600">
               Manage course offerings and fee structures
+              {courses.length > 0 && (
+                <span className="ml-2 text-sm bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
+                  {courses.length} courses
+                </span>
+              )}
             </p>
           </div>
           <button
-            onClick={() => setShowForm(true)}
+            onClick={handleAddCourse}
             className="btn-primary"
+            aria-label="Add new course"
           >
-            <span className="mr-2">+</span>
+            <span className="mr-2" aria-hidden="true">+</span>
             Add New Course
           </button>
         </div>
 
-        {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-6 py-4 rounded-xl animate-fade-in">
-            <div className="flex items-center">
-              <span className="text-red-500 mr-2">⚠️</span>
-              {error}
-            </div>
-          </div>
-        )}
+        {/* Error handling with shared component */}
+        {error && <ErrorAlert message={error} />}
 
         {showForm && (
           <div className="card animate-slide-up">
-            <h3 className="text-2xl font-bold text-gray-900 mb-6">
+            <AccessibleHeading
+              level={2}
+              className="text-gray-900 mb-6"
+            >
               {editingCourse ? 'Edit Course' : 'Add New Course'}
-            </h3>
+            </AccessibleHeading>
             <CourseForm
               course={editingCourse}
               onSuccess={handleFormSuccess}

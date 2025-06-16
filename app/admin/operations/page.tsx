@@ -2,6 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import AdminLayout from '@/components/layout/AdminLayout';
+import ProfessionalMetricCard from '@/components/cards/ProfessionalMetricCard';
+import DataInsightCard from '@/components/cards/DataInsightCard';
+import { HubHeader, HubActionButton, ManagementCard } from '@/components/hub';
+import { Settings, Bell, FileText, Play, Clock, Activity } from 'lucide-react';
 
 interface AutomationStatus {
   systemStatus: {
@@ -177,14 +181,16 @@ export default function OperationsPage() {
     <AdminLayout>
       <div className="space-y-8">
         {/* Header */}
-        <div className="animate-fade-in">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
-            Operations Dashboard
-          </h1>
-          <p className="mt-2 text-lg text-gray-600">
-            Automation & Operations Management
-          </p>
-        </div>
+        <HubHeader
+          title="Operations Dashboard"
+          subtitle="Automation & Operations Management"
+          actions={
+            <>
+              <HubActionButton href="/admin/operations?tab=reminders" icon={Bell} label="Fee Reminders" color="gray" />
+              <HubActionButton href="/admin/operations?tab=reports" icon={FileText} label="Report Generation" color="blue" />
+            </>
+          }
+        />
 
         {error && (
           <div className="bg-red-50 border border-red-200 rounded-xl p-4">
@@ -230,40 +236,116 @@ export default function OperationsPage() {
           <>
             {activeTab === 'overview' && (
               <>
-                {/* System Status */}
-                <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-4">System Status</h2>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div className="bg-green-50 rounded-xl p-4 border border-green-200">
-                      <div className="flex items-center">
-                        <div className="h-3 w-3 bg-green-500 rounded-full mr-3"></div>
-                        <div>
-                          <p className="text-sm font-medium text-green-800">Automation Engine</p>
-                          <p className="text-xs text-green-600 capitalize">{automationStatus.systemStatus.automationEngine}</p>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="bg-blue-50 rounded-xl p-4 border border-blue-200">
-                      <div className="flex items-center">
-                        <div className="h-3 w-3 bg-blue-500 rounded-full mr-3"></div>
-                        <div>
-                          <p className="text-sm font-medium text-blue-800">Scheduler</p>
-                          <p className="text-xs text-blue-600 capitalize">{automationStatus.systemStatus.scheduler}</p>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="bg-gray-50 rounded-xl p-4 border border-gray-200">
-                      <div>
-                        <p className="text-sm font-medium text-gray-800">Last Updated</p>
-                        <p className="text-xs text-gray-600">{formatDateTime(automationStatus.systemStatus.timestamp)}</p>
-                      </div>
-                    </div>
+                {/* Key Metrics */}
+                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                  <ProfessionalMetricCard
+                    title="Running Jobs"
+                    value={automationStatus.summary.totalRunningJobs}
+                    subtitle="Currently active"
+                    icon="play"
+                    color="blue"
+                  />
+                  <ProfessionalMetricCard
+                    title="Scheduled Jobs"
+                    value={automationStatus.summary.totalScheduledJobs}
+                    subtitle="Total configured"
+                    icon="clock"
+                    color="green"
+                  />
+                  <ProfessionalMetricCard
+                    title="Active Schedules"
+                    value={automationStatus.summary.activeScheduledJobs}
+                    subtitle="Currently enabled"
+                    icon="activity"
+                    color="purple"
+                  />
+                  <ProfessionalMetricCard
+                    title="System Status"
+                    value={automationStatus.systemStatus.automationEngine === 'active' ? 'Online' : 'Offline'}
+                    subtitle="Automation engine"
+                    icon="settings"
+                    color={automationStatus.systemStatus.automationEngine === 'active' ? 'green' : 'red'}
+                  />
+                </div>
+
+                {/* Primary Management Actions */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <ManagementCard
+                    href="/admin/operations?tab=overview"
+                    icon={Settings}
+                    title="System Overview"
+                    description="Monitor automation engine, scheduler status, and running jobs"
+                    color="blue"
+                    delay={0.1}
+                  />
+                  <ManagementCard
+                    href="/admin/operations?tab=reminders"
+                    icon={Bell}
+                    title="Fee Reminders"
+                    description="Manage automated fee reminder system and send manual reminders"
+                    color="green"
+                    delay={0.2}
+                  />
+                  <ManagementCard
+                    href="/admin/operations?tab=reports"
+                    icon={FileText}
+                    title="Report Generation"
+                    description="Generate automated reports and manage report scheduling"
+                    color="purple"
+                    delay={0.3}
+                  />
+                </div>
+
+                {/* Data Insights */}
+                <div className="animate-slide-up">
+                  <h3 className="text-2xl font-bold text-gray-900 mb-6">
+                    Operations Insights
+                  </h3>
+                  <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                    <DataInsightCard
+                      title="System Health"
+                      description="Overall automation system status"
+                      value={automationStatus.systemStatus.automationEngine === 'active' ? 100 : 0}
+                      icon="activity"
+                      color={automationStatus.systemStatus.automationEngine === 'active' ? 'green' : 'red'}
+                      href="/admin/operations?tab=overview"
+                      badge={{
+                        text: automationStatus.systemStatus.automationEngine === 'active' ? "Online" : "Offline",
+                        color: automationStatus.systemStatus.automationEngine === 'active' ? "green" : "red"
+                      }}
+                    />
+
+                    <DataInsightCard
+                      title="Job Efficiency"
+                      description="Scheduled jobs running successfully"
+                      value={Math.floor((automationStatus.summary.activeScheduledJobs / automationStatus.summary.totalScheduledJobs) * 100)}
+                      icon="clock"
+                      color="blue"
+                      href="/admin/operations?tab=overview"
+                      badge={{
+                        text: "Efficient",
+                        color: "blue"
+                      }}
+                    />
+
+                    <DataInsightCard
+                      title="Active Operations"
+                      description="Currently running automation jobs"
+                      value={automationStatus.summary.totalRunningJobs}
+                      icon="play"
+                      color="purple"
+                      href="/admin/operations?tab=overview"
+                      badge={{
+                        text: automationStatus.summary.totalRunningJobs > 0 ? "Active" : "Idle",
+                        color: automationStatus.summary.totalRunningJobs > 0 ? "purple" : "yellow"
+                      }}
+                    />
                   </div>
                 </div>
 
                 {/* Quick Actions */}
-                <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-4">Quick Actions</h2>
+                <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-8">
+                  <h3 className="text-2xl font-bold text-gray-900 mb-6">Quick Actions</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     <button
                       onClick={triggerMonthlyBilling}

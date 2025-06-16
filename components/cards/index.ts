@@ -1,3 +1,3 @@
-export { default as MetricCard } from './MetricCard';
 export { default as ActionCard } from './ActionCard';
-export { default as InsightCard } from './InsightCard';
+export { default as ProfessionalMetricCard } from './ProfessionalMetricCard';
+export { default as DataInsightCard } from './DataInsightCard';
