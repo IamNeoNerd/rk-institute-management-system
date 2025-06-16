@@ -2,15 +2,21 @@
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { 
-  ArrowRight, 
-  TrendingUp, 
+import {
+  ArrowRight,
+  TrendingUp,
   TrendingDown,
   AlertTriangle,
   CheckCircle,
   Clock,
   Users,
-  DollarSign
+  DollarSign,
+  Award,
+  MessageSquare,
+  Calendar,
+  CreditCard,
+  FileText,
+  Flame
 } from 'lucide-react';
 import ProfessionalPieChart from '../charts/ProfessionalPieChart';
 import ProfessionalBarChart from '../charts/ProfessionalBarChart';
@@ -24,15 +30,15 @@ interface ChartData {
 interface DataInsightCardProps {
   title: string;
   description: string;
-  value: number;
+  value: number | string;
   icon: string;
-  color: 'blue' | 'green' | 'purple' | 'red' | 'yellow' | 'indigo';
+  color: 'blue' | 'green' | 'purple' | 'red' | 'yellow' | 'indigo' | 'orange';
   href: string;
   chartType?: 'pie' | 'bar' | 'none';
   chartData?: ChartData[];
   badge?: {
     text: string;
-    color: 'red' | 'yellow' | 'green' | 'blue' | 'purple';
+    color: 'red' | 'yellow' | 'green' | 'blue' | 'purple' | 'indigo' | 'orange';
   };
   trend?: {
     value: number;
@@ -49,6 +55,12 @@ const iconMap = {
   'alert-triangle': AlertTriangle,
   'check-circle': CheckCircle,
   clock: Clock,
+  award: Award,
+  'message-square': MessageSquare,
+  calendar: Calendar,
+  'credit-card': CreditCard,
+  'file-text': FileText,
+  flame: Flame,
 };
 
 const colorClasses = {
@@ -87,6 +99,12 @@ const colorClasses = {
     border: 'border-indigo-200',
     text: 'text-indigo-600',
     lightBg: 'bg-indigo-50'
+  },
+  orange: {
+    bg: 'from-orange-500 to-orange-600',
+    border: 'border-orange-200',
+    text: 'text-orange-600',
+    lightBg: 'bg-orange-50'
   }
 };
 
@@ -95,7 +113,9 @@ const badgeClasses = {
   yellow: 'bg-yellow-100 text-yellow-800 border-yellow-200',
   green: 'bg-green-100 text-green-800 border-green-200',
   blue: 'bg-blue-100 text-blue-800 border-blue-200',
-  purple: 'bg-purple-100 text-purple-800 border-purple-200'
+  purple: 'bg-purple-100 text-purple-800 border-purple-200',
+  indigo: 'bg-indigo-100 text-indigo-800 border-indigo-200',
+  orange: 'bg-orange-100 text-orange-800 border-orange-200'
 };
 
 export default function DataInsightCard({
@@ -151,7 +171,7 @@ export default function DataInsightCard({
         {/* Value and Trend */}
         <div className="flex items-center justify-between mb-4">
           <div className="text-3xl font-bold text-gray-900">
-            {value.toLocaleString()}
+            {typeof value === 'number' ? value.toLocaleString() : value}
           </div>
           {trend && (
             <div className={`flex items-center ${trend.isPositive ? 'text-green-600' : 'text-red-600'}`}>

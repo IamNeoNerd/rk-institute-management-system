@@ -4,7 +4,7 @@ import { Suspense } from 'react';
 import dynamic from 'next/dynamic';
 import TeacherLayout from '@/components/layout/TeacherLayout';
 import { Toaster } from 'react-hot-toast';
-import { BookOpen, Users, FileText, Target } from 'lucide-react';
+import { BarChart3, FileText, Target } from 'lucide-react';
 import { HubHeader, HubActionButton } from '@/components/hub';
 
 // Custom hook for data management
@@ -45,8 +45,6 @@ export default function TeacherDashboard() {
       </TeacherLayout>
     );
   }
-
-
 
   return (
     <TeacherLayout>
@@ -97,5 +95,3 @@ export default function TeacherDashboard() {
     </TeacherLayout>
   );
 }
-
-

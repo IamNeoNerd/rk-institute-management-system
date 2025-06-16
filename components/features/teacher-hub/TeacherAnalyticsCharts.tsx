@@ -60,7 +60,7 @@ export default function TeacherAnalyticsCharts({ stats, loading }: TeacherAnalyt
             <ProfessionalPieChart
               title="Academic Log Types"
               data={academicLogsData}
-              height={300}
+              size="md"
             />
           ) : (
             <div className="flex items-center justify-center h-64">
@@ -75,7 +75,7 @@ export default function TeacherAnalyticsCharts({ stats, loading }: TeacherAnalyt
             <ProfessionalPieChart
               title="Assignment Progress"
               data={assignmentStatusData}
-              height={300}
+              size="md"
             />
           ) : (
             <div className="flex items-center justify-center h-64">
@@ -90,7 +90,7 @@ export default function TeacherAnalyticsCharts({ stats, loading }: TeacherAnalyt
             <ProfessionalPieChart
               title="Engagement Levels"
               data={courseEngagementData}
-              height={300}
+              size="md"
             />
           ) : (
             <div className="flex items-center justify-center h-64">
@@ -105,7 +105,7 @@ export default function TeacherAnalyticsCharts({ stats, loading }: TeacherAnalyt
             <ProfessionalPieChart
               title="Student Performance"
               data={performanceDistributionData}
-              height={300}
+              size="md"
             />
           ) : (
             <div className="flex items-center justify-center h-64">

@@ -58,7 +58,7 @@ export default function ParentAnalyticsCharts({ stats, loading }: ParentAnalytic
             <ProfessionalPieChart
               title="Family Assignment Progress"
               data={assignmentStatusData}
-              height={300}
+              size="md"
             />
           ) : (
             <div className="flex items-center justify-center h-64">
@@ -73,7 +73,7 @@ export default function ParentAnalyticsCharts({ stats, loading }: ParentAnalytic
             <ProfessionalPieChart
               title="Academic Performance"
               data={familyPerformanceData}
-              height={300}
+              size="md"
             />
           ) : (
             <div className="flex items-center justify-center h-64">
@@ -88,7 +88,7 @@ export default function ParentAnalyticsCharts({ stats, loading }: ParentAnalytic
             <ProfessionalPieChart
               title="Achievement Types"
               data={achievementDistributionData}
-              height={300}
+              size="md"
             />
           ) : (
             <div className="flex items-center justify-center h-64">
@@ -103,7 +103,7 @@ export default function ParentAnalyticsCharts({ stats, loading }: ParentAnalytic
             <ProfessionalPieChart
               title="Overall Attendance"
               data={attendanceOverviewData}
-              height={300}
+              size="md"
             />
           ) : (
             <div className="flex items-center justify-center h-64">

@@ -62,7 +62,7 @@ export default function StudentAnalyticsCharts({ stats, loading }: StudentAnalyt
             <ProfessionalPieChart
               title="Assignment Progress"
               data={assignmentStatusData}
-              height={300}
+              size="md"
             />
           ) : (
             <div className="flex items-center justify-center h-64">
@@ -77,7 +77,7 @@ export default function StudentAnalyticsCharts({ stats, loading }: StudentAnalyt
             <ProfessionalPieChart
               title="Performance Levels"
               data={gradeDistributionData}
-              height={300}
+              size="md"
             />
           ) : (
             <div className="flex items-center justify-center h-64">
@@ -92,7 +92,7 @@ export default function StudentAnalyticsCharts({ stats, loading }: StudentAnalyt
             <ProfessionalPieChart
               title="Attendance Rate"
               data={attendanceData}
-              height={300}
+              size="md"
             />
           ) : (
             <div className="flex items-center justify-center h-64">
@@ -107,7 +107,7 @@ export default function StudentAnalyticsCharts({ stats, loading }: StudentAnalyt
             <ProfessionalPieChart
               title="Subject Scores"
               data={courseProgressData}
-              height={300}
+              size="md"
             />
           ) : (
             <div className="flex items-center justify-center h-64">

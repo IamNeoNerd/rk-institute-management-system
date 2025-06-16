@@ -54,7 +54,7 @@ export default function StudentDataInsights({ stats, loading }: StudentDataInsig
       <DataInsightCard
         title="Course Progress"
         description="Overall completion rate across all subjects"
-        value={`${Math.round((stats?.completedAssignments || 0) / ((stats?.completedAssignments || 0) + (stats?.pendingAssignments || 1)) * 100)}%`}
+        value={Math.round((stats?.completedAssignments || 0) / ((stats?.completedAssignments || 0) + (stats?.pendingAssignments || 1)) * 100)}
         icon="trending-up"
         color="blue"
         href="/student/courses?view=progress"
@@ -84,7 +84,7 @@ export default function StudentDataInsights({ stats, loading }: StudentDataInsig
       <DataInsightCard
         title="Study Streak"
         description="Consecutive days of active learning"
-        value={`${Math.floor((stats?.recentActivity || 0) / 2)} days`}
+        value={Math.floor((stats?.recentActivity || 0) / 2)}
         icon="flame"
         color="orange"
         href="/student/analytics?view=activity"
@@ -101,7 +101,7 @@ export default function StudentDataInsights({ stats, loading }: StudentDataInsig
       <DataInsightCard
         title="Fee Status"
         description="Current month payment status"
-        value={stats?.outstandingDues === 0 ? "Paid" : `₹${stats?.outstandingDues?.toLocaleString()}`}
+        value={stats?.outstandingDues === 0 ? "Paid" : stats?.outstandingDues?.toLocaleString() || "0"}
         icon="credit-card"
         color={stats?.outstandingDues === 0 ? "green" : "red"}
         href="/student/fees"

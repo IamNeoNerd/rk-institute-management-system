@@ -1,19 +1,20 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { 
-  Users, 
-  BookOpen, 
-  GraduationCap, 
-  DollarSign, 
-  TrendingUp, 
+import {
+  Users,
+  BookOpen,
+  GraduationCap,
+  DollarSign,
+  TrendingUp,
   TrendingDown,
   AlertTriangle,
   CheckCircle,
   Clock,
   Target,
   Award,
-  FileText
+  FileText,
+  Smile
 } from 'lucide-react';
 
 interface TrendData {
@@ -27,7 +28,7 @@ interface ProfessionalMetricCardProps {
   value: string | number;
   subtitle?: string;
   icon: string;
-  color: 'blue' | 'green' | 'purple' | 'red' | 'yellow' | 'indigo';
+  color: 'blue' | 'green' | 'purple' | 'red' | 'yellow' | 'indigo' | 'orange';
   trend?: TrendData;
   className?: string;
 }
@@ -45,6 +46,7 @@ const iconMap = {
   target: Target,
   award: Award,
   'file-text': FileText,
+  smile: Smile,
 };
 
 const colorClasses = {
@@ -93,6 +95,14 @@ const colorClasses = {
     border: 'border-indigo-200',
     icon: 'from-indigo-500 to-indigo-600',
     text: 'text-indigo-600',
+    trendPositive: 'text-green-600',
+    trendNegative: 'text-red-600'
+  },
+  orange: {
+    bg: 'from-orange-50 to-orange-100',
+    border: 'border-orange-200',
+    icon: 'from-orange-500 to-orange-600',
+    text: 'text-orange-600',
     trendPositive: 'text-green-600',
     trendNegative: 'text-red-600'
   }

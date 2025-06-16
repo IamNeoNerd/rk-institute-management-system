@@ -80,7 +80,7 @@ export default function ParentDataInsights({ stats, loading }: ParentDataInsight
       <DataInsightCard
         title="Payment Status"
         description="Current month fee payment status"
-        value={stats?.outstandingDues === 0 ? "Paid" : `₹${stats?.outstandingDues?.toLocaleString()}`}
+        value={stats?.outstandingDues === 0 ? "Paid" : stats?.outstandingDues?.toLocaleString() || "0"}
         icon="credit-card"
         color={stats?.outstandingDues === 0 ? "green" : "red"}
         href="/parent/fees"
@@ -93,7 +93,7 @@ export default function ParentDataInsights({ stats, loading }: ParentDataInsight
       <DataInsightCard
         title="Family Progress"
         description="Overall academic progress across all children"
-        value={`${stats?.averageFamilyGrade || 0}%`}
+        value={stats?.averageFamilyGrade || 0}
         icon="trending-up"
         color="indigo"
         href="/parent/analytics?view=family"

@@ -71,7 +71,7 @@ export default function TeacherDataInsights({ stats, loading }: TeacherDataInsig
       <DataInsightCard
         title="Course Performance"
         description="Average student performance across all courses"
-        value={`${stats?.averageGrade || 0}%`}
+        value={stats?.averageGrade || 0}
         icon="trending-up"
         color="blue"
         href="/teacher/analytics?view=performance"
@@ -107,7 +107,7 @@ export default function TeacherDataInsights({ stats, loading }: TeacherDataInsig
         href="/teacher/students?view=activity"
         badge={{
           text: "Engaged",
-          color: "indigo"
+          color: "purple"
         }}
         trend={{
           value: 12.8,

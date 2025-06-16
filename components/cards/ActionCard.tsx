@@ -6,7 +6,7 @@ interface ActionCardProps {
   title: string;
   description: string;
   icon: string;
-  color: 'blue' | 'green' | 'purple' | 'red' | 'yellow' | 'indigo' | 'pink' | 'orange';
+  color: 'blue' | 'green' | 'purple' | 'red' | 'yellow' | 'indigo' | 'pink' | 'orange' | 'teal';
   action: {
     type: 'link' | 'button';
     href?: string;
@@ -65,6 +65,12 @@ const colorClasses = {
     border: 'border-orange-200 hover:border-orange-300',
     iconBg: 'from-orange-500 to-orange-600',
     button: 'bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700'
+  },
+  teal: {
+    bg: 'from-teal-50 to-teal-100',
+    border: 'border-teal-200 hover:border-teal-300',
+    iconBg: 'from-teal-500 to-teal-600',
+    button: 'bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-600 hover:to-teal-700'
   }
 };
 
