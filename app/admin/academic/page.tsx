@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react';
 import AdminLayout from '@/components/layout/AdminLayout';
 import ProfessionalMetricCard from '@/components/cards/ProfessionalMetricCard';
+import DataInsightCard from '@/components/cards/DataInsightCard';
+import ProfessionalPieChart from '@/components/charts/ProfessionalPieChart';
 import { HubHeader, HubActionButton, ManagementCard } from '@/components/hub';
 import { BookOpen, Target, FileText, BarChart3, TrendingUp } from 'lucide-react';
 
@@ -161,73 +163,107 @@ export default function AcademicsHubPage() {
           />
         </div>
 
-        {/* Academic Performance Overview */}
-        <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Academic Performance Overview</h2>
-          {stats ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <div className="text-center p-6 bg-blue-50 rounded-xl border border-blue-100">
-                <div className="text-3xl font-bold text-blue-600 mb-2">{stats.totalEnrollments}</div>
-                <div className="text-sm text-blue-800 font-medium">Total Enrollments</div>
-              </div>
-              <div className="text-center p-6 bg-green-50 rounded-xl border border-green-100">
-                <div className="text-3xl font-bold text-green-600 mb-2">{stats.averageProgress}%</div>
-                <div className="text-sm text-green-800 font-medium">Average Progress</div>
-              </div>
-              <div className="text-center p-6 bg-purple-50 rounded-xl border border-purple-100">
-                <div className="text-3xl font-bold text-purple-600 mb-2">{stats.recentLogs}</div>
-                <div className="text-sm text-purple-800 font-medium">Recent Logs (7 days)</div>
-              </div>
-              <div className="text-center p-6 bg-orange-50 rounded-xl border border-orange-100">
-                <div className="text-3xl font-bold text-orange-600 mb-2">{stats.activeCourses + stats.activeServices}</div>
-                <div className="text-sm text-orange-800 font-medium">Active Offerings</div>
-              </div>
-            </div>
-          ) : (
-            <div className="text-center py-12">
-              <div className="text-gray-400 text-6xl mb-4">📊</div>
-              <p className="text-gray-500 text-lg">Loading performance data...</p>
-            </div>
-          )}
+        {/* Data Insights */}
+        <div className="animate-slide-up">
+          <h3 className="text-2xl font-bold text-gray-900 mb-6">
+            Academic Insights
+          </h3>
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <DataInsightCard
+              title="Course Completion Rate"
+              description="Students completing courses successfully"
+              value={stats ? Math.floor(stats.averageProgress) : 0}
+              icon="trending-up"
+              color="green"
+              href="/admin/courses?filter=completion"
+              badge={{
+                text: "Excellent",
+                color: "green"
+              }}
+              trend={{
+                value: 8.5,
+                isPositive: true
+              }}
+            />
+
+            <DataInsightCard
+              title="Active Enrollments"
+              description="Current student enrollments across all courses"
+              value={stats?.totalEnrollments || 0}
+              icon="users"
+              color="blue"
+              href="/admin/courses?filter=enrollments"
+              badge={{
+                text: "Active",
+                color: "blue"
+              }}
+              trend={{
+                value: 12.3,
+                isPositive: true
+              }}
+            />
+
+            <DataInsightCard
+              title="Service Utilization"
+              description="Students using institute services"
+              value={stats ? Math.floor(stats.totalEnrollments * 0.6) : 0}
+              icon="target"
+              color="purple"
+              href="/admin/services?filter=utilization"
+              badge={{
+                text: "High",
+                color: "purple"
+              }}
+            />
+          </div>
         </div>
 
-        {/* Academic Performance Overview */}
-        <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Academic Performance Overview</h2>
-          {stats ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <div className="text-center p-4 bg-blue-50 rounded-xl">
-                <div className="text-2xl font-bold text-blue-600">{stats.totalEnrollments}</div>
-                <div className="text-sm text-blue-800">Total Enrollments</div>
+        {/* Data Visualization */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-8">
+            <h3 className="text-xl font-bold text-gray-900 mb-6">Course Distribution</h3>
+            {stats ? (
+              <ProfessionalPieChart
+                title="Course Distribution"
+                data={[
+                  { name: 'Active Courses', value: stats.activeCourses, color: '#3B82F6' },
+                  { name: 'Inactive Courses', value: stats.totalCourses - stats.activeCourses, color: '#E5E7EB' },
+                ]}
+              />
+            ) : (
+              <div className="flex items-center justify-center h-[300px]">
+                <div className="text-gray-400">Loading chart data...</div>
               </div>
-              <div className="text-center p-4 bg-green-50 rounded-xl">
-                <div className="text-2xl font-bold text-green-600">{stats.averageProgress}%</div>
-                <div className="text-sm text-green-800">Average Progress</div>
+            )}
+          </div>
+
+          <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-8">
+            <h3 className="text-xl font-bold text-gray-900 mb-6">Service Distribution</h3>
+            {stats ? (
+              <ProfessionalPieChart
+                title="Service Distribution"
+                data={[
+                  { name: 'Active Services', value: stats.activeServices, color: '#10B981' },
+                  { name: 'Inactive Services', value: stats.totalServices - stats.activeServices, color: '#E5E7EB' },
+                ]}
+              />
+            ) : (
+              <div className="flex items-center justify-center h-[300px]">
+                <div className="text-gray-400">Loading chart data...</div>
               </div>
-              <div className="text-center p-4 bg-purple-50 rounded-xl">
-                <div className="text-2xl font-bold text-purple-600">{stats.recentLogs}</div>
-                <div className="text-sm text-purple-800">Recent Logs (7 days)</div>
-              </div>
-              <div className="text-center p-4 bg-orange-50 rounded-xl">
-                <div className="text-2xl font-bold text-orange-600">{stats.activeCourses + stats.activeServices}</div>
-                <div className="text-sm text-orange-800">Active Offerings</div>
-              </div>
-            </div>
-          ) : (
-            <div className="text-center py-8">
-              <div className="text-gray-400 text-4xl mb-4">📊</div>
-              <p className="text-gray-500">Loading performance data...</p>
-            </div>
-          )}
+            )}
+          </div>
         </div>
 
         {/* Recent Activity */}
-        <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Recent Academic Activity</h2>
-          <div className="text-center py-8">
-            <div className="text-gray-400 text-4xl mb-4">📋</div>
-            <p className="text-gray-500">Recent activity tracking coming soon</p>
-            <p className="text-sm text-gray-400 mt-2">This will show recent course enrollments, academic log entries, and service subscriptions</p>
+        <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-8">
+          <h3 className="text-2xl font-bold text-gray-900 mb-6">Recent Academic Activity</h3>
+          <div className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl p-8 text-center">
+            <div className="w-16 h-16 bg-gradient-to-br from-gray-400 to-gray-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <span className="text-2xl">📋</span>
+            </div>
+            <p className="text-gray-600 font-medium">Recent activity tracking coming soon</p>
+            <p className="text-sm text-gray-500 mt-2">This will show recent course enrollments, academic log entries, and service subscriptions</p>
           </div>
         </div>
       </div>

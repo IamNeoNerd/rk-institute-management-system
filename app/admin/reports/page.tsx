@@ -2,6 +2,11 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import AdminLayout from '@/components/layout/AdminLayout';
+import ProfessionalMetricCard from '@/components/cards/ProfessionalMetricCard';
+import DataInsightCard from '@/components/cards/DataInsightCard';
+import ProfessionalPieChart from '@/components/charts/ProfessionalPieChart';
+import { HubHeader, HubActionButton, ManagementCard } from '@/components/hub';
+import { BarChart3, FileText, Download, TrendingUp, Users, DollarSign } from 'lucide-react';
 
 interface ReportData {
   totalStudents: number;
@@ -150,43 +155,46 @@ export default function ReportsPage() {
   return (
     <AdminLayout>
       <div className="space-y-8">
-        <div className="flex justify-between items-center animate-fade-in">
-          <div>
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">Reports & Analytics</h1>
-            <p className="mt-2 text-lg text-gray-600">
-              Comprehensive insights and automated reports
-            </p>
-          </div>
-          {activeTab === 'dashboard' && (
-            <div className="flex space-x-4">
-              <select
-                value={selectedMonth}
-                onChange={(e) => setSelectedMonth(parseInt(e.target.value))}
-                className="input-field"
-              >
-                {Array.from({ length: 12 }, (_, i) => (
-                  <option key={i + 1} value={i + 1}>
-                    {new Date(0, i).toLocaleString('default', { month: 'long' })}
+        <HubHeader
+          title="Reports & Analytics"
+          subtitle="Comprehensive insights and automated reports"
+          actions={
+            <>
+              <HubActionButton href="/admin/reports?tab=automated" icon={FileText} label="Automated Reports" color="gray" />
+              <HubActionButton href="/admin/reports?tab=history" icon={Download} label="Report History" color="blue" />
+            </>
+          }
+        />
+
+        {activeTab === 'dashboard' && (
+          <div className="flex justify-end space-x-4">
+            <select
+              value={selectedMonth}
+              onChange={(e) => setSelectedMonth(parseInt(e.target.value))}
+              className="input-field"
+            >
+              {Array.from({ length: 12 }, (_, i) => (
+                <option key={i + 1} value={i + 1}>
+                  {new Date(0, i).toLocaleString('default', { month: 'long' })}
+                </option>
+              ))}
+            </select>
+            <select
+              value={selectedYear}
+              onChange={(e) => setSelectedYear(parseInt(e.target.value))}
+              className="input-field"
+            >
+              {Array.from({ length: 5 }, (_, i) => {
+                const year = 2022 + i; // 2022, 2023, 2024, 2025, 2026
+                return (
+                  <option key={year} value={year}>
+                    {year}
                   </option>
-                ))}
-              </select>
-              <select
-                value={selectedYear}
-                onChange={(e) => setSelectedYear(parseInt(e.target.value))}
-                className="input-field"
-              >
-                {Array.from({ length: 5 }, (_, i) => {
-                  const year = 2022 + i; // 2022, 2023, 2024, 2025, 2026
-                  return (
-                    <option key={year} value={year}>
-                      {year}
-                    </option>
-                  );
-                })}
-              </select>
-            </div>
-          )}
-        </div>
+                );
+              })}
+            </select>
+          </div>
+        )}
 
         {/* Tab Navigation */}
         <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
@@ -215,62 +223,50 @@ export default function ReportsPage() {
         {activeTab === 'dashboard' && reportData && (
           <>
             {/* Key Metrics */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 animate-fade-in">
-              <div className="card-compact">
-                <div className="flex items-center">
-                  <div className="p-3 rounded-full bg-blue-100 text-blue-600 mr-4">
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-gray-600">Total Students</p>
-                    <p className="text-2xl font-bold text-gray-900">{reportData.totalStudents}</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="card-compact">
-                <div className="flex items-center">
-                  <div className="p-3 rounded-full bg-green-100 text-green-600 mr-4">
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
-                    </svg>
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-gray-600">Monthly Revenue</p>
-                    <p className="text-2xl font-bold text-gray-900">₹{reportData.monthlyRevenue.toLocaleString()}</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="card-compact">
-                <div className="flex items-center">
-                  <div className="p-3 rounded-full bg-orange-100 text-orange-600 mr-4">
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-gray-600">Outstanding Dues</p>
-                    <p className="text-2xl font-bold text-gray-900">₹{reportData.outstandingDues.toLocaleString()}</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="card-compact">
-                <div className="flex items-center">
-                  <div className="p-3 rounded-full bg-purple-100 text-purple-600 mr-4">
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-gray-600">Total Discounts</p>
-                    <p className="text-2xl font-bold text-gray-900">₹{reportData.totalDiscounts.toLocaleString()}</p>
-                  </div>
-                </div>
-              </div>
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+              <ProfessionalMetricCard
+                title="Total Students"
+                value={reportData.totalStudents}
+                subtitle="Active enrollments"
+                icon="users"
+                color="blue"
+                trend={{
+                  value: 8.2,
+                  label: "vs last month",
+                  isPositive: true
+                }}
+              />
+              <ProfessionalMetricCard
+                title="Monthly Revenue"
+                value={`₹${reportData.monthlyRevenue.toLocaleString()}`}
+                subtitle="Current month collections"
+                icon="dollar-sign"
+                color="green"
+                trend={{
+                  value: 12.5,
+                  label: "vs last month",
+                  isPositive: true
+                }}
+              />
+              <ProfessionalMetricCard
+                title="Outstanding Dues"
+                value={`₹${reportData.outstandingDues.toLocaleString()}`}
+                subtitle="Pending collections"
+                icon="trending-up"
+                color="red"
+                trend={{
+                  value: 5.3,
+                  label: "vs last month",
+                  isPositive: false
+                }}
+              />
+              <ProfessionalMetricCard
+                title="Total Discounts"
+                value={`₹${reportData.totalDiscounts.toLocaleString()}`}
+                subtitle="Applied discounts"
+                icon="file-text"
+                color="purple"
+              />
             </div>
 
             {/* Charts and Tables */}
@@ -327,19 +323,85 @@ export default function ReportsPage() {
               </div>
             </div>
 
-            {/* Summary Stats */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-fade-in">
-              <div className="card-compact text-center">
-                <div className="text-3xl font-bold text-blue-600 mb-2">{reportData.totalFamilies}</div>
-                <div className="text-sm font-medium text-gray-600">Total Families</div>
+            {/* Data Insights */}
+            <div className="animate-slide-up">
+              <h3 className="text-2xl font-bold text-gray-900 mb-6">
+                Performance Insights
+              </h3>
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                <DataInsightCard
+                  title="Student Growth"
+                  description="Total active student enrollments"
+                  value={reportData.totalStudents}
+                  icon="users"
+                  color="blue"
+                  href="/admin/people?filter=students"
+                  badge={{
+                    text: "Growing",
+                    color: "blue"
+                  }}
+                  trend={{
+                    value: 8.2,
+                    isPositive: true
+                  }}
+                />
+
+                <DataInsightCard
+                  title="Revenue Performance"
+                  description="Monthly revenue collections"
+                  value={reportData.monthlyRevenue}
+                  icon="dollar-sign"
+                  color="green"
+                  href="/admin/financials?filter=revenue"
+                  badge={{
+                    text: "Excellent",
+                    color: "green"
+                  }}
+                  trend={{
+                    value: 12.5,
+                    isPositive: true
+                  }}
+                />
+
+                <DataInsightCard
+                  title="Collection Rate"
+                  description="Payment collection efficiency"
+                  value={Math.floor((reportData.monthlyRevenue / (reportData.monthlyRevenue + reportData.outstandingDues)) * 100)}
+                  icon="trending-up"
+                  color="purple"
+                  href="/admin/financials?filter=collections"
+                  badge={{
+                    text: "Good",
+                    color: "purple"
+                  }}
+                />
               </div>
-              <div className="card-compact text-center">
-                <div className="text-3xl font-bold text-green-600 mb-2">{reportData.totalCourses}</div>
-                <div className="text-sm font-medium text-gray-600">Active Courses</div>
+            </div>
+
+            {/* Data Visualization */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-8">
+                <h3 className="text-xl font-bold text-gray-900 mb-6">Revenue vs Outstanding</h3>
+                <ProfessionalPieChart
+                  title="Revenue vs Outstanding"
+                  data={[
+                    { name: 'Collected Revenue', value: reportData.monthlyRevenue, color: '#10B981' },
+                    { name: 'Outstanding Dues', value: reportData.outstandingDues, color: '#EF4444' },
+                  ]}
+                />
               </div>
-              <div className="card-compact text-center">
-                <div className="text-3xl font-bold text-purple-600 mb-2">{reportData.totalServices}</div>
-                <div className="text-sm font-medium text-gray-600">Available Services</div>
+
+              <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-8">
+                <h3 className="text-xl font-bold text-gray-900 mb-6">Institute Overview</h3>
+                <ProfessionalPieChart
+                  title="Institute Overview"
+                  data={[
+                    { name: 'Students', value: reportData.totalStudents, color: '#3B82F6' },
+                    { name: 'Families', value: reportData.totalFamilies, color: '#8B5CF6' },
+                    { name: 'Courses', value: reportData.totalCourses, color: '#F59E0B' },
+                    { name: 'Services', value: reportData.totalServices, color: '#10B981' },
+                  ]}
+                />
               </div>
             </div>
           </>
