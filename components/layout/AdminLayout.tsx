@@ -23,7 +23,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   useEffect(() => {
     const token = localStorage.getItem('token');
     const userData = localStorage.getItem('user');
-    
+
     if (!token || !userData) {
       router.push('/');
       return;
@@ -37,6 +37,20 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
     setUser(parsedUser);
   }, [router]);
+
+  // Handle body scroll lock when sidebar is open
+  useEffect(() => {
+    if (sidebarOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+
+    // Cleanup on unmount
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [sidebarOpen]);
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -123,44 +137,59 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
   return (
     <div className="min-h-screen gradient-bg">
-      {/* Mobile sidebar */}
-      <div className={`fixed inset-0 flex z-40 md:hidden ${sidebarOpen ? '' : 'hidden'}`}>
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setSidebarOpen(false)} />
-        <div className="relative flex-1 flex flex-col max-w-xs w-full bg-white/95 backdrop-blur-md">
-          <div className="absolute top-0 right-0 -mr-12 pt-2">
-            <button
-              type="button"
-              className="ml-1 flex items-center justify-center h-10 w-10 rounded-full bg-white/20 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-white/50"
-              onClick={() => setSidebarOpen(false)}
-            >
-              <span className="sr-only">Close sidebar</span>
-              <span className="text-white text-xl">×</span>
-            </button>
-          </div>
-          <div className="flex-1 h-0 pt-5 pb-4 overflow-y-auto">
-            <div className="flex-shrink-0 flex items-center px-6 mb-8">
-              <div className="h-10 w-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center mr-3">
-                <span className="text-lg font-bold text-white">RK</span>
-              </div>
-              <h1 className="text-xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">RK Institute</h1>
-            </div>
-            <nav className="px-3 space-y-2">
-              {navigation.map((item) => (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  className="group flex items-center px-4 py-3 text-base font-medium rounded-xl text-gray-700 hover:bg-white/50 hover:text-gray-900 transition-all duration-200"
+      {/* Mobile sidebar overlay */}
+      {sidebarOpen && (
+        <div className="fixed inset-0 z-50 md:hidden">
+          {/* Backdrop */}
+          <div
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-300"
+            onClick={() => setSidebarOpen(false)}
+            aria-hidden="true"
+          />
+
+          {/* Sidebar panel */}
+          <div className="fixed inset-y-0 left-0 flex w-full max-w-xs">
+            <div className="relative flex w-full flex-col bg-white/95 backdrop-blur-md shadow-xl">
+              {/* Close button */}
+              <div className="absolute top-0 right-0 -mr-12 pt-2">
+                <button
+                  type="button"
+                  className="ml-1 flex h-10 w-10 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-white/50 transition-all duration-200"
+                  onClick={() => setSidebarOpen(false)}
                 >
-                  <div className={`mr-4 h-8 w-8 bg-gradient-to-r ${item.color} rounded-lg flex items-center justify-center text-white shadow-lg group-hover:shadow-xl transition-all duration-200`}>
-                    {item.icon}
+                  <span className="sr-only">Close sidebar</span>
+                  <span className="text-white text-xl font-bold">×</span>
+                </button>
+              </div>
+
+              {/* Sidebar content */}
+              <div className="flex-1 h-0 pt-5 pb-4 overflow-y-auto">
+                <div className="flex-shrink-0 flex items-center px-6 mb-8">
+                  <div className="h-10 w-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center mr-3 shadow-lg">
+                    <span className="text-lg font-bold text-white">RK</span>
                   </div>
-                  {item.name}
-                </Link>
-              ))}
-            </nav>
+                  <h1 className="text-xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">RK Institute</h1>
+                </div>
+                <nav className="px-3 space-y-2">
+                  {navigation.map((item) => (
+                    <Link
+                      key={item.name}
+                      href={item.href}
+                      className="group flex items-center px-4 py-3 text-base font-medium rounded-xl text-gray-700 hover:bg-white/50 hover:text-gray-900 transition-all duration-200"
+                      onClick={() => setSidebarOpen(false)} // Close sidebar on navigation
+                    >
+                      <div className={`mr-4 h-8 w-8 bg-gradient-to-r ${item.color} rounded-lg flex items-center justify-center text-white shadow-lg group-hover:shadow-xl transition-all duration-200`}>
+                        {item.icon}
+                      </div>
+                      {item.name}
+                    </Link>
+                  ))}
+                </nav>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Desktop sidebar */}
       <div className="hidden md:flex md:w-72 md:flex-col md:fixed md:inset-y-0">
@@ -196,7 +225,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       {/* Main content */}
       <div className="md:pl-72 flex flex-col flex-1">
         {/* Top bar - includes mobile menu button */}
-        <div className="bg-white/80 backdrop-blur-md shadow-lg border-b border-gray-200/50 sticky top-0 z-10">
+        <div className="bg-white/80 backdrop-blur-md shadow-lg border-b border-gray-200/50 sticky top-0 z-30">
           <div className="px-6 lg:px-8">
             <div className="flex justify-between h-20">
               <div className="flex items-center">
