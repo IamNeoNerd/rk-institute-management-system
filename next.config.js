@@ -25,7 +25,7 @@ const nextConfig = {
   // SECURITY CONFIGURATION
   // =============================================================================
   
-  // Security headers
+  // Security and performance headers
   async headers() {
     return [
       {
@@ -50,6 +50,26 @@ const nextConfig = {
           {
             key: 'Permissions-Policy',
             value: 'camera=(), microphone=(), geolocation=()'
+          }
+        ]
+      },
+      // Static assets caching for performance
+      {
+        source: '/static/(.*)',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable'
+          }
+        ]
+      },
+      // API routes with appropriate caching
+      {
+        source: '/api/(.*)',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=300, s-maxage=300' // 5 minutes cache for API responses
           }
         ]
       }
@@ -235,8 +255,8 @@ const nextConfig = {
   // PRODUCTION LOGGING
   // =============================================================================
   
-  // Disable source maps in production for security
-  productionBrowserSourceMaps: false,
+  // Enable source maps in production for debugging (P3 Lighthouse fix)
+  productionBrowserSourceMaps: true,
 
   // =============================================================================
   // API CONFIGURATION
