@@ -1,16 +1,30 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
+import dynamic from 'next/dynamic';
 import AdminLayout from '@/components/layout/AdminLayout';
 import ProfessionalMetricCard from '@/components/cards/ProfessionalMetricCard';
-import DataInsightCard from '@/components/cards/DataInsightCard';
-import ProfessionalPieChart from '@/components/charts/ProfessionalPieChart';
-import ProfessionalBarChart from '@/components/charts/ProfessionalBarChart';
-import ReportGenerator from '@/components/reports/ReportGenerator';
 import { motion } from 'framer-motion';
 import { Toaster } from 'react-hot-toast';
 import { Users, UserCheck, Shield, Search, FileText } from 'lucide-react';
 import { HubHeader, HubActionButton, ManagementCard } from '@/components/hub';
+
+// Dynamic imports for heavy components (below the fold)
+const DataInsightCard = dynamic(() => import('@/components/cards/DataInsightCard'), {
+  loading: () => <div className="animate-pulse bg-gray-200 rounded-xl h-64"></div>
+});
+
+const ProfessionalPieChart = dynamic(() => import('@/components/charts/ProfessionalPieChart'), {
+  loading: () => <div className="animate-pulse bg-gray-200 rounded-xl h-96"></div>
+});
+
+const ProfessionalBarChart = dynamic(() => import('@/components/charts/ProfessionalBarChart'), {
+  loading: () => <div className="animate-pulse bg-gray-200 rounded-xl h-96"></div>
+});
+
+const ReportGenerator = dynamic(() => import('@/components/reports/ReportGenerator'), {
+  loading: () => <div className="animate-pulse bg-gray-200 rounded-xl h-32"></div>
+});
 
 interface PeopleStats {
   totalStudents: number;
