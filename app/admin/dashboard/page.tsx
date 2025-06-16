@@ -2,7 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import AdminLayout from '@/components/layout/AdminLayout';
-import { MetricCard, ActionCard, InsightCard } from '@/components/cards';
+import ProfessionalMetricCard from '@/components/cards/ProfessionalMetricCard';
+import DataInsightCard from '@/components/cards/DataInsightCard';
+import ActionCard from '@/components/cards/ActionCard';
+import { HubHeader } from '@/components/hub';
 
 interface DashboardStats {
   totalStudents: number;
@@ -45,22 +48,18 @@ export default function AdminDashboard() {
   return (
     <AdminLayout>
       <div className="space-y-8">
-        <div className="animate-fade-in">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
-            System Overview
-          </h1>
-          <p className="mt-2 text-lg text-gray-600">
-            Institute-wide metrics and priority actions
-          </p>
-        </div>
+        <HubHeader
+          title="System Overview"
+          subtitle="Institute-wide metrics and priority actions"
+        />
 
         {/* Key Metrics */}
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 animate-slide-up">
-          <MetricCard
+          <ProfessionalMetricCard
             title="Total Students"
             value={stats?.totalStudents || 0}
             subtitle="Active learners"
-            icon="👨‍🎓"
+            icon="users"
             color="blue"
             trend={{
               value: 8.2,
@@ -69,27 +68,27 @@ export default function AdminDashboard() {
             }}
           />
 
-          <MetricCard
+          <ProfessionalMetricCard
             title="Active Courses"
             value={stats?.totalCourses || 0}
             subtitle="Running programs"
-            icon="📚"
+            icon="book-open"
             color="green"
           />
 
-          <MetricCard
+          <ProfessionalMetricCard
             title="Available Services"
             value={stats?.totalServices || 0}
             subtitle="Institute services"
-            icon="🚌"
+            icon="target"
             color="purple"
           />
 
-          <MetricCard
+          <ProfessionalMetricCard
             title="Outstanding Fees"
             value={`₹${((stats?.outstandingFees || 0) / 1000).toFixed(0)}K`}
             subtitle="Pending collection"
-            icon="💰"
+            icon="dollar-sign"
             color="red"
             trend={{
               value: 12.5,
@@ -105,37 +104,45 @@ export default function AdminDashboard() {
             Priority Insights
           </h3>
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            <InsightCard
+            <DataInsightCard
               title="Students with Overdue Fees"
               description="Students requiring immediate fee collection attention"
               value={Math.floor((stats?.outstandingFees || 0) / 5000)}
-              icon="⚠️"
+              icon="alert-triangle"
               color="red"
               href="/admin/students?filter=overdue"
               badge={{
                 text: "Urgent",
                 color: "red"
               }}
+              trend={{
+                value: 15,
+                isPositive: false
+              }}
             />
 
-            <InsightCard
+            <DataInsightCard
               title="Recent Enrollments"
               description="New students enrolled in the last 30 days"
               value={stats?.recentEnrollments || 0}
-              icon="🎓"
+              icon="trending-up"
               color="green"
               href="/admin/students?filter=recent"
               badge={{
                 text: "New",
                 color: "green"
               }}
+              trend={{
+                value: 22,
+                isPositive: true
+              }}
             />
 
-            <InsightCard
+            <DataInsightCard
               title="Course Capacity"
               description="Courses approaching maximum enrollment"
               value={Math.floor((stats?.totalCourses || 0) * 0.3)}
-              icon="📊"
+              icon="bar-chart"
               color="yellow"
               href="/admin/courses?filter=capacity"
               badge={{
