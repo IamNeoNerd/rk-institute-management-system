@@ -174,7 +174,7 @@ const nextConfig = {
       }
     }
 
-    // Enhanced SSR Compatibility (Phase 2 Completion + Phase 3 Foundation)
+    // Enhanced SSR Compatibility (Phase 2 Completion + Phase 3 Foundation + Critical Vendor Bundle Fix)
     if (isServer) {
       // Externalize all browser-specific dependencies
       config.externals.push(
@@ -183,14 +183,25 @@ const nextConfig = {
         'jspdf'
       );
 
-      // Aggressive externalization for problematic libraries (Phase 2 Final Resolution)
+      // Critical vendor bundle fix - aggressive externalization
       config.externals.push({
         'recharts': 'recharts',
         'framer-motion': 'framer-motion',
-        'react-hot-toast': 'react-hot-toast'  // Add toast library
+        'react-hot-toast': 'react-hot-toast',
+        // Additional problematic dependencies
+        'web-vitals': 'web-vitals',
+        'lucide-react': 'lucide-react'
+      });
+
+      // Prevent vendor bundle from being processed on server
+      config.externals.push((context, request, callback) => {
+        if (request.includes('vendors') || request.includes('vendor')) {
+          return callback(null, 'commonjs ' + request);
+        }
+        callback();
       });
     } else {
-      // Client-side fallbacks
+      // Enhanced client-side fallbacks
       config.resolve.fallback = {
         ...config.resolve.fallback,
         fs: false,
@@ -199,6 +210,9 @@ const nextConfig = {
         crypto: false,
         stream: false,
         buffer: false,
+        util: false,
+        url: false,
+        querystring: false,
       };
     }
 
