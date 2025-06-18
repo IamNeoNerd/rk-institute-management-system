@@ -194,11 +194,11 @@ const nextConfig = {
       });
 
       // Critical: Prevent vendor bundle from being processed on server
-      config.externals.push((context, request, callback) => {
+      config.externals.push(({ context, request }, callback) => {
         // Exclude any vendor-related modules
-        if (request.includes('vendors') || request.includes('vendor') ||
+        if (request && (request.includes('vendors') || request.includes('vendor') ||
             request.includes('recharts') || request.includes('framer-motion') ||
-            request.includes('react-hot-toast') || request.includes('web-vitals')) {
+            request.includes('react-hot-toast') || request.includes('web-vitals'))) {
           return callback(null, 'commonjs ' + request);
         }
         callback();
@@ -231,7 +231,7 @@ const nextConfig = {
       };
     }
 
-    // Enhanced global polyfills with comprehensive environment detection (Phase 2 Final)
+    // Enhanced global polyfills with comprehensive environment detection (Critical Vendor Bundle Fix)
     config.plugins.push(
       new webpack.DefinePlugin({
         'typeof window': isServer ? JSON.stringify('undefined') : JSON.stringify('object'),
@@ -240,10 +240,17 @@ const nextConfig = {
         'typeof document': isServer ? JSON.stringify('undefined') : JSON.stringify('object'),
         'typeof navigator': isServer ? JSON.stringify('undefined') : JSON.stringify('object'),
         'typeof location': isServer ? JSON.stringify('undefined') : JSON.stringify('object'),
-        // Global polyfill for self reference (Phase 2 Critical Fix)
-        'self': isServer ? 'global' : 'self',
       })
     );
+
+    // Critical vendor bundle fix: Provide global polyfill for 'self'
+    if (isServer) {
+      config.plugins.push(
+        new webpack.ProvidePlugin({
+          self: 'global',
+        })
+      );
+    }
 
     // Enhanced ignore patterns for SSR (Phase 2 Final Resolution)
     if (isServer) {
@@ -336,13 +343,8 @@ const nextConfig = {
   // },
 
   // =============================================================================
-  // STATIC GENERATION CONFIGURATION (Critical Vendor Bundle Fix)
+  // BUILD CONFIGURATION (Critical Vendor Bundle Fix)
   // =============================================================================
-
-  // Exclude problematic pages from static generation
-  async generateStaticParams() {
-    return [];
-  },
 
   // Force dynamic rendering for problematic routes
   async generateBuildId() {
