@@ -1,6 +1,6 @@
 'use client';
 
-import { Suspense } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import AdminLayout from '@/components/layout/AdminLayout';
 import { Toaster } from 'react-hot-toast';
@@ -35,8 +35,27 @@ const PeopleReportSection = dynamic(() => import('@/components/features/people-h
 });
 
 export default function PeopleHubClientPage() {
+  // Client-side only rendering check
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
   // Use custom hook for all data management (SSR-safe)
   const { stats, loading, error } = usePeopleHubData();
+
+  // Ensure client-side only rendering
+  if (!isClient) {
+    return (
+      <AdminLayout>
+        <div className="flex items-center justify-center h-64">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+          <span className="ml-3 text-gray-600">Initializing people management...</span>
+        </div>
+      </AdminLayout>
+    );
+  }
 
   // Loading state with improved UX
   if (loading) {

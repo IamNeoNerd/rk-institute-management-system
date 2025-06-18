@@ -1,6 +1,10 @@
 import dynamic from 'next/dynamic';
 import AdminLayout from '@/components/layout/AdminLayout';
 
+// Force dynamic rendering to prevent static generation
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 // Critical SSR workaround: Load entire page client-side to avoid vendor bundle issues
 const PeopleHubClientPage = dynamic(() => import('./client-page'), {
   ssr: false,

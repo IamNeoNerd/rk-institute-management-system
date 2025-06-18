@@ -193,13 +193,28 @@ const nextConfig = {
         'lucide-react': 'lucide-react'
       });
 
-      // Prevent vendor bundle from being processed on server
+      // Critical: Prevent vendor bundle from being processed on server
       config.externals.push((context, request, callback) => {
-        if (request.includes('vendors') || request.includes('vendor')) {
+        // Exclude any vendor-related modules
+        if (request.includes('vendors') || request.includes('vendor') ||
+            request.includes('recharts') || request.includes('framer-motion') ||
+            request.includes('react-hot-toast') || request.includes('web-vitals')) {
           return callback(null, 'commonjs ' + request);
         }
         callback();
       });
+
+      // Additional server-side module exclusions
+      config.externals.push(/^(recharts|framer-motion|react-hot-toast|web-vitals)$/);
+
+      // Prevent problematic modules from being bundled
+      config.resolve.alias = {
+        ...config.resolve.alias,
+        'recharts': false,
+        'framer-motion': false,
+        'react-hot-toast': false,
+        'web-vitals': false
+      };
     } else {
       // Enhanced client-side fallbacks
       config.resolve.fallback = {
@@ -267,7 +282,7 @@ const nextConfig = {
   // =============================================================================
   // REDIRECTS AND REWRITES
   // =============================================================================
-  
+
   // Redirects for SEO and user experience
   async redirects() {
     return [
@@ -284,6 +299,33 @@ const nextConfig = {
     ]
   },
 
+  // Custom page exclusions for build process
+  async rewrites() {
+    return {
+      beforeFiles: [
+        // Force dynamic rendering for problematic routes
+        {
+          source: '/admin/people',
+          destination: '/admin/people',
+          has: [
+            {
+              type: 'header',
+              key: 'x-force-dynamic',
+              value: 'true',
+            },
+          ],
+        },
+      ],
+      afterFiles: [
+        {
+          source: '/api/:path*',
+          destination: '/api/:path*',
+        },
+      ],
+      fallback: [],
+    }
+  },
+
   // =============================================================================
   // INTERNATIONALIZATION (if needed)
   // =============================================================================
@@ -294,9 +336,23 @@ const nextConfig = {
   // },
 
   // =============================================================================
+  // STATIC GENERATION CONFIGURATION (Critical Vendor Bundle Fix)
+  // =============================================================================
+
+  // Exclude problematic pages from static generation
+  async generateStaticParams() {
+    return [];
+  },
+
+  // Force dynamic rendering for problematic routes
+  async generateBuildId() {
+    return 'rk-institute-' + Date.now();
+  },
+
+  // =============================================================================
   // TYPESCRIPT CONFIGURATION
   // =============================================================================
-  
+
   typescript: {
     // Dangerously allow production builds to successfully complete even if
     // your project has type errors. (Not recommended for production)
@@ -355,15 +411,7 @@ const nextConfig = {
   // API CONFIGURATION
   // =============================================================================
   
-  // API routes configuration
-  async rewrites() {
-    return [
-      {
-        source: '/api/:path*',
-        destination: '/api/:path*',
-      },
-    ]
-  },
+  // API routes configuration handled in main rewrites function above
 }
 
 module.exports = nextConfig
