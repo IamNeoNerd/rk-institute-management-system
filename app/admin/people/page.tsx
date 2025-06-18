@@ -18,17 +18,20 @@ import LoadingSpinner from '@/components/ui/feedback/LoadingSpinner';
 import PeopleStatsOverview from '@/components/features/people-hub/PeopleStatsOverview';
 import PeopleManagementActions from '@/components/features/people-hub/PeopleManagementActions';
 
-// Dynamic feature components (below-the-fold)
+// Dynamic feature components with SSR disabled (Phase 2 Critical SSR Fix)
 const PeopleDataInsights = dynamic(() => import('@/components/features/people-hub/PeopleDataInsights'), {
-  loading: () => <div className="animate-pulse bg-gray-200 rounded-xl h-64"></div>
+  loading: () => <div className="animate-pulse bg-gray-200 rounded-xl h-64"></div>,
+  ssr: false
 });
 
 const PeopleAnalyticsCharts = dynamic(() => import('@/components/features/people-hub/PeopleAnalyticsCharts'), {
-  loading: () => <div className="animate-pulse bg-gray-200 rounded-xl h-96"></div>
+  loading: () => <div className="animate-pulse bg-gray-200 rounded-xl h-96"></div>,
+  ssr: false
 });
 
 const PeopleReportSection = dynamic(() => import('@/components/features/people-hub/PeopleReportSection'), {
-  loading: () => <div className="animate-pulse bg-gray-200 rounded-xl h-32"></div>
+  loading: () => <div className="animate-pulse bg-gray-200 rounded-xl h-32"></div>,
+  ssr: false
 });
 
 export default function PeopleHubPage() {

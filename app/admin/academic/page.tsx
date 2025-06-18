@@ -1,12 +1,18 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import dynamic from 'next/dynamic';
 import AdminLayout from '@/components/layout/AdminLayout';
 import ProfessionalMetricCard from '@/components/cards/ProfessionalMetricCard';
 import DataInsightCard from '@/components/cards/DataInsightCard';
-import ProfessionalPieChart from '@/components/charts/ProfessionalPieChart';
 import { HubHeader, HubActionButton, ManagementCard } from '@/components/hub';
 import { BookOpen, Target, FileText, BarChart3, TrendingUp } from 'lucide-react';
+
+// Dynamic import for chart component (SSR disabled for vendor bundle compatibility)
+const ProfessionalPieChart = dynamic(() => import('@/components/charts/ProfessionalPieChart'), {
+  loading: () => <div className="animate-pulse bg-gray-200 rounded-xl h-64"></div>,
+  ssr: false
+});
 
 interface AcademicStats {
   totalCourses: number;

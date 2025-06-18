@@ -3,13 +3,15 @@
 import dynamic from 'next/dynamic';
 import { PeopleStats } from './types';
 
-// Dynamic imports for heavy chart components
+// Dynamic imports for heavy chart components (SSR disabled for vendor bundle compatibility)
 const ProfessionalPieChart = dynamic(() => import('@/components/charts/ProfessionalPieChart'), {
-  loading: () => <div className="animate-pulse bg-gray-200 rounded-xl h-96"></div>
+  loading: () => <div className="animate-pulse bg-gray-200 rounded-xl h-96"></div>,
+  ssr: false
 });
 
 const ProfessionalBarChart = dynamic(() => import('@/components/charts/ProfessionalBarChart'), {
-  loading: () => <div className="animate-pulse bg-gray-200 rounded-xl h-96"></div>
+  loading: () => <div className="animate-pulse bg-gray-200 rounded-xl h-96"></div>,
+  ssr: false
 });
 
 interface PeopleAnalyticsChartsProps {
