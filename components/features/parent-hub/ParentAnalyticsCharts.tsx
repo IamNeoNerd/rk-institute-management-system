@@ -1,7 +1,13 @@
 'use client';
 
-import ProfessionalPieChart from '@/components/charts/ProfessionalPieChart';
+import dynamic from 'next/dynamic';
 import { ParentStats } from '@/hooks/parent/useParentDashboardData';
+
+// Dynamic import for chart component (SSR disabled for vendor bundle compatibility)
+const ProfessionalPieChart = dynamic(() => import('@/components/charts/ProfessionalPieChart'), {
+  loading: () => <div className="animate-pulse bg-gray-200 rounded-xl h-64"></div>,
+  ssr: false
+});
 
 interface ParentAnalyticsChartsProps {
   stats: ParentStats | null;

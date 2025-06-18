@@ -231,7 +231,7 @@ const nextConfig = {
       };
     }
 
-    // Enhanced global polyfills with comprehensive environment detection (Critical Vendor Bundle Fix)
+    // Enhanced global polyfills with comprehensive environment detection (Phase 2 Final)
     config.plugins.push(
       new webpack.DefinePlugin({
         'typeof window': isServer ? JSON.stringify('undefined') : JSON.stringify('object'),
@@ -240,17 +240,10 @@ const nextConfig = {
         'typeof document': isServer ? JSON.stringify('undefined') : JSON.stringify('object'),
         'typeof navigator': isServer ? JSON.stringify('undefined') : JSON.stringify('object'),
         'typeof location': isServer ? JSON.stringify('undefined') : JSON.stringify('object'),
+        // Global polyfill for self reference (Phase 2 Critical Fix)
+        'self': isServer ? 'global' : 'self',
       })
     );
-
-    // Critical vendor bundle fix: Provide global polyfill for 'self'
-    if (isServer) {
-      config.plugins.push(
-        new webpack.ProvidePlugin({
-          self: 'global',
-        })
-      );
-    }
 
     // Enhanced ignore patterns for SSR (Phase 2 Final Resolution)
     if (isServer) {

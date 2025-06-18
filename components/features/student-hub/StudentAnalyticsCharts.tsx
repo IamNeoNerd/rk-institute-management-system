@@ -1,7 +1,13 @@
 'use client';
 
-import ProfessionalPieChart from '@/components/charts/ProfessionalPieChart';
+import dynamic from 'next/dynamic';
 import { StudentStats } from '@/hooks/student/useStudentDashboardData';
+
+// Dynamic import for chart component (SSR disabled for vendor bundle compatibility)
+const ProfessionalPieChart = dynamic(() => import('@/components/charts/ProfessionalPieChart'), {
+  loading: () => <div className="animate-pulse bg-gray-200 rounded-xl h-64"></div>,
+  ssr: false
+});
 
 interface StudentAnalyticsChartsProps {
   stats: StudentStats | null;

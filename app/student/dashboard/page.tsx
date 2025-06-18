@@ -18,13 +18,15 @@ import LoadingSpinner from '@/components/ui/feedback/LoadingSpinner';
 import StudentStatsOverview from '@/components/features/student-hub/StudentStatsOverview';
 import StudentManagementActions from '@/components/features/student-hub/StudentManagementActions';
 
-// Dynamic feature components (below-the-fold)
+// Dynamic feature components (SSR disabled for vendor bundle compatibility)
 const StudentDataInsights = dynamic(() => import('@/components/features/student-hub/StudentDataInsights'), {
-  loading: () => <div className="animate-pulse bg-gray-200 rounded-xl h-64"></div>
+  loading: () => <div className="animate-pulse bg-gray-200 rounded-xl h-64"></div>,
+  ssr: false
 });
 
 const StudentAnalyticsCharts = dynamic(() => import('@/components/features/student-hub/StudentAnalyticsCharts'), {
-  loading: () => <div className="animate-pulse bg-gray-200 rounded-xl h-96"></div>
+  loading: () => <div className="animate-pulse bg-gray-200 rounded-xl h-96"></div>,
+  ssr: false
 });
 
 const StudentQuickActions = dynamic(() => import('@/components/features/student-hub/StudentQuickActions'), {
