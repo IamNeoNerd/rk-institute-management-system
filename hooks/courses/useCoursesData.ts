@@ -22,10 +22,16 @@ export function useCoursesData(): UseCoursesDataReturn {
     try {
       setLoading(true);
       setError('');
-      
-      const token = localStorage.getItem('token');
-      
+
+      // SSR-safe localStorage access (Phase 2 Critical Fix)
+      const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+
       if (!token) {
+        // During SSR, skip API call
+        if (typeof window === 'undefined') {
+          setLoading(false);
+          return;
+        }
         setError('Authentication required. Please log in again.');
         return;
       }

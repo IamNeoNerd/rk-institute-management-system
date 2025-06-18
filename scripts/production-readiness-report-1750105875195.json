@@ -1,0 +1,1093 @@
+{
+  "metadata": {
+    "testSuite": "RK Institute Management System - Production Readiness Testing",
+    "timestamp": "2025-06-16T20:31:15.195Z",
+    "executionTime": 24053,
+    "target": "http://localhost:3000",
+    "version": "1.0.0"
+  },
+  "assessment": {
+    "summary": {
+      "total": 52,
+      "passed": 47,
+      "failed": 1,
+      "warnings": 3,
+      "skipped": 1
+    },
+    "securityFindings": [
+      {
+        "severity": "MEDIUM",
+        "finding": "Potential CSRF Vulnerability",
+        "details": "Cross-origin requests may be accepted without proper validation",
+        "recommendation": "",
+        "timestamp": "2025-06-16T20:31:01.931Z"
+      },
+      {
+        "severity": "HIGH",
+        "finding": "Token Validation Bypass",
+        "details": "Invalid tokens may be accepted by the system",
+        "recommendation": "",
+        "timestamp": "2025-06-16T20:31:05.870Z"
+      }
+    ],
+    "performanceMetrics": [
+      {
+        "test": "ADMIN Valid Login",
+        "duration": 2482,
+        "category": "Authentication",
+        "phase": "Phase 1"
+      },
+      {
+        "test": "ADMIN Invalid Password",
+        "duration": 588,
+        "category": "Security",
+        "phase": "Phase 1"
+      },
+      {
+        "test": "ADMIN Invalid Email",
+        "duration": 259,
+        "category": "Security",
+        "phase": "Phase 1"
+      },
+      {
+        "test": "ADMIN Empty Credentials",
+        "duration": 43,
+        "category": "Security",
+        "phase": "Phase 1"
+      },
+      {
+        "test": "ADMIN Missing Password",
+        "duration": 29,
+        "category": "Security",
+        "phase": "Phase 1"
+      },
+      {
+        "test": "ADMIN Missing Email",
+        "duration": 30,
+        "category": "Security",
+        "phase": "Phase 1"
+      },
+      {
+        "test": "TEACHER Valid Login",
+        "duration": 629,
+        "category": "Authentication",
+        "phase": "Phase 1"
+      },
+      {
+        "test": "TEACHER Invalid Password",
+        "duration": 686,
+        "category": "Security",
+        "phase": "Phase 1"
+      },
+      {
+        "test": "TEACHER Invalid Email",
+        "duration": 217,
+        "category": "Security",
+        "phase": "Phase 1"
+      },
+      {
+        "test": "TEACHER Empty Credentials",
+        "duration": 47,
+        "category": "Security",
+        "phase": "Phase 1"
+      },
+      {
+        "test": "TEACHER Missing Password",
+        "duration": 28,
+        "category": "Security",
+        "phase": "Phase 1"
+      },
+      {
+        "test": "TEACHER Missing Email",
+        "duration": 31,
+        "category": "Security",
+        "phase": "Phase 1"
+      },
+      {
+        "test": "PARENT Valid Login",
+        "duration": 615,
+        "category": "Authentication",
+        "phase": "Phase 1"
+      },
+      {
+        "test": "PARENT Invalid Password",
+        "duration": 688,
+        "category": "Security",
+        "phase": "Phase 1"
+      },
+      {
+        "test": "PARENT Invalid Email",
+        "duration": 224,
+        "category": "Security",
+        "phase": "Phase 1"
+      },
+      {
+        "test": "PARENT Empty Credentials",
+        "duration": 50,
+        "category": "Security",
+        "phase": "Phase 1"
+      },
+      {
+        "test": "PARENT Missing Password",
+        "duration": 26,
+        "category": "Security",
+        "phase": "Phase 1"
+      },
+      {
+        "test": "PARENT Missing Email",
+        "duration": 25,
+        "category": "Security",
+        "phase": "Phase 1"
+      },
+      {
+        "test": "STUDENT Valid Login",
+        "duration": 591,
+        "category": "Authentication",
+        "phase": "Phase 1"
+      },
+      {
+        "test": "STUDENT Invalid Password",
+        "duration": 564,
+        "category": "Security",
+        "phase": "Phase 1"
+      },
+      {
+        "test": "STUDENT Invalid Email",
+        "duration": 192,
+        "category": "Security",
+        "phase": "Phase 1"
+      },
+      {
+        "test": "STUDENT Empty Credentials",
+        "duration": 42,
+        "category": "Security",
+        "phase": "Phase 1"
+      },
+      {
+        "test": "STUDENT Missing Password",
+        "duration": 28,
+        "category": "Security",
+        "phase": "Phase 1"
+      },
+      {
+        "test": "STUDENT Missing Email",
+        "duration": 28,
+        "category": "Security",
+        "phase": "Phase 1"
+      },
+      {
+        "test": "SQL Injection Protection",
+        "duration": 195,
+        "category": "Security",
+        "phase": "Phase 1"
+      },
+      {
+        "test": "SQL Injection Protection",
+        "duration": 208,
+        "category": "Security",
+        "phase": "Phase 1"
+      },
+      {
+        "test": "SQL Injection Protection",
+        "duration": 211,
+        "category": "Security",
+        "phase": "Phase 1"
+      },
+      {
+        "test": "SQL Injection Protection",
+        "duration": 287,
+        "category": "Security",
+        "phase": "Phase 1"
+      },
+      {
+        "test": "XSS Protection",
+        "duration": 354,
+        "category": "Security",
+        "phase": "Phase 1"
+      },
+      {
+        "test": "XSS Protection",
+        "duration": 236,
+        "category": "Security",
+        "phase": "Phase 1"
+      },
+      {
+        "test": "XSS Protection",
+        "duration": 307,
+        "category": "Security",
+        "phase": "Phase 1"
+      },
+      {
+        "test": "XSS Protection",
+        "duration": 204,
+        "category": "Security",
+        "phase": "Phase 1"
+      },
+      {
+        "test": "CSRF Protection",
+        "duration": 590,
+        "category": "Security",
+        "phase": "Phase 1"
+      },
+      {
+        "test": "Valid Token Access",
+        "duration": 317,
+        "category": "Security",
+        "phase": "Phase 1"
+      },
+      {
+        "test": "Invalid Token Rejection",
+        "duration": 105,
+        "category": "Security",
+        "phase": "Phase 1"
+      },
+      {
+        "test": "Home Page Load",
+        "duration": 112,
+        "category": "Performance",
+        "phase": "Phase 2"
+      },
+      {
+        "test": "Login Page Load",
+        "duration": 2,
+        "category": "Performance",
+        "phase": "Phase 2"
+      },
+      {
+        "test": "Admin Dashboard",
+        "duration": 204,
+        "category": "Performance",
+        "phase": "Phase 2"
+      },
+      {
+        "test": "5 Concurrent Users",
+        "duration": 321,
+        "category": "Load Testing",
+        "phase": "Phase 2"
+      },
+      {
+        "test": "10 Concurrent Users",
+        "duration": 363,
+        "category": "Load Testing",
+        "phase": "Phase 2"
+      },
+      {
+        "test": "User List API",
+        "duration": 2553,
+        "category": "Database",
+        "phase": "Phase 2"
+      },
+      {
+        "test": "Student List API",
+        "duration": 4412,
+        "category": "Database",
+        "phase": "Phase 2"
+      }
+    ],
+    "productionReady": false
+  },
+  "results": [
+    {
+      "timestamp": "2025-06-16T20:30:53.632Z",
+      "phase": "Phase 1",
+      "category": "Authentication",
+      "test": "ADMIN Valid Login",
+      "status": "PASS",
+      "details": "Successfully authenticated Dr. Rajesh Kumar Sharma",
+      "duration": "2482ms",
+      "metadata": {
+        "role": "ADMIN",
+        "email": "admin@rkinstitute.com"
+      }
+    },
+    {
+      "timestamp": "2025-06-16T20:30:53.633Z",
+      "phase": "Phase 1",
+      "category": "Security",
+      "test": "ADMIN JWT Structure",
+      "status": "PASS",
+      "details": "Valid JWT token format",
+      "duration": null,
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-06-16T20:30:53.633Z",
+      "phase": "Phase 1",
+      "category": "Security",
+      "test": "ADMIN Token Expiration",
+      "status": "PASS",
+      "details": "Token lifetime: 8 hours",
+      "duration": null,
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-06-16T20:30:54.221Z",
+      "phase": "Phase 1",
+      "category": "Security",
+      "test": "ADMIN Invalid Password",
+      "status": "PASS",
+      "details": "Correctly rejected with status 401",
+      "duration": "588ms",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-06-16T20:30:54.480Z",
+      "phase": "Phase 1",
+      "category": "Security",
+      "test": "ADMIN Invalid Email",
+      "status": "PASS",
+      "details": "Correctly rejected with status 401",
+      "duration": "259ms",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-06-16T20:30:54.524Z",
+      "phase": "Phase 1",
+      "category": "Security",
+      "test": "ADMIN Empty Credentials",
+      "status": "PASS",
+      "details": "Correctly rejected with status 400",
+      "duration": "43ms",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-06-16T20:30:54.554Z",
+      "phase": "Phase 1",
+      "category": "Security",
+      "test": "ADMIN Missing Password",
+      "status": "PASS",
+      "details": "Correctly rejected with status 400",
+      "duration": "29ms",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-06-16T20:30:54.585Z",
+      "phase": "Phase 1",
+      "category": "Security",
+      "test": "ADMIN Missing Email",
+      "status": "PASS",
+      "details": "Correctly rejected with status 400",
+      "duration": "30ms",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-06-16T20:30:55.214Z",
+      "phase": "Phase 1",
+      "category": "Authentication",
+      "test": "TEACHER Valid Login",
+      "status": "PASS",
+      "details": "Successfully authenticated Mrs. Priya Mehta",
+      "duration": "629ms",
+      "metadata": {
+        "role": "TEACHER",
+        "email": "teacher1@rkinstitute.com"
+      }
+    },
+    {
+      "timestamp": "2025-06-16T20:30:55.215Z",
+      "phase": "Phase 1",
+      "category": "Security",
+      "test": "TEACHER JWT Structure",
+      "status": "PASS",
+      "details": "Valid JWT token format",
+      "duration": null,
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-06-16T20:30:55.215Z",
+      "phase": "Phase 1",
+      "category": "Security",
+      "test": "TEACHER Token Expiration",
+      "status": "PASS",
+      "details": "Token lifetime: 8 hours",
+      "duration": null,
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-06-16T20:30:55.902Z",
+      "phase": "Phase 1",
+      "category": "Security",
+      "test": "TEACHER Invalid Password",
+      "status": "PASS",
+      "details": "Correctly rejected with status 401",
+      "duration": "686ms",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-06-16T20:30:56.119Z",
+      "phase": "Phase 1",
+      "category": "Security",
+      "test": "TEACHER Invalid Email",
+      "status": "PASS",
+      "details": "Correctly rejected with status 401",
+      "duration": "217ms",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-06-16T20:30:56.167Z",
+      "phase": "Phase 1",
+      "category": "Security",
+      "test": "TEACHER Empty Credentials",
+      "status": "PASS",
+      "details": "Correctly rejected with status 400",
+      "duration": "47ms",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-06-16T20:30:56.196Z",
+      "phase": "Phase 1",
+      "category": "Security",
+      "test": "TEACHER Missing Password",
+      "status": "PASS",
+      "details": "Correctly rejected with status 400",
+      "duration": "28ms",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-06-16T20:30:56.227Z",
+      "phase": "Phase 1",
+      "category": "Security",
+      "test": "TEACHER Missing Email",
+      "status": "PASS",
+      "details": "Correctly rejected with status 400",
+      "duration": "31ms",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-06-16T20:30:56.843Z",
+      "phase": "Phase 1",
+      "category": "Authentication",
+      "test": "PARENT Valid Login",
+      "status": "PASS",
+      "details": "Successfully authenticated Mr. Suresh Patel",
+      "duration": "615ms",
+      "metadata": {
+        "role": "PARENT",
+        "email": "parent@rkinstitute.com"
+      }
+    },
+    {
+      "timestamp": "2025-06-16T20:30:56.844Z",
+      "phase": "Phase 1",
+      "category": "Security",
+      "test": "PARENT JWT Structure",
+      "status": "PASS",
+      "details": "Valid JWT token format",
+      "duration": null,
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-06-16T20:30:56.844Z",
+      "phase": "Phase 1",
+      "category": "Security",
+      "test": "PARENT Token Expiration",
+      "status": "PASS",
+      "details": "Token lifetime: 8 hours",
+      "duration": null,
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-06-16T20:30:57.533Z",
+      "phase": "Phase 1",
+      "category": "Security",
+      "test": "PARENT Invalid Password",
+      "status": "PASS",
+      "details": "Correctly rejected with status 401",
+      "duration": "688ms",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-06-16T20:30:57.758Z",
+      "phase": "Phase 1",
+      "category": "Security",
+      "test": "PARENT Invalid Email",
+      "status": "PASS",
+      "details": "Correctly rejected with status 401",
+      "duration": "224ms",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-06-16T20:30:57.809Z",
+      "phase": "Phase 1",
+      "category": "Security",
+      "test": "PARENT Empty Credentials",
+      "status": "PASS",
+      "details": "Correctly rejected with status 400",
+      "duration": "50ms",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-06-16T20:30:57.836Z",
+      "phase": "Phase 1",
+      "category": "Security",
+      "test": "PARENT Missing Password",
+      "status": "PASS",
+      "details": "Correctly rejected with status 400",
+      "duration": "26ms",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-06-16T20:30:57.862Z",
+      "phase": "Phase 1",
+      "category": "Security",
+      "test": "PARENT Missing Email",
+      "status": "PASS",
+      "details": "Correctly rejected with status 400",
+      "duration": "25ms",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-06-16T20:30:58.454Z",
+      "phase": "Phase 1",
+      "category": "Authentication",
+      "test": "STUDENT Valid Login",
+      "status": "PASS",
+      "details": "Successfully authenticated Aarav Patel",
+      "duration": "591ms",
+      "metadata": {
+        "role": "STUDENT",
+        "email": "student@rkinstitute.com"
+      }
+    },
+    {
+      "timestamp": "2025-06-16T20:30:58.454Z",
+      "phase": "Phase 1",
+      "category": "Security",
+      "test": "STUDENT JWT Structure",
+      "status": "PASS",
+      "details": "Valid JWT token format",
+      "duration": null,
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-06-16T20:30:58.454Z",
+      "phase": "Phase 1",
+      "category": "Security",
+      "test": "STUDENT Token Expiration",
+      "status": "PASS",
+      "details": "Token lifetime: 8 hours",
+      "duration": null,
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-06-16T20:30:59.020Z",
+      "phase": "Phase 1",
+      "category": "Security",
+      "test": "STUDENT Invalid Password",
+      "status": "PASS",
+      "details": "Correctly rejected with status 401",
+      "duration": "564ms",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-06-16T20:30:59.212Z",
+      "phase": "Phase 1",
+      "category": "Security",
+      "test": "STUDENT Invalid Email",
+      "status": "PASS",
+      "details": "Correctly rejected with status 401",
+      "duration": "192ms",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-06-16T20:30:59.255Z",
+      "phase": "Phase 1",
+      "category": "Security",
+      "test": "STUDENT Empty Credentials",
+      "status": "PASS",
+      "details": "Correctly rejected with status 400",
+      "duration": "42ms",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-06-16T20:30:59.284Z",
+      "phase": "Phase 1",
+      "category": "Security",
+      "test": "STUDENT Missing Password",
+      "status": "PASS",
+      "details": "Correctly rejected with status 400",
+      "duration": "28ms",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-06-16T20:30:59.312Z",
+      "phase": "Phase 1",
+      "category": "Security",
+      "test": "STUDENT Missing Email",
+      "status": "PASS",
+      "details": "Correctly rejected with status 400",
+      "duration": "28ms",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-06-16T20:30:59.508Z",
+      "phase": "Phase 1",
+      "category": "Security",
+      "test": "SQL Injection Protection",
+      "status": "PASS",
+      "details": "Malicious SQL payload safely handled",
+      "duration": "195ms",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-06-16T20:30:59.717Z",
+      "phase": "Phase 1",
+      "category": "Security",
+      "test": "SQL Injection Protection",
+      "status": "PASS",
+      "details": "Malicious SQL payload safely handled",
+      "duration": "208ms",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-06-16T20:30:59.928Z",
+      "phase": "Phase 1",
+      "category": "Security",
+      "test": "SQL Injection Protection",
+      "status": "PASS",
+      "details": "Malicious SQL payload safely handled",
+      "duration": "211ms",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-06-16T20:31:00.216Z",
+      "phase": "Phase 1",
+      "category": "Security",
+      "test": "SQL Injection Protection",
+      "status": "PASS",
+      "details": "Malicious SQL payload safely handled",
+      "duration": "287ms",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-06-16T20:31:00.571Z",
+      "phase": "Phase 1",
+      "category": "Security",
+      "test": "XSS Protection",
+      "status": "PASS",
+      "details": "XSS payload not reflected",
+      "duration": "354ms",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-06-16T20:31:00.829Z",
+      "phase": "Phase 1",
+      "category": "Security",
+      "test": "XSS Protection",
+      "status": "PASS",
+      "details": "XSS payload not reflected",
+      "duration": "236ms",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-06-16T20:31:01.136Z",
+      "phase": "Phase 1",
+      "category": "Security",
+      "test": "XSS Protection",
+      "status": "PASS",
+      "details": "XSS payload not reflected",
+      "duration": "307ms",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-06-16T20:31:01.340Z",
+      "phase": "Phase 1",
+      "category": "Security",
+      "test": "XSS Protection",
+      "status": "PASS",
+      "details": "XSS payload not reflected",
+      "duration": "204ms",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-06-16T20:31:01.931Z",
+      "phase": "Phase 1",
+      "category": "Security",
+      "test": "CSRF Protection",
+      "status": "WARN",
+      "details": "CSRF protection may not be implemented",
+      "duration": "590ms",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-06-16T20:31:05.446Z",
+      "phase": "Phase 1",
+      "category": "Security",
+      "test": "Rate Limiting",
+      "status": "PASS",
+      "details": "All requests properly rejected (authentication failed)",
+      "duration": null,
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-06-16T20:31:05.763Z",
+      "phase": "Phase 1",
+      "category": "Security",
+      "test": "Valid Token Access",
+      "status": "PASS",
+      "details": "Valid token grants access",
+      "duration": "317ms",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-06-16T20:31:05.869Z",
+      "phase": "Phase 1",
+      "category": "Security",
+      "test": "Invalid Token Rejection",
+      "status": "FAIL",
+      "details": "Invalid token may have been accepted",
+      "duration": "105ms",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-06-16T20:31:07.202Z",
+      "phase": "Phase 1",
+      "category": "Security",
+      "test": "Password Policy Testing",
+      "status": "SKIP",
+      "details": "Registration endpoint not implemented",
+      "duration": null,
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-06-16T20:31:07.315Z",
+      "phase": "Phase 2",
+      "category": "Performance",
+      "test": "Home Page Load",
+      "status": "PASS",
+      "details": "Response time: 112ms (threshold: 1000ms)",
+      "duration": "112ms",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-06-16T20:31:07.318Z",
+      "phase": "Phase 2",
+      "category": "Performance",
+      "test": "Login Page Load",
+      "status": "PASS",
+      "details": "Response time: 2ms (threshold: 1000ms)",
+      "duration": "2ms",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-06-16T20:31:07.522Z",
+      "phase": "Phase 2",
+      "category": "Performance",
+      "test": "Admin Dashboard",
+      "status": "PASS",
+      "details": "Response time: 204ms (threshold: 2000ms)",
+      "duration": "204ms",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-06-16T20:31:07.845Z",
+      "phase": "Phase 2",
+      "category": "Load Testing",
+      "test": "5 Concurrent Users",
+      "status": "PASS",
+      "details": "5/5 successful, avg: 308ms",
+      "duration": "321ms",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-06-16T20:31:08.210Z",
+      "phase": "Phase 2",
+      "category": "Load Testing",
+      "test": "10 Concurrent Users",
+      "status": "PASS",
+      "details": "10/10 successful, avg: 336ms",
+      "duration": "363ms",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-06-16T20:31:10.763Z",
+      "phase": "Phase 2",
+      "category": "Database",
+      "test": "User List API",
+      "status": "WARN",
+      "details": "Slow DB query: 2553ms",
+      "duration": "2553ms",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-06-16T20:31:15.175Z",
+      "phase": "Phase 2",
+      "category": "Database",
+      "test": "Student List API",
+      "status": "WARN",
+      "details": "Slow DB query: 4412ms",
+      "duration": "4412ms",
+      "metadata": {}
+    }
+  ],
+  "securityFindings": [
+    {
+      "severity": "MEDIUM",
+      "finding": "Potential CSRF Vulnerability",
+      "details": "Cross-origin requests may be accepted without proper validation",
+      "recommendation": "",
+      "timestamp": "2025-06-16T20:31:01.931Z"
+    },
+    {
+      "severity": "HIGH",
+      "finding": "Token Validation Bypass",
+      "details": "Invalid tokens may be accepted by the system",
+      "recommendation": "",
+      "timestamp": "2025-06-16T20:31:05.870Z"
+    }
+  ],
+  "performanceMetrics": [
+    {
+      "test": "ADMIN Valid Login",
+      "duration": 2482,
+      "category": "Authentication",
+      "phase": "Phase 1"
+    },
+    {
+      "test": "ADMIN Invalid Password",
+      "duration": 588,
+      "category": "Security",
+      "phase": "Phase 1"
+    },
+    {
+      "test": "ADMIN Invalid Email",
+      "duration": 259,
+      "category": "Security",
+      "phase": "Phase 1"
+    },
+    {
+      "test": "ADMIN Empty Credentials",
+      "duration": 43,
+      "category": "Security",
+      "phase": "Phase 1"
+    },
+    {
+      "test": "ADMIN Missing Password",
+      "duration": 29,
+      "category": "Security",
+      "phase": "Phase 1"
+    },
+    {
+      "test": "ADMIN Missing Email",
+      "duration": 30,
+      "category": "Security",
+      "phase": "Phase 1"
+    },
+    {
+      "test": "TEACHER Valid Login",
+      "duration": 629,
+      "category": "Authentication",
+      "phase": "Phase 1"
+    },
+    {
+      "test": "TEACHER Invalid Password",
+      "duration": 686,
+      "category": "Security",
+      "phase": "Phase 1"
+    },
+    {
+      "test": "TEACHER Invalid Email",
+      "duration": 217,
+      "category": "Security",
+      "phase": "Phase 1"
+    },
+    {
+      "test": "TEACHER Empty Credentials",
+      "duration": 47,
+      "category": "Security",
+      "phase": "Phase 1"
+    },
+    {
+      "test": "TEACHER Missing Password",
+      "duration": 28,
+      "category": "Security",
+      "phase": "Phase 1"
+    },
+    {
+      "test": "TEACHER Missing Email",
+      "duration": 31,
+      "category": "Security",
+      "phase": "Phase 1"
+    },
+    {
+      "test": "PARENT Valid Login",
+      "duration": 615,
+      "category": "Authentication",
+      "phase": "Phase 1"
+    },
+    {
+      "test": "PARENT Invalid Password",
+      "duration": 688,
+      "category": "Security",
+      "phase": "Phase 1"
+    },
+    {
+      "test": "PARENT Invalid Email",
+      "duration": 224,
+      "category": "Security",
+      "phase": "Phase 1"
+    },
+    {
+      "test": "PARENT Empty Credentials",
+      "duration": 50,
+      "category": "Security",
+      "phase": "Phase 1"
+    },
+    {
+      "test": "PARENT Missing Password",
+      "duration": 26,
+      "category": "Security",
+      "phase": "Phase 1"
+    },
+    {
+      "test": "PARENT Missing Email",
+      "duration": 25,
+      "category": "Security",
+      "phase": "Phase 1"
+    },
+    {
+      "test": "STUDENT Valid Login",
+      "duration": 591,
+      "category": "Authentication",
+      "phase": "Phase 1"
+    },
+    {
+      "test": "STUDENT Invalid Password",
+      "duration": 564,
+      "category": "Security",
+      "phase": "Phase 1"
+    },
+    {
+      "test": "STUDENT Invalid Email",
+      "duration": 192,
+      "category": "Security",
+      "phase": "Phase 1"
+    },
+    {
+      "test": "STUDENT Empty Credentials",
+      "duration": 42,
+      "category": "Security",
+      "phase": "Phase 1"
+    },
+    {
+      "test": "STUDENT Missing Password",
+      "duration": 28,
+      "category": "Security",
+      "phase": "Phase 1"
+    },
+    {
+      "test": "STUDENT Missing Email",
+      "duration": 28,
+      "category": "Security",
+      "phase": "Phase 1"
+    },
+    {
+      "test": "SQL Injection Protection",
+      "duration": 195,
+      "category": "Security",
+      "phase": "Phase 1"
+    },
+    {
+      "test": "SQL Injection Protection",
+      "duration": 208,
+      "category": "Security",
+      "phase": "Phase 1"
+    },
+    {
+      "test": "SQL Injection Protection",
+      "duration": 211,
+      "category": "Security",
+      "phase": "Phase 1"
+    },
+    {
+      "test": "SQL Injection Protection",
+      "duration": 287,
+      "category": "Security",
+      "phase": "Phase 1"
+    },
+    {
+      "test": "XSS Protection",
+      "duration": 354,
+      "category": "Security",
+      "phase": "Phase 1"
+    },
+    {
+      "test": "XSS Protection",
+      "duration": 236,
+      "category": "Security",
+      "phase": "Phase 1"
+    },
+    {
+      "test": "XSS Protection",
+      "duration": 307,
+      "category": "Security",
+      "phase": "Phase 1"
+    },
+    {
+      "test": "XSS Protection",
+      "duration": 204,
+      "category": "Security",
+      "phase": "Phase 1"
+    },
+    {
+      "test": "CSRF Protection",
+      "duration": 590,
+      "category": "Security",
+      "phase": "Phase 1"
+    },
+    {
+      "test": "Valid Token Access",
+      "duration": 317,
+      "category": "Security",
+      "phase": "Phase 1"
+    },
+    {
+      "test": "Invalid Token Rejection",
+      "duration": 105,
+      "category": "Security",
+      "phase": "Phase 1"
+    },
+    {
+      "test": "Home Page Load",
+      "duration": 112,
+      "category": "Performance",
+      "phase": "Phase 2"
+    },
+    {
+      "test": "Login Page Load",
+      "duration": 2,
+      "category": "Performance",
+      "phase": "Phase 2"
+    },
+    {
+      "test": "Admin Dashboard",
+      "duration": 204,
+      "category": "Performance",
+      "phase": "Phase 2"
+    },
+    {
+      "test": "5 Concurrent Users",
+      "duration": 321,
+      "category": "Load Testing",
+      "phase": "Phase 2"
+    },
+    {
+      "test": "10 Concurrent Users",
+      "duration": 363,
+      "category": "Load Testing",
+      "phase": "Phase 2"
+    },
+    {
+      "test": "User List API",
+      "duration": 2553,
+      "category": "Database",
+      "phase": "Phase 2"
+    },
+    {
+      "test": "Student List API",
+      "duration": 4412,
+      "category": "Database",
+      "phase": "Phase 2"
+    }
+  ]
+}

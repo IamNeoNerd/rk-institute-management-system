@@ -3,7 +3,7 @@
 import { Student } from './types';
 
 interface StudentsTableProps {
-  students: Student[];
+  students: Student[] | null | undefined;
   loading?: boolean;
   onEdit: (student: Student) => void;
   onDelete: (studentId: string) => void;
@@ -49,7 +49,7 @@ export default function StudentsTable({
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
-          {students.length === 0 ? (
+          {!students || students.length === 0 ? (
             <tr>
               <td colSpan={6} className="table-cell text-center text-gray-500 py-12">
                 <div className="flex flex-col items-center">
@@ -61,7 +61,7 @@ export default function StudentsTable({
                 </div>
               </td>
             </tr>
-          ) : (
+          ) : Array.isArray(students) ? (
             students.map((student) => (
               <tr key={student.id} className="hover:bg-gray-50 transition-colors duration-200">
                 <td className="table-cell">
@@ -123,6 +123,12 @@ export default function StudentsTable({
                 </td>
               </tr>
             ))
+          ) : (
+            <tr>
+              <td colSpan={6} className="table-cell text-center text-red-500">
+                Error: Invalid data format received. Please refresh the page.
+              </td>
+            </tr>
           )}
         </tbody>
       </table>

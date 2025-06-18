@@ -1,0 +1,97 @@
+# Artillery Load Testing Configuration (Phase 3)
+# Generated automatically for RK Institute Management System
+
+config:
+  target: 'http://localhost:3000'
+  phases:
+    - duration: 60
+      arrivalRate: 5
+      name: 'Warm up'
+    - duration: 120
+      arrivalRate: 10
+      name: 'Ramp up load'
+    - duration: 300
+      arrivalRate: 20
+      name: 'Sustained load'
+  defaults:
+    headers:
+      Content-Type: 'application/json'
+
+scenarios:
+  - name: 'User Authentication Flow'
+    weight: 30
+    flow:
+      - post:
+          url: '/api/auth/login'
+          json:
+            email: 'admin@rkinstitute.com'
+            password: 'admin123'
+          capture:
+            json: '$.token'
+            as: 'authToken'
+      - get:
+          url: '/admin/dashboard'
+          headers:
+            Authorization: 'Bearer {{ authToken }}'
+  - name: 'Student Data Access'
+    weight: 25
+    flow:
+      - post:
+          url: '/api/auth/login'
+          json:
+            email: 'teacher1@rkinstitute.com'
+            password: 'admin123'
+          capture:
+            json: '$.token'
+            as: 'authToken'
+      - get:
+          url: '/api/students'
+          headers:
+            Authorization: 'Bearer {{ authToken }}'
+  - name: 'Fee Calculation Load'
+    weight: 20
+    flow:
+      - post:
+          url: '/api/auth/login'
+          json:
+            email: 'admin@rkinstitute.com'
+            password: 'admin123'
+          capture:
+            json: '$.token'
+            as: 'authToken'
+      - post:
+          url: '/api/fees/calculate'
+          json:
+            studentId: 'student-1'
+            month: '6'
+            year: '2025'
+  - name: 'Report Generation'
+    weight: 15
+    flow:
+      - post:
+          url: '/api/auth/login'
+          json:
+            email: 'admin@rkinstitute.com'
+            password: 'admin123'
+          capture:
+            json: '$.token'
+            as: 'authToken'
+      - get:
+          url: '/api/reports/revenue'
+          headers:
+            Authorization: 'Bearer {{ authToken }}'
+  - name: 'Academic Logs Access'
+    weight: 10
+    flow:
+      - post:
+          url: '/api/auth/login'
+          json:
+            email: 'student@rkinstitute.com'
+            password: 'admin123'
+          capture:
+            json: '$.token'
+            as: 'authToken'
+      - get:
+          url: '/api/academic-logs'
+          headers:
+            Authorization: 'Bearer {{ authToken }}'

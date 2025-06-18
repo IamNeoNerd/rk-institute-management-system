@@ -4,14 +4,34 @@ import bcrypt from 'bcryptjs';
 
 const prisma = new PrismaClient();
 
-// GET - Fetch users with optional role filter
+// GET - Fetch users with optional role filter and pagination
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const role = searchParams.get('role');
+    const page = parseInt(searchParams.get('page') || '1');
+    const limit = parseInt(searchParams.get('limit') || '50'); // Default limit of 50
+    const search = searchParams.get('search');
 
-    const whereClause = role ? { role: role as any } : {};
+    // Calculate offset for pagination
+    const offset = (page - 1) * limit;
 
+    // Build where clause
+    const whereClause: any = {};
+    if (role) {
+      whereClause.role = role;
+    }
+    if (search) {
+      whereClause.OR = [
+        { name: { contains: search, mode: 'insensitive' } },
+        { email: { contains: search, mode: 'insensitive' } }
+      ];
+    }
+
+    // Get total count for pagination
+    const totalCount = await prisma.user.count({ where: whereClause });
+
+    // Fetch users with pagination and optimized query
     const users = await prisma.user.findMany({
       where: whereClause,
       select: {
@@ -32,9 +52,22 @@ export async function GET(request: Request) {
       orderBy: {
         createdAt: 'desc',
       },
+      skip: offset,
+      take: limit,
     });
 
-    return NextResponse.json(users);
+    // Return paginated response
+    return NextResponse.json({
+      users,
+      pagination: {
+        page,
+        limit,
+        total: totalCount,
+        totalPages: Math.ceil(totalCount / limit),
+        hasNext: page * limit < totalCount,
+        hasPrev: page > 1
+      }
+    });
   } catch (error) {
     console.error('Error fetching users:', error);
     return NextResponse.json(

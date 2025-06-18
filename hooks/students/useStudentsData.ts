@@ -22,10 +22,16 @@ export function useStudentsData(): UseStudentsDataReturn {
     try {
       setLoading(true);
       setError('');
-      
-      const token = localStorage.getItem('token');
-      
+
+      // SSR-safe localStorage access (Phase 2 Critical Fix)
+      const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+
       if (!token) {
+        // During SSR, skip API call
+        if (typeof window === 'undefined') {
+          setLoading(false);
+          return;
+        }
         setError('Authentication required. Please log in again.');
         return;
       }
@@ -38,7 +44,16 @@ export function useStudentsData(): UseStudentsDataReturn {
 
       if (response.ok) {
         const data = await response.json();
-        setStudents(data);
+        // Handle paginated response structure
+        if (data.students && Array.isArray(data.students)) {
+          setStudents(data.students);
+        } else if (Array.isArray(data)) {
+          // Fallback for direct array response
+          setStudents(data);
+        } else {
+          console.error('Unexpected response structure:', data);
+          setStudents([]);
+        }
       } else {
         setError('Failed to fetch students');
       }
@@ -52,8 +67,9 @@ export function useStudentsData(): UseStudentsDataReturn {
 
   const deleteStudent = useCallback(async (studentId: string): Promise<boolean> => {
     try {
-      const token = localStorage.getItem('token');
-      
+      // SSR-safe localStorage access (Phase 2 Critical Fix)
+      const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+
       if (!token) {
         setError('Authentication required. Please log in again.');
         return false;

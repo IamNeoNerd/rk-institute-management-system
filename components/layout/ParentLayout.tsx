@@ -40,9 +40,12 @@ export default function ParentLayout({ children }: ParentLayoutProps) {
   const router = useRouter();
 
   useEffect(() => {
+    // Only run on client side
+    if (typeof window === 'undefined') return;
+
     const token = localStorage.getItem('token');
     const userData = localStorage.getItem('user');
-    
+
     if (!token || !userData) {
       router.push('/');
       return;
@@ -59,6 +62,9 @@ export default function ParentLayout({ children }: ParentLayoutProps) {
 
   // Handle body scroll lock when sidebar is open
   useEffect(() => {
+    // Only run on client side
+    if (typeof window === 'undefined') return;
+
     if (sidebarOpen) {
       document.body.style.overflow = 'hidden';
     } else {
@@ -72,6 +78,9 @@ export default function ParentLayout({ children }: ParentLayoutProps) {
   }, [sidebarOpen]);
 
   const handleLogout = () => {
+    // Only run on client side
+    if (typeof window === 'undefined') return;
+
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     router.push('/');

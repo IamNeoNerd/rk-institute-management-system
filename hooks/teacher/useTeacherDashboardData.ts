@@ -31,9 +31,15 @@ export function useTeacherDashboardData(): TeacherDashboardData {
     try {
       setLoading(true);
       setError(null);
-      
-      const token = localStorage.getItem('token');
+
+      // SSR-safe localStorage access (Phase 2 Critical Fix)
+      const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
       if (!token) {
+        // During SSR, use mock data
+        if (typeof window === 'undefined') {
+          setLoading(false);
+          return;
+        }
         throw new Error('No authentication token found');
       }
 

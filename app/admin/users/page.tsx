@@ -40,7 +40,16 @@ export default function UsersPage() {
 
       if (response.ok) {
         const data = await response.json();
-        setUsers(data);
+        // Handle paginated response structure
+        if (data.users && Array.isArray(data.users)) {
+          setUsers(data.users);
+        } else if (Array.isArray(data)) {
+          // Fallback for direct array response
+          setUsers(data);
+        } else {
+          console.error('Unexpected response structure:', data);
+          setUsers([]);
+        }
       } else {
         setError('Failed to fetch users');
       }
@@ -208,7 +217,7 @@ export default function UsersPage() {
                     No users found. Create your first user to get started.
                   </td>
                 </tr>
-              ) : (
+              ) : Array.isArray(users) ? (
                 users.map((user) => (
                   <tr key={user.id} className="hover:bg-gray-50 transition-colors duration-200">
                     <td className="table-cell">
@@ -271,6 +280,12 @@ export default function UsersPage() {
                     </td>
                   </tr>
                 ))
+              ) : (
+                <tr>
+                  <td colSpan={7} className="table-cell text-center text-red-500">
+                    Error: Invalid data format received. Please refresh the page.
+                  </td>
+                </tr>
               )}
             </tbody>
           </table>

@@ -59,6 +59,9 @@ export default function StudentLayout({ children }: StudentLayoutProps) {
 
   // Handle body scroll lock when sidebar is open
   useEffect(() => {
+    // Only run on client side
+    if (typeof window === 'undefined') return;
+
     if (sidebarOpen) {
       document.body.style.overflow = 'hidden';
     } else {
@@ -72,6 +75,9 @@ export default function StudentLayout({ children }: StudentLayoutProps) {
   }, [sidebarOpen]);
 
   const handleLogout = () => {
+    // Only run on client side
+    if (typeof window === 'undefined') return;
+
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     router.push('/');

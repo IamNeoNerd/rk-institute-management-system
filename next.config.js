@@ -92,14 +92,18 @@ const nextConfig = {
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
 
-  // Experimental features for better performance
+  // Experimental features for better performance (Phase 2 optimizations)
   experimental: {
     // Enable modern bundling
     esmExternals: true,
-    
+
     // Optimize server components
     serverComponentsExternalPackages: ['@prisma/client'],
-    
+
+    // Phase 2: Advanced performance optimizations
+    optimizeCss: true,
+    optimizePackageImports: ['lucide-react', '@prisma/client', 'react-hook-form'],
+
     // Enable turbo mode for faster builds
     turbo: {
       rules: {
@@ -109,6 +113,10 @@ const nextConfig = {
         },
       },
     },
+
+    // Phase 2: Memory and performance improvements
+    workerThreads: false,
+    cpus: Math.max(1, (require('os').cpus().length || 1) - 1),
   },
 
   // =============================================================================
@@ -116,7 +124,25 @@ const nextConfig = {
   // =============================================================================
   
   webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
-    // Production optimizations
+    // Development server optimizations (Phase 1 carryover)
+    if (dev) {
+      // Optimize file watching for better development performance
+      config.watchOptions = {
+        poll: 1000,
+        aggregateTimeout: 300,
+        ignored: ['**/node_modules', '**/.git', '**/.next', '**/coverage']
+      };
+
+      // Reduce memory usage in development
+      config.optimization = {
+        ...config.optimization,
+        removeAvailableModules: false,
+        removeEmptyChunks: false,
+        splitChunks: false,
+      };
+    }
+
+    // Production optimizations (Phase 2)
     if (!dev) {
       // Minimize bundle size
       config.optimization.splitChunks = {
@@ -126,6 +152,12 @@ const nextConfig = {
             test: /[\\/]node_modules[\\/]/,
             name: 'vendors',
             chunks: 'all',
+          },
+          common: {
+            name: 'common',
+            minChunks: 2,
+            chunks: 'all',
+            enforce: true,
           },
         },
       }
@@ -142,9 +174,56 @@ const nextConfig = {
       }
     }
 
-    // Handle Prisma client
+    // Enhanced SSR Compatibility (Phase 2 Completion + Phase 3 Foundation)
     if (isServer) {
-      config.externals.push('@prisma/client')
+      // Externalize all browser-specific dependencies
+      config.externals.push(
+        '@prisma/client',
+        'html2canvas',
+        'jspdf'
+      );
+
+      // Aggressive externalization for problematic libraries (Phase 2 Final Resolution)
+      config.externals.push({
+        'recharts': 'recharts',
+        'framer-motion': 'framer-motion',
+        'react-hot-toast': 'react-hot-toast'  // Add toast library
+      });
+    } else {
+      // Client-side fallbacks
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        path: false,
+        os: false,
+        crypto: false,
+        stream: false,
+        buffer: false,
+      };
+    }
+
+    // Enhanced global polyfills with comprehensive environment detection (Phase 2 Final)
+    config.plugins.push(
+      new webpack.DefinePlugin({
+        'typeof window': isServer ? JSON.stringify('undefined') : JSON.stringify('object'),
+        'typeof self': isServer ? JSON.stringify('undefined') : JSON.stringify('object'),
+        'typeof global': isServer ? JSON.stringify('object') : JSON.stringify('object'),
+        'typeof document': isServer ? JSON.stringify('undefined') : JSON.stringify('object'),
+        'typeof navigator': isServer ? JSON.stringify('undefined') : JSON.stringify('object'),
+        'typeof location': isServer ? JSON.stringify('undefined') : JSON.stringify('object'),
+        // Global polyfill for self reference (Phase 2 Critical Fix)
+        'self': isServer ? 'global' : 'self',
+      })
+    );
+
+    // Enhanced ignore patterns for SSR (Phase 2 Final Resolution)
+    if (isServer) {
+      config.plugins.push(
+        new webpack.IgnorePlugin({
+          resourceRegExp: /^(recharts|framer-motion|react-hot-toast)$/,
+          contextRegExp: /node_modules/,
+        })
+      );
     }
 
     return config

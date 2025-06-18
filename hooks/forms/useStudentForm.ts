@@ -103,7 +103,7 @@ export function useStudentForm({ student, onSuccess }: UseStudentFormProps): Use
   }, [fetchFamilies]);
 
   // Form validation
-  const validateForm = (): boolean => {
+  const validateForm = useCallback((): boolean => {
     const newErrors: Record<string, string> = {};
 
     if (!formData.name.trim()) {
@@ -128,7 +128,7 @@ export function useStudentForm({ student, onSuccess }: UseStudentFormProps): Use
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
-  };
+  }, [formData]);
 
   // Handle form field changes
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -192,7 +192,7 @@ export function useStudentForm({ student, onSuccess }: UseStudentFormProps): Use
     } finally {
       setLoading(false);
     }
-  }, [formData, student, onSuccess]);
+  }, [formData, student, onSuccess, validateForm]);
 
   // Reset form
   const resetForm = useCallback(() => {

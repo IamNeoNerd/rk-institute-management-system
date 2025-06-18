@@ -21,6 +21,9 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   const router = useRouter();
 
   useEffect(() => {
+    // Only run on client side
+    if (typeof window === 'undefined') return;
+
     const token = localStorage.getItem('token');
     const userData = localStorage.getItem('user');
 
@@ -40,6 +43,9 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
   // Handle body scroll lock when sidebar is open
   useEffect(() => {
+    // Only run on client side
+    if (typeof window === 'undefined') return;
+
     if (sidebarOpen) {
       document.body.style.overflow = 'hidden';
     } else {
@@ -53,6 +59,9 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   }, [sidebarOpen]);
 
   const handleLogout = () => {
+    // Only run on client side
+    if (typeof window === 'undefined') return;
+
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     // Clear the cookie as well

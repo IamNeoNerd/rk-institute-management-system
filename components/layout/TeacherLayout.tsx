@@ -39,9 +39,12 @@ export default function TeacherLayout({ children }: TeacherLayoutProps) {
   const router = useRouter();
 
   useEffect(() => {
+    // Only run on client side
+    if (typeof window === 'undefined') return;
+
     const token = localStorage.getItem('token');
     const userData = localStorage.getItem('user');
-    
+
     if (!token || !userData) {
       router.push('/');
       return;
@@ -58,6 +61,9 @@ export default function TeacherLayout({ children }: TeacherLayoutProps) {
 
   // Handle body scroll lock when sidebar is open
   useEffect(() => {
+    // Only run on client side
+    if (typeof window === 'undefined') return;
+
     if (sidebarOpen) {
       document.body.style.overflow = 'hidden';
     } else {
@@ -71,6 +77,9 @@ export default function TeacherLayout({ children }: TeacherLayoutProps) {
   }, [sidebarOpen]);
 
   const handleLogout = () => {
+    // Only run on client side
+    if (typeof window === 'undefined') return;
+
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     router.push('/');
@@ -190,7 +199,7 @@ export default function TeacherLayout({ children }: TeacherLayoutProps) {
                   <Menu className="h-6 w-6" />
                 </button>
                 <div className="flex items-center ml-4 md:ml-0">
-                  <span className="text-lg font-semibold text-gray-900">🎓 Teacher's Toolkit</span>
+                  <span className="text-lg font-semibold text-gray-900">🎓 Teacher&apos;s Toolkit</span>
                 </div>
               </div>
               <div className="flex items-center space-x-4">

@@ -3,8 +3,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Download, FileText, Calendar, Filter, Loader2 } from 'lucide-react';
-import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
 import toast from 'react-hot-toast';
 
 interface ReportData {
@@ -36,8 +34,20 @@ export default function ReportGenerator({ reportData, className = '' }: ReportGe
 
   const generatePDFReport = async () => {
     setIsGenerating(true);
-    
+
     try {
+      // Only run on client side
+      if (typeof window === 'undefined') {
+        toast.error('PDF generation is only available in the browser');
+        setIsGenerating(false);
+        return;
+      }
+
+      // Dynamically import the modules
+      const [{ default: jsPDF }, { default: html2canvas }] = await Promise.all([
+        import('jspdf'),
+        import('html2canvas')
+      ]);
       // Create a temporary div for the report content
       const reportElement = document.createElement('div');
       reportElement.style.padding = '40px';
@@ -97,18 +107,21 @@ export default function ReportGenerator({ reportData, className = '' }: ReportGe
         </div>
       `;
       
-      document.body.appendChild(reportElement);
-      
+      // Only run on client side
+      if (typeof window !== 'undefined') {
+        document.body.appendChild(reportElement);
+      }
+
       // Generate canvas from the element
       const canvas = await html2canvas(reportElement, {
         scale: 2,
         useCORS: true,
         allowTaint: true
       });
-      
+
       // Remove the temporary element
       document.body.removeChild(reportElement);
-      
+
       // Create PDF
       const pdf = new jsPDF('p', 'mm', 'a4');
       const imgData = canvas.toDataURL('image/png');

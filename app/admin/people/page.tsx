@@ -32,7 +32,7 @@ const PeopleReportSection = dynamic(() => import('@/components/features/people-h
 });
 
 export default function PeopleHubPage() {
-  // Use custom hook for all data management
+  // Use custom hook for all data management (SSR-safe)
   const { stats, loading, error } = usePeopleHubData();
 
   // Loading state with improved UX

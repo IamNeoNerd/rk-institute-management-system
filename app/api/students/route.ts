@@ -3,11 +3,41 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-// GET - Fetch all students
-export async function GET() {
+// GET - Fetch students with pagination and optimized queries
+export async function GET(request: Request) {
   try {
+    const { searchParams } = new URL(request.url);
+    const page = parseInt(searchParams.get('page') || '1');
+    const limit = parseInt(searchParams.get('limit') || '25'); // Smaller default limit
+    const grade = searchParams.get('grade');
+    const search = searchParams.get('search');
+
+    // Calculate offset for pagination
+    const offset = (page - 1) * limit;
+
+    // Build where clause
+    const whereClause: any = {};
+    if (grade) {
+      whereClause.grade = grade;
+    }
+    if (search) {
+      whereClause.name = { contains: search, mode: 'insensitive' };
+    }
+
+    // Get total count for pagination
+    const totalCount = await prisma.student.count({ where: whereClause });
+
+    // Optimized query with pagination and selective includes
     const students = await prisma.student.findMany({
-      include: {
+      where: whereClause,
+      select: {
+        id: true,
+        name: true,
+        grade: true,
+        dateOfBirth: true,
+        enrollmentDate: true,
+        familyId: true,
+        createdAt: true,
         family: {
           select: {
             id: true,
@@ -15,39 +45,34 @@ export async function GET() {
             discountAmount: true,
           },
         },
-        subscriptions: {
-          include: {
-            course: {
-              select: {
-                id: true,
-                name: true,
-                feeStructure: true,
-              },
-            },
-            service: {
-              select: {
-                id: true,
-                name: true,
-                feeStructure: true,
-              },
-            },
-          },
-          where: {
-            endDate: null, // Active subscriptions only
-          },
-        },
+        // Only get active subscriptions count for performance
         _count: {
           select: {
-            subscriptions: true,
+            subscriptions: {
+              where: { endDate: null }
+            },
           },
         },
       },
       orderBy: {
         createdAt: 'desc',
       },
+      skip: offset,
+      take: limit,
     });
 
-    return NextResponse.json(students);
+    // Return paginated response
+    return NextResponse.json({
+      students,
+      pagination: {
+        page,
+        limit,
+        total: totalCount,
+        totalPages: Math.ceil(totalCount / limit),
+        hasNext: page * limit < totalCount,
+        hasPrev: page > 1
+      }
+    });
   } catch (error) {
     console.error('Error fetching students:', error);
     return NextResponse.json(
