@@ -174,47 +174,23 @@ const nextConfig = {
       }
     }
 
-    // Enhanced SSR Compatibility (Phase 2 Completion + Phase 3 Foundation + Critical Vendor Bundle Fix)
+    // Enhanced SSR Compatibility (Simplified approach - Phase 3 Critical Fix)
     if (isServer) {
-      // Externalize all browser-specific dependencies
+      // Only externalize truly server-incompatible dependencies
       config.externals.push(
         '@prisma/client',
         'html2canvas',
         'jspdf'
       );
 
-      // Critical vendor bundle fix - aggressive externalization
-      config.externals.push({
-        'recharts': 'recharts',
-        'framer-motion': 'framer-motion',
-        'react-hot-toast': 'react-hot-toast',
-        // Additional problematic dependencies
-        'web-vitals': 'web-vitals',
-        'lucide-react': 'lucide-react'
-      });
-
-      // Critical: Prevent vendor bundle from being processed on server
-      config.externals.push(({ context, request }, callback) => {
-        // Exclude any vendor-related modules
-        if (request && (request.includes('vendors') || request.includes('vendor') ||
-            request.includes('recharts') || request.includes('framer-motion') ||
-            request.includes('react-hot-toast') || request.includes('web-vitals'))) {
-          return callback(null, 'commonjs ' + request);
-        }
-        callback();
-      });
-
-      // Additional server-side module exclusions
-      config.externals.push(/^(recharts|framer-motion|react-hot-toast|web-vitals)$/);
-
-      // Prevent problematic modules from being bundled
-      config.resolve.alias = {
-        ...config.resolve.alias,
-        'recharts': false,
-        'framer-motion': false,
-        'react-hot-toast': false,
-        'web-vitals': false
-      };
+      // Critical fix: Add banner to define self globally
+      config.plugins.push(
+        new webpack.BannerPlugin({
+          banner: 'if (typeof self === "undefined") { var self = global; }',
+          raw: true,
+          entryOnly: false,
+        })
+      );
     } else {
       // Enhanced client-side fallbacks
       config.resolve.fallback = {
@@ -231,7 +207,7 @@ const nextConfig = {
       };
     }
 
-    // Enhanced global polyfills with comprehensive environment detection (Phase 2 Final)
+    // Enhanced global polyfills with comprehensive environment detection (Phase 3 Critical Fix)
     config.plugins.push(
       new webpack.DefinePlugin({
         'typeof window': isServer ? JSON.stringify('undefined') : JSON.stringify('object'),
@@ -240,20 +216,10 @@ const nextConfig = {
         'typeof document': isServer ? JSON.stringify('undefined') : JSON.stringify('object'),
         'typeof navigator': isServer ? JSON.stringify('undefined') : JSON.stringify('object'),
         'typeof location': isServer ? JSON.stringify('undefined') : JSON.stringify('object'),
-        // Global polyfill for self reference (Phase 2 Critical Fix)
+        // Critical fix: Define self as global on server-side
         'self': isServer ? 'global' : 'self',
       })
     );
-
-    // Enhanced ignore patterns for SSR (Phase 2 Final Resolution)
-    if (isServer) {
-      config.plugins.push(
-        new webpack.IgnorePlugin({
-          resourceRegExp: /^(recharts|framer-motion|react-hot-toast)$/,
-          contextRegExp: /node_modules/,
-        })
-      );
-    }
 
     return config
   },

@@ -1,6 +1,6 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { Motion, slideUp } from '@/components/ui/animations/SSRSafeMotion';
 import Link from 'next/link';
 import { LucideIcon } from 'lucide-react';
 
@@ -83,9 +83,8 @@ export default function ManagementCard({
   const colors = colorClasses[color];
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
+    <Motion
+      {...slideUp}
       transition={{ duration: 0.3, delay }}
     >
       <Link
@@ -115,6 +114,6 @@ export default function ManagementCard({
           </svg>
         </div>
       </Link>
-    </motion.div>
+    </Motion>
   );
 }

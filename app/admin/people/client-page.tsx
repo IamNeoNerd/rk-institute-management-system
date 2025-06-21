@@ -3,7 +3,7 @@
 import { Suspense, useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import AdminLayout from '@/components/layout/AdminLayout';
-import { Toaster } from 'react-hot-toast';
+import SSRSafeToaster from '@/components/ui/notifications/SSRSafeToaster';
 import { Search, Users, FileText } from 'lucide-react';
 import { HubHeader, HubActionButton } from '@/components/hub';
 
@@ -70,7 +70,7 @@ export default function PeopleHubClientPage() {
 
   return (
     <AdminLayout>
-      <Toaster position="top-right" />
+      <SSRSafeToaster position="top-right" />
       <div className="space-y-8">
         {/* Header - Critical above-the-fold content */}
         <HubHeader

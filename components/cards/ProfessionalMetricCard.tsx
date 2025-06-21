@@ -1,6 +1,6 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { Motion, scaleIn } from '@/components/ui/animations/SSRSafeMotion';
 import {
   Users,
   BookOpen,
@@ -121,12 +121,11 @@ export default function ProfessionalMetricCard({
   const IconComponent = iconMap[icon as keyof typeof iconMap] || Users;
 
   return (
-    <motion.div
+    <Motion
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      whileHover={{ y: -2 }}
-      className={`bg-gradient-to-br ${colors.bg} p-6 rounded-xl border ${colors.border} hover:shadow-lg transition-all duration-300 ${className}`}
+      className={`bg-gradient-to-br ${colors.bg} p-6 rounded-xl border ${colors.border} hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 ${className}`}
     >
       <div className="flex items-center justify-between">
         <div className="flex-1">
@@ -162,6 +161,6 @@ export default function ProfessionalMetricCard({
           <IconComponent className="w-8 h-8 text-white" />
         </div>
       </div>
-    </motion.div>
+    </Motion>
   );
 }

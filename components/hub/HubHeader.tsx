@@ -1,6 +1,6 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { Motion, slideDown } from '@/components/ui/animations/SSRSafeMotion';
 import { ReactNode } from 'react';
 
 interface HubHeaderProps {
@@ -11,10 +11,8 @@ interface HubHeaderProps {
 
 export default function HubHeader({ title, subtitle, actions }: HubHeaderProps) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: -20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
+    <Motion
+      {...slideDown}
       className="flex justify-between items-center"
     >
       <div>
@@ -30,6 +28,6 @@ export default function HubHeader({ title, subtitle, actions }: HubHeaderProps) 
           {actions}
         </div>
       )}
-    </motion.div>
+    </Motion>
   );
 }

@@ -3,7 +3,7 @@
 import { Suspense } from 'react';
 import dynamic from 'next/dynamic';
 import StudentLayout from '@/components/layout/StudentLayout';
-import { Toaster } from 'react-hot-toast';
+import SSRSafeToaster from '@/components/ui/notifications/SSRSafeToaster';
 import { BookOpen, CreditCard, FileText, Target, BarChart3 } from 'lucide-react';
 import { HubHeader, HubActionButton } from '@/components/hub';
 
@@ -54,7 +54,7 @@ export default function StudentDashboard() {
 
   return (
     <StudentLayout>
-      <Toaster position="top-right" />
+      <SSRSafeToaster position="top-right" />
       <div className="space-y-8">
         {/* Header - Critical above-the-fold content */}
         <HubHeader

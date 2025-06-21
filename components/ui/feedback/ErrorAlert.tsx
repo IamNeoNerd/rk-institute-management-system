@@ -1,6 +1,6 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { Motion, scaleIn } from '@/components/ui/animations/SSRSafeMotion';
 import { AlertTriangle, X } from 'lucide-react';
 
 interface ErrorAlertProps {
@@ -37,10 +37,8 @@ export default function ErrorAlert({
   const styles = variantStyles[variant];
 
   return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.95 }}
+    <Motion
+      {...scaleIn}
       className={`${styles.container} border px-6 py-4 rounded-xl ${className}`}
     >
       <div className="flex items-center justify-between">
@@ -60,6 +58,6 @@ export default function ErrorAlert({
           </button>
         )}
       </div>
-    </motion.div>
+    </Motion>
   );
 }

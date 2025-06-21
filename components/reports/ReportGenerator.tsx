@@ -1,9 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { Motion, fadeIn } from '@/components/ui/animations/SSRSafeMotion';
 import { Download, FileText, Calendar, Filter, Loader2 } from 'lucide-react';
-import toast from 'react-hot-toast';
+import { ssrSafeToast } from '@/components/ui/notifications/SSRSafeToaster';
 
 interface ReportData {
   title: string;
@@ -38,7 +38,7 @@ export default function ReportGenerator({ reportData, className = '' }: ReportGe
     try {
       // Only run on client side
       if (typeof window === 'undefined') {
-        toast.error('PDF generation is only available in the browser');
+        ssrSafeToast.error('PDF generation is only available in the browser');
         setIsGenerating(false);
         return;
       }
@@ -155,10 +155,10 @@ export default function ReportGenerator({ reportData, className = '' }: ReportGe
         recordCount: reportData.data.length
       });
       
-      toast.success('Report generated and downloaded successfully!');
+      ssrSafeToast.success('Report generated and downloaded successfully!');
     } catch (error) {
       console.error('Error generating report:', error);
-      toast.error('Failed to generate report. Please try again.');
+      ssrSafeToast.error('Failed to generate report. Please try again.');
     } finally {
       setIsGenerating(false);
     }
@@ -183,9 +183,8 @@ export default function ReportGenerator({ reportData, className = '' }: ReportGe
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
+    <Motion
+      {...fadeIn}
       transition={{ duration: 0.3 }}
       className={`bg-white p-6 rounded-xl shadow-sm border border-gray-200 ${className}`}
     >
@@ -243,6 +242,6 @@ export default function ReportGenerator({ reportData, className = '' }: ReportGe
           <span>{isGenerating ? 'Generating...' : 'Download Report'}</span>
         </button>
       </div>
-    </motion.div>
+    </Motion>
   );
 }

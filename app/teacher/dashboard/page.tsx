@@ -3,7 +3,7 @@
 import { Suspense } from 'react';
 import dynamic from 'next/dynamic';
 import TeacherLayout from '@/components/layout/TeacherLayout';
-import { Toaster } from 'react-hot-toast';
+import SSRSafeToaster from '@/components/ui/notifications/SSRSafeToaster';
 import { BarChart3, FileText, Target } from 'lucide-react';
 import { HubHeader, HubActionButton } from '@/components/hub';
 
@@ -50,7 +50,7 @@ export default function TeacherDashboard() {
 
   return (
     <TeacherLayout>
-      <Toaster position="top-right" />
+      <SSRSafeToaster position="top-right" />
       <div className="space-y-8">
         {/* Header - Critical above-the-fold content */}
         <HubHeader

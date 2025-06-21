@@ -1,6 +1,6 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { Motion, slideUp } from '@/components/ui/animations/SSRSafeMotion';
 import Link from 'next/link';
 import {
   ArrowRight,
@@ -136,12 +136,11 @@ export default function DataInsightCard({
 
   return (
     <Link href={href}>
-      <motion.div
+      <Motion
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.3 }}
-        whileHover={{ y: -4, scale: 1.02 }}
-        className={`group relative bg-white p-6 rounded-2xl border ${colors.border} transition-all duration-300 hover:shadow-xl cursor-pointer ${className}`}
+        className={`group relative bg-white p-6 rounded-2xl border ${colors.border} transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:scale-105 cursor-pointer ${className}`}
       >
         {/* Badge */}
         {badge && (
@@ -217,7 +216,7 @@ export default function DataInsightCard({
           </span>
           <ArrowRight className={`w-4 h-4 ${colors.text} group-hover:translate-x-1 transition-transform`} />
         </div>
-      </motion.div>
+      </Motion>
     </Link>
   );
 }
