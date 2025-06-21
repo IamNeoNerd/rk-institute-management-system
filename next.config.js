@@ -331,7 +331,7 @@ if (typeof global !== "undefined" && typeof global.Object === "undefined") { glo
   // POWEREDBY HEADER
   // =============================================================================
   
-  // Remove X-Powered-By header for security
+  // Remove X-Powered-By header for security (Force Vercel rebuild)
   poweredByHeader: false,
 
   // =============================================================================
