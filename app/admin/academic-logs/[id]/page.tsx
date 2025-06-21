@@ -37,7 +37,7 @@ export default function AcademicLogDetail() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  const logId = params.id as string;
+  const logId = params?.id as string;
 
   const fetchLog = useCallback(async () => {
     try {

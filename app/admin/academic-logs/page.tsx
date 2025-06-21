@@ -107,11 +107,11 @@ function AdminAcademicLogsContent() {
 
   useEffect(() => {
     // Set initial filters from URL parameters
-    const student = searchParams.get('student');
-    const teacher = searchParams.get('teacher');
-    const course = searchParams.get('course');
-    const logType = searchParams.get('logType');
-    const search = searchParams.get('search');
+    const student = searchParams?.get('student');
+    const teacher = searchParams?.get('teacher');
+    const course = searchParams?.get('course');
+    const logType = searchParams?.get('logType');
+    const search = searchParams?.get('search');
 
     if (student) setFilterStudent(student);
     if (teacher) setFilterTeacher(teacher);
