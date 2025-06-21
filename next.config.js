@@ -104,8 +104,8 @@ const nextConfig = {
     optimizeCss: false,
     optimizePackageImports: ['lucide-react', '@prisma/client'],
 
-    // Disable turbo mode for stability
-    turbo: false,
+    // Disable turbo mode for stability (must be object or undefined)
+    // turbo: false,
 
     // Phase 3: Conservative memory settings
     workerThreads: false,

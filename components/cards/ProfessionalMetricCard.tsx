@@ -1,21 +1,7 @@
 'use client';
 
-import { Motion, scaleIn } from '@/components/ui/animations/SSRSafeMotion';
-import {
-  Users,
-  BookOpen,
-  GraduationCap,
-  DollarSign,
-  TrendingUp,
-  TrendingDown,
-  AlertTriangle,
-  CheckCircle,
-  Clock,
-  Target,
-  Award,
-  FileText,
-  Smile
-} from 'lucide-react';
+// Temporary minimal version to isolate webpack runtime issue
+import { Users } from 'lucide-react';
 
 interface TrendData {
   value: number;
@@ -33,20 +19,10 @@ interface ProfessionalMetricCardProps {
   className?: string;
 }
 
+// Minimal icon map to isolate webpack runtime issue
 const iconMap = {
   users: Users,
-  'book-open': BookOpen,
-  'graduation-cap': GraduationCap,
-  'dollar-sign': DollarSign,
-  'trending-up': TrendingUp,
-  'trending-down': TrendingDown,
-  'alert-triangle': AlertTriangle,
-  'check-circle': CheckCircle,
-  clock: Clock,
-  target: Target,
-  award: Award,
-  'file-text': FileText,
-  smile: Smile,
+  default: Users,
 };
 
 const colorClasses = {
@@ -108,6 +84,7 @@ const colorClasses = {
   }
 };
 
+// Minimal component to isolate webpack runtime issue
 export default function ProfessionalMetricCard({
   title,
   value,
@@ -117,16 +94,10 @@ export default function ProfessionalMetricCard({
   trend,
   className = ''
 }: ProfessionalMetricCardProps) {
-  const colors = colorClasses[color];
-  const IconComponent = iconMap[icon as keyof typeof iconMap] || Users;
+  const colors = colorClasses[color] || colorClasses.blue;
 
   return (
-    <Motion
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
-      className={`bg-gradient-to-br ${colors.bg} p-6 rounded-xl border ${colors.border} hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 ${className}`}
-    >
+    <div className={`bg-gradient-to-br ${colors.bg} p-6 rounded-xl border ${colors.border} ${className}`}>
       <div className="flex items-center justify-between">
         <div className="flex-1">
           <p className="text-sm font-medium text-gray-600 mb-1">
@@ -140,27 +111,12 @@ export default function ProfessionalMetricCard({
               {subtitle}
             </p>
           )}
-          {trend && (
-            <div className="flex items-center mt-2">
-              <span className={`text-sm font-medium flex items-center ${trend.isPositive ? colors.trendPositive : colors.trendNegative}`}>
-                {trend.isPositive ? (
-                  <TrendingUp className="w-4 h-4 mr-1" />
-                ) : (
-                  <TrendingDown className="w-4 h-4 mr-1" />
-                )}
-                {Math.abs(trend.value)}%
-              </span>
-              <span className="text-xs text-gray-500 ml-2">
-                {trend.label}
-              </span>
-            </div>
-          )}
         </div>
-        
+
         <div className={`flex items-center justify-center w-16 h-16 bg-gradient-to-br ${colors.icon} rounded-xl shadow-lg`}>
-          <IconComponent className="w-8 h-8 text-white" />
+          <Users className="w-8 h-8 text-white" />
         </div>
       </div>
-    </Motion>
+    </div>
   );
 }

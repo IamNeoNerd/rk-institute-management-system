@@ -40,37 +40,41 @@ export function Motion({
 
   useEffect(() => {
     setMounted(true);
-    // Trigger animation after mount
+    // Trigger animation after mount with safety check
+    const delay = (transition && transition.delay) || 0;
     const timer = setTimeout(() => {
       setIsAnimating(true);
-    }, transition.delay || 0);
+    }, delay);
 
     return () => clearTimeout(timer);
-  }, [transition.delay]);
+  }, [transition]);
 
-  // Generate CSS transform and opacity values
+  // Generate CSS transform and opacity values with safety checks
   const getInitialStyle = () => {
     const transforms = [];
-    let opacity = initial.opacity;
+    let opacity = initial && initial.opacity !== undefined ? initial.opacity : undefined;
 
-    if (initial.x !== undefined) transforms.push(`translateX(${initial.x}px)`);
-    if (initial.y !== undefined) transforms.push(`translateY(${initial.y}px)`);
-    if (initial.scale !== undefined) transforms.push(`scale(${initial.scale})`);
+    if (initial && initial.x !== undefined) transforms.push(`translateX(${initial.x}px)`);
+    if (initial && initial.y !== undefined) transforms.push(`translateY(${initial.y}px)`);
+    if (initial && initial.scale !== undefined) transforms.push(`scale(${initial.scale})`);
+
+    const duration = (transition && transition.duration) || 0.3;
+    const ease = (transition && transition.ease) || 'ease-out';
 
     return {
       transform: transforms.length > 0 ? transforms.join(' ') : undefined,
       opacity,
-      transition: mounted ? `all ${transition.duration || 0.3}s ${transition.ease || 'ease-out'}` : 'none',
+      transition: mounted ? `all ${duration}s ${ease}` : 'none',
     };
   };
 
   const getAnimateStyle = () => {
     const transforms = [];
-    let opacity = animate.opacity;
+    let opacity = animate && animate.opacity !== undefined ? animate.opacity : undefined;
 
-    if (animate.x !== undefined) transforms.push(`translateX(${animate.x}px)`);
-    if (animate.y !== undefined) transforms.push(`translateY(${animate.y}px)`);
-    if (animate.scale !== undefined) transforms.push(`scale(${animate.scale})`);
+    if (animate && animate.x !== undefined) transforms.push(`translateX(${animate.x}px)`);
+    if (animate && animate.y !== undefined) transforms.push(`translateY(${animate.y}px)`);
+    if (animate && animate.scale !== undefined) transforms.push(`scale(${animate.scale})`);
 
     return {
       transform: transforms.length > 0 ? transforms.join(' ') : 'none',

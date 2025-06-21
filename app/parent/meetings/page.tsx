@@ -625,17 +625,17 @@ function ParentMeetingsContent() {
   );
 }
 
-// Main component with Suspense wrapper for SSR safety
+// Temporary simplified component to isolate webpack runtime issue
 export default function ParentMeetings() {
   return (
-    <Suspense fallback={
-      <ParentLayout>
-        <div className="flex items-center justify-center h-64">
-          <div className="text-lg">Loading meetings...</div>
+    <ParentLayout>
+      <div className="p-8">
+        <h1 className="text-2xl font-bold mb-4">Parent-Teacher Meetings</h1>
+        <div className="bg-white p-6 rounded-lg border">
+          <p>Meetings feature is temporarily under maintenance.</p>
+          <p className="text-sm text-gray-600 mt-2">Please check back later.</p>
         </div>
-      </ParentLayout>
-    }>
-      <ParentMeetingsContent />
-    </Suspense>
+      </div>
+    </ParentLayout>
   );
 }
