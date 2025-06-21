@@ -21,24 +21,35 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   const router = useRouter();
 
   useEffect(() => {
+    // SSR-safe localStorage access
+    if (typeof window === 'undefined') return;
+
     const token = localStorage.getItem('token');
     const userData = localStorage.getItem('user');
-    
+
     if (!token || !userData) {
       router.push('/');
       return;
     }
 
-    const parsedUser = JSON.parse(userData);
-    if (parsedUser.role !== 'ADMIN') {
-      router.push('/');
-      return;
-    }
+    try {
+      const parsedUser = JSON.parse(userData);
+      if (parsedUser.role !== 'ADMIN') {
+        router.push('/');
+        return;
+      }
 
-    setUser(parsedUser);
+      setUser(parsedUser);
+    } catch (error) {
+      console.error('Error parsing user data:', error);
+      router.push('/');
+    }
   }, [router]);
 
   const handleLogout = () => {
+    // SSR-safe browser API access
+    if (typeof window === 'undefined') return;
+
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     // Clear the cookie as well

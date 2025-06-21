@@ -478,7 +478,12 @@ export default function ReportsPage() {
                           {report.type.toLowerCase()}
                         </div>
                         <button
-                          onClick={() => window.open(`/api/reports/download/${report.id}`, '_blank')}
+                          onClick={() => {
+                            // SSR-safe window.open usage
+                            if (typeof window !== 'undefined') {
+                              window.open(`/api/reports/download/${report.id}`, '_blank');
+                            }
+                          }}
                           className="text-blue-600 hover:text-blue-800 text-sm font-medium"
                           disabled={report.status !== 'COMPLETED'}
                         >
