@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import ParentLayout from '@/components/layout/ParentLayout';
 import { HubHeader, HubActionButton } from '@/components/hub';
@@ -37,7 +37,8 @@ interface TimeSlot {
   available: boolean;
 }
 
-export default function ParentMeetings() {
+// SSR-Safe Search Params Component
+function ParentMeetingsContent() {
   const searchParams = useSearchParams();
   const [meetings, setMeetings] = useState<Meeting[]>([]);
   const [availableSlots, setAvailableSlots] = useState<TimeSlot[]>([]);
@@ -58,14 +59,19 @@ export default function ParentMeetings() {
   });
 
   useEffect(() => {
-    // Handle query parameters
-    const action = searchParams.get('action');
-    const teacher = searchParams.get('teacher');
-    const child = searchParams.get('child');
+    // Handle query parameters safely
+    try {
+      const action = searchParams?.get('action');
+      const teacher = searchParams?.get('teacher');
+      const child = searchParams?.get('child');
 
-    if (action === 'schedule') setShowScheduleForm(true);
-    if (teacher) setFilterTeacher(teacher);
-    if (child) setFilterChild(child);
+      if (action === 'schedule') setShowScheduleForm(true);
+      if (teacher) setFilterTeacher(teacher);
+      if (child) setFilterChild(child);
+    } catch (error) {
+      // Handle SSR or navigation errors gracefully
+      console.warn('Search params not available:', error);
+    }
   }, [searchParams]);
 
   useEffect(() => {
@@ -616,5 +622,20 @@ export default function ParentMeetings() {
         )}
       </div>
     </ParentLayout>
+  );
+}
+
+// Main component with Suspense wrapper for SSR safety
+export default function ParentMeetings() {
+  return (
+    <Suspense fallback={
+      <ParentLayout>
+        <div className="flex items-center justify-center h-64">
+          <div className="text-lg">Loading meetings...</div>
+        </div>
+      </ParentLayout>
+    }>
+      <ParentMeetingsContent />
+    </Suspense>
   );
 }

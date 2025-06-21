@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import ParentLayout from '@/components/layout/ParentLayout';
 import { HubHeader, HubActionButton } from '@/components/hub';
@@ -26,7 +26,8 @@ interface EmergencyContact {
   updatedAt: string;
 }
 
-export default function ParentEmergencyContacts() {
+// SSR-Safe Search Params Component
+function EmergencyContactsContent() {
   const searchParams = useSearchParams();
   const [contacts, setContacts] = useState<EmergencyContact[]>([]);
   const [loading, setLoading] = useState(true);
@@ -48,11 +49,16 @@ export default function ParentEmergencyContacts() {
   });
 
   useEffect(() => {
-    // Handle query parameters
-    const action = searchParams.get('action');
-    
-    if (action === 'add') {
-      setShowForm(true);
+    // Handle query parameters safely
+    try {
+      const action = searchParams?.get('action');
+
+      if (action === 'add') {
+        setShowForm(true);
+      }
+    } catch (error) {
+      // Handle SSR or navigation errors gracefully
+      console.warn('Search params not available:', error);
     }
 
     // Mock data for emergency contacts
@@ -545,5 +551,20 @@ export default function ParentEmergencyContacts() {
         )}
       </div>
     </ParentLayout>
+  );
+}
+
+// Main component with Suspense wrapper for SSR safety
+export default function ParentEmergencyContacts() {
+  return (
+    <Suspense fallback={
+      <ParentLayout>
+        <div className="flex items-center justify-center h-64">
+          <div className="text-lg">Loading emergency contacts...</div>
+        </div>
+      </ParentLayout>
+    }>
+      <EmergencyContactsContent />
+    </Suspense>
   );
 }

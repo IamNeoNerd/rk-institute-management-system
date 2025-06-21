@@ -92,31 +92,24 @@ const nextConfig = {
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
 
-  // Experimental features for better performance (Phase 2 optimizations)
+  // Experimental features for better performance (Phase 3 Stability Focus)
   experimental: {
-    // Enable modern bundling
-    esmExternals: true,
+    // Enable modern bundling (disabled for stability)
+    esmExternals: false,
 
     // Optimize server components
     serverComponentsExternalPackages: ['@prisma/client'],
 
-    // Phase 2: Advanced performance optimizations
-    optimizeCss: true,
-    optimizePackageImports: ['lucide-react', '@prisma/client', 'react-hook-form'],
+    // Phase 3: Stability over performance optimizations
+    optimizeCss: false,
+    optimizePackageImports: ['lucide-react', '@prisma/client'],
 
-    // Enable turbo mode for faster builds
-    turbo: {
-      rules: {
-        '*.svg': {
-          loaders: ['@svgr/webpack'],
-          as: '*.js',
-        },
-      },
-    },
+    // Disable turbo mode for stability
+    turbo: false,
 
-    // Phase 2: Memory and performance improvements
+    // Phase 3: Conservative memory settings
     workerThreads: false,
-    cpus: Math.max(1, (require('os').cpus().length || 1) - 1),
+    cpus: 1,
   },
 
   // =============================================================================
@@ -183,10 +176,14 @@ const nextConfig = {
         'jspdf'
       );
 
-      // Critical fix: Add banner to define self globally
+      // Critical fix: Add banner to define self globally and fix webpack runtime
       config.plugins.push(
         new webpack.BannerPlugin({
-          banner: 'if (typeof self === "undefined") { var self = global; }',
+          banner: `
+if (typeof self === "undefined") { var self = global; }
+if (typeof global !== "undefined" && typeof global.Array === "undefined") { global.Array = Array; }
+if (typeof global !== "undefined" && typeof global.Object === "undefined") { global.Object = Object; }
+          `.trim(),
           raw: true,
           entryOnly: false,
         })
