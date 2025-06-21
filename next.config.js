@@ -307,6 +307,12 @@ if (typeof global !== "undefined" && typeof global.Object === "undefined") { glo
     return 'rk-institute-' + Date.now();
   },
 
+  // Experimental: Skip error page generation to avoid webpack runtime issues
+  experimental: {
+    skipTrailingSlashRedirect: true,
+    skipMiddlewareUrlNormalize: true,
+  },
+
   // =============================================================================
   // TYPESCRIPT CONFIGURATION
   // =============================================================================
