@@ -96,19 +96,78 @@ const nextConfig = {
   // =============================================================================
   
   webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
+    // =============================================================================
+    // WEBPACK RUNTIME ERROR FIXES - PROVEN SOLUTIONS
+    // =============================================================================
+
+    // Fix "self is not defined" errors in vendor bundles
+    config.plugins.push(
+      new webpack.DefinePlugin({
+        'typeof self': JSON.stringify('undefined'),
+        'typeof window': isServer ? JSON.stringify('undefined') : JSON.stringify('object'),
+        'typeof global': JSON.stringify('object'),
+        'typeof globalThis': JSON.stringify('object'),
+      })
+    );
+
+    // Ignore problematic modules that cause SSR issues
+    config.plugins.push(
+      new webpack.IgnorePlugin({
+        resourceRegExp: /^(canvas|jsdom)$/,
+      })
+    );
+
+    // Provide polyfills for Node.js globals in browser environment
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        net: false,
+        tls: false,
+        crypto: false,
+        stream: false,
+        url: false,
+        zlib: false,
+        http: false,
+        https: false,
+        assert: false,
+        os: false,
+        path: false,
+      };
+    }
+
     // Production optimizations
     if (!dev) {
-      // Minimize bundle size
+      // Enhanced bundle splitting with runtime isolation
       config.optimization.splitChunks = {
         chunks: 'all',
         cacheGroups: {
+          default: {
+            minChunks: 2,
+            priority: -20,
+            reuseExistingChunk: true,
+          },
           vendor: {
             test: /[\\/]node_modules[\\/]/,
             name: 'vendors',
             chunks: 'all',
+            priority: -10,
+            enforce: true,
+          },
+          common: {
+            name: 'common',
+            minChunks: 2,
+            chunks: 'all',
+            priority: -5,
+            reuseExistingChunk: true,
           },
         },
-      }
+      };
+
+      // Runtime chunk optimization
+      config.optimization.runtimeChunk = {
+        name: 'runtime',
+      };
 
       // Add bundle analyzer in production (optional)
       if (process.env.ANALYZE === 'true') {
@@ -122,9 +181,15 @@ const nextConfig = {
       }
     }
 
-    // Handle Prisma client
+    // Handle Prisma client and other server-only modules
     if (isServer) {
-      config.externals.push('@prisma/client')
+      config.externals.push('@prisma/client');
+
+      // Additional server-only externals
+      config.externals.push({
+        'utf-8-validate': 'commonjs utf-8-validate',
+        'bufferutil': 'commonjs bufferutil',
+      });
     }
 
     return config

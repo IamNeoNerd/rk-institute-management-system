@@ -38,9 +38,16 @@ export default function CoursesView() {
   const [currentUser, setCurrentUser] = useState<any>(null);
 
   useEffect(() => {
-    const userData = localStorage.getItem('user');
-    if (userData) {
-      setCurrentUser(JSON.parse(userData));
+    // SSR-safe localStorage access
+    if (typeof window !== 'undefined') {
+      const userData = localStorage.getItem('user');
+      if (userData) {
+        try {
+          setCurrentUser(JSON.parse(userData));
+        } catch (error) {
+          console.error('Error parsing user data:', error);
+        }
+      }
     }
     fetchCourses();
   }, []);

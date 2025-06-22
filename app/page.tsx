@@ -27,12 +27,15 @@ export default function LoginPage() {
       const data = await response.json();
 
       if (response.ok) {
-        // Store token in localStorage and cookie
-        localStorage.setItem('token', data.token);
-        localStorage.setItem('user', JSON.stringify(data.user));
+        // SSR-safe browser API access
+        if (typeof window !== 'undefined') {
+          // Store token in localStorage and cookie
+          localStorage.setItem('token', data.token);
+          localStorage.setItem('user', JSON.stringify(data.user));
 
-        // Also set as httpOnly cookie for server-side access
-        document.cookie = `token=${data.token}; path=/; max-age=86400; SameSite=Lax`;
+          // Also set as httpOnly cookie for server-side access
+          document.cookie = `token=${data.token}; path=/; max-age=86400; SameSite=Lax`;
+        }
 
         // Redirect based on role
         switch (data.user.role) {
