@@ -2,19 +2,20 @@
 
 import { useEffect } from 'react';
 import { PeopleDataInsightsProps } from './types';
+import { usePeopleHubData } from '@/hooks';
 
 /**
  * People Data Insights Component
- * 
- * Handles data fetching and state management for the People hub.
- * This component manages API calls, loading states, and error handling
- * while maintaining SSR compatibility.
- * 
+ *
+ * Handles data fetching and state management for the People hub using
+ * the custom usePeopleHubData hook. This component now serves as a bridge
+ * between the custom hook and the parent component's state management.
+ *
  * Design Features:
- * - SSR-safe localStorage access with proper guards
- * - Comprehensive error handling with user-friendly messages
- * - Automatic data fetching on component mount
- * - Clean separation of data logic from presentation
+ * - Uses custom hook for clean business logic separation
+ * - Maintains compatibility with existing component interface
+ * - SSR-safe data fetching through custom hook
+ * - Comprehensive error handling via hook
  */
 
 export default function PeopleDataInsights({
@@ -22,60 +23,21 @@ export default function PeopleDataInsights({
   onLoadingChange,
   onErrorChange
 }: PeopleDataInsightsProps) {
-  
+
+  const { stats, loading, error } = usePeopleHubData();
+
+  // Update parent component state when hook state changes
   useEffect(() => {
-    fetchPeopleStats();
-  }, []);
+    onStatsUpdate(stats);
+  }, [stats, onStatsUpdate]);
 
-  const fetchPeopleStats = async () => {
-    try {
-      onLoadingChange(true);
-      onErrorChange('');
+  useEffect(() => {
+    onLoadingChange(loading);
+  }, [loading, onLoadingChange]);
 
-      // SSR-safe localStorage access
-      if (typeof window === 'undefined') {
-        onLoadingChange(false);
-        return;
-      }
-
-      const token = localStorage.getItem('token');
-
-      // Check if token exists before making API call
-      if (!token) {
-        onErrorChange('Authentication required. Please log in again.');
-        onLoadingChange(false);
-        return;
-      }
-
-      const response = await fetch('/api/people/stats', {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        onStatsUpdate(data);
-      } else {
-        // Try to parse error response for more specific feedback
-        try {
-          const errorData = await response.json();
-          onErrorChange(errorData.message || `Failed to fetch people statistics (${response.status})`);
-        } catch {
-          onErrorChange(`Failed to fetch people statistics (${response.status})`);
-        }
-      }
-    } catch (error) {
-      // Provide more specific error messages
-      if (error instanceof Error) {
-        onErrorChange(`Network error: ${error.message}`);
-      } else {
-        onErrorChange('Network error: Unable to connect to server');
-      }
-    } finally {
-      onLoadingChange(false);
-    }
-  };
+  useEffect(() => {
+    onErrorChange(error);
+  }, [error, onErrorChange]);
 
   // This component doesn't render anything visible - it's purely for data management
   return null;

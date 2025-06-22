@@ -24,6 +24,8 @@ export default function ReportsPage() {
   const [automationReports, setAutomationReports] = useState<AutomationReport[]>([]);
   const [generatingReport, setGeneratingReport] = useState<string | null>(null);
 
+  // This function is now handled by the useReportGeneration hook
+  // but we keep it here for compatibility with the ReportsAutomationHub component
   const generateAutomationReport = async (reportType: ReportType) => {
     setGeneratingReport(reportType);
     try {
@@ -38,9 +40,7 @@ export default function ReportsPage() {
       const data = await response.json();
 
       if (data.success) {
-        // Show success toast (user-friendly message)
         alert(`${reportType.charAt(0).toUpperCase() + reportType.slice(1)} report generated successfully!`);
-        // Refresh automation reports will be handled by ReportsDataInsights
       } else {
         alert(`Failed to generate ${reportType} report: ${data.error}`);
       }
