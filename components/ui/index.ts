@@ -59,3 +59,18 @@ export type {
   SkeletonProps,
   SkeletonGroupProps
 } from './States';
+
+// Performance Optimized Components (Phase F)
+export { default as OptimizedStatsCard } from './OptimizedStatsCard';
+export { default as OptimizedHeader } from './OptimizedHeader';
+export { default as OptimizedNavigation } from './OptimizedNavigation';
+export type {
+  OptimizedStatsCardProps
+} from './OptimizedStatsCard';
+export type {
+  OptimizedHeaderProps
+} from './OptimizedHeader';
+export type {
+  OptimizedNavigationProps,
+  NavigationTab
+} from './OptimizedNavigation';
