@@ -67,6 +67,27 @@ export {
   type JobAnalysis
 } from './operations/useJobScheduler';
 
+// Student Portal Hooks
+export {
+  useStudentPortalData,
+  type UseStudentPortalDataReturn
+} from './student/useStudentPortalData';
+export {
+  useStudentAcademics,
+  type UseStudentAcademicsReturn,
+  type Course,
+  type Assignment,
+  type AcademicLog,
+  type CourseMaterial
+} from './student/useStudentAcademics';
+export {
+  useStudentFinancials,
+  type UseStudentFinancialsReturn,
+  type FeeAllocation,
+  type Payment,
+  type PaymentSummary
+} from './student/useStudentFinancials';
+
 // Shared Types
 export type {
   ApiResponse,
