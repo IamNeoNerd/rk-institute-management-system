@@ -349,7 +349,7 @@ export function useReportingSystem(
 
 // Mock data functions for development
 function getMockTemplates(userRole: string): ReportTemplate[] {
-  const allTemplates = [
+  const allTemplates: ReportTemplate[] = [
     {
       id: 'academic-progress',
       name: 'Academic Progress Report',
@@ -382,7 +382,7 @@ function getMockTemplates(userRole: string): ReportTemplate[] {
           ]
         }
       ],
-      outputFormats: ['pdf', 'excel'],
+      outputFormats: ['pdf', 'excel'] as ('pdf' | 'excel' | 'csv')[],
       estimatedTime: 15,
       isActive: true,
       createdAt: '2024-01-01T00:00:00Z',
@@ -410,7 +410,7 @@ function getMockTemplates(userRole: string): ReportTemplate[] {
           ]
         }
       ],
-      outputFormats: ['pdf', 'excel', 'csv'],
+      outputFormats: ['pdf', 'excel', 'csv'] as ('pdf' | 'excel' | 'csv')[],
       estimatedTime: 10,
       isActive: true,
       createdAt: '2024-01-01T00:00:00Z',
