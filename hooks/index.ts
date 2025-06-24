@@ -45,6 +45,28 @@ export {
   useReportAnalytics
 } from './reports/useReportsHubData';
 
+// Operations Hub Hooks
+export {
+  useOperationsHubData,
+  type UseOperationsHubDataReturn
+} from './operations/useOperationsHubData';
+export {
+  useAutomationJobs,
+  type UseAutomationJobsReturn
+} from './operations/useAutomationJobs';
+export {
+  useSystemHealth,
+  type UseSystemHealthReturn,
+  type HealthStatus,
+  type SystemHealthMetrics
+} from './operations/useSystemHealth';
+export {
+  useJobScheduler,
+  type UseJobSchedulerReturn,
+  type JobMetrics,
+  type JobAnalysis
+} from './operations/useJobScheduler';
+
 // Shared Types
 export type {
   ApiResponse,
