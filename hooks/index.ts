@@ -103,6 +103,21 @@ export {
   type CourseAnalytics
 } from './teacher/useTeacherCourses';
 
+// Parent Portal Hooks
+export {
+  useParentPortalData,
+  type UseParentPortalDataReturn
+} from './parent/useParentPortalData';
+export {
+  useParentFamily,
+  type UseParentFamilyReturn
+} from './parent/useParentFamily';
+export {
+  useParentFinancials,
+  type UseParentFinancialsReturn,
+  type FamilyFinancialSummary
+} from './parent/useParentFinancials';
+
 // Shared Types
 export type {
   ApiResponse,
