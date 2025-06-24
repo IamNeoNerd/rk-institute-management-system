@@ -90,7 +90,7 @@ export default function ParentStatsOverview({
           Welcome, {familyProfile?.name}!
         </h2>
         <p className="text-lg opacity-90 mb-6">
-          Stay connected with your children's academic journey and manage family account information
+          Stay connected with your children&apos;s academic journey and manage family account information
         </p>
         
         {/* Family Info Badges */}

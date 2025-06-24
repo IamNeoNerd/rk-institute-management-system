@@ -87,7 +87,7 @@ export default function TeacherStatsOverview({
       {/* Welcome Section */}
       <div className="bg-gradient-to-r from-teal-500 via-blue-600 to-purple-600 rounded-xl shadow-lg p-8 text-white">
         <h2 className="text-3xl font-bold mb-4">
-          Teacher's Dashboard
+          Teacher&apos;s Dashboard
         </h2>
         <p className="text-lg opacity-90 mb-6">
           Empower student success through comprehensive academic tracking and progress management

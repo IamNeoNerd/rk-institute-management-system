@@ -257,7 +257,7 @@ class ProductionMonitoring {
     const allHealthy = Object.values(checks).every(check => check);
     const someHealthy = Object.values(checks).some(check => check);
 
-    const status = allHealthy ? 'healthy' : someHealthy ? 'degraded' : 'unhealthy';
+    const status: 'healthy' | 'degraded' | 'unhealthy' = allHealthy ? 'healthy' : someHealthy ? 'degraded' : 'unhealthy';
 
     const healthData = {
       status,
@@ -266,7 +266,9 @@ class ProductionMonitoring {
     };
 
     if (status !== 'healthy') {
-      this.logWarning('Health check failed', { health_status: status, checks });
+      this.logWarning('Health check failed', {
+        additionalData: { health_status: status, checks }
+      });
     }
 
     return healthData;

@@ -43,7 +43,7 @@ export default function ParentAdvancedReportsPage() {
               <div className="text-2xl mr-3">👨‍👩‍👧‍👦</div>
               <div>
                 <h1 className="text-xl font-semibold text-gray-900">Family Reports</h1>
-                <p className="text-sm text-gray-600">Generate comprehensive reports for your children's progress</p>
+                <p className="text-sm text-gray-600">Generate comprehensive reports for your children&apos;s progress</p>
               </div>
             </div>
             <div className="text-sm text-gray-500">
