@@ -76,11 +76,6 @@ export async function GET(request: NextRequest) {
           active: 1, // Simplified - would need actual pool metrics
           idle: 0,
           total: 1
-        },
-        dataValidation: {
-          userCount,
-          studentCount,
-          tablesAccessible: true
         }
       };
 
@@ -97,11 +92,6 @@ export async function GET(request: NextRequest) {
           active: 0,
           idle: 0,
           total: 0
-        },
-        dataValidation: {
-          userCount: 0,
-          studentCount: 0,
-          tablesAccessible: false
         }
       };
     }
