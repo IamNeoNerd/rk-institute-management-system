@@ -15,6 +15,20 @@
 import React from 'react';
 
 // =============================================================================
+// GLOBAL TYPE DECLARATIONS
+// =============================================================================
+
+// Extend Window interface for third-party services
+declare global {
+  interface Window {
+    gtag?: (...args: any[]) => void;
+    Sentry?: any;
+    va?: (...args: any[]) => void;
+    web_vitals?: any;
+  }
+}
+
+// =============================================================================
 // ERROR TRACKING CONFIGURATION
 // =============================================================================
 
