@@ -88,6 +88,21 @@ export {
   type PaymentSummary
 } from './student/useStudentFinancials';
 
+// Teacher Portal Hooks
+export {
+  useTeacherPortalData,
+  type UseTeacherPortalDataReturn
+} from './teacher/useTeacherPortalData';
+export {
+  useTeacherAcademics,
+  type UseTeacherAcademicsReturn
+} from './teacher/useTeacherAcademics';
+export {
+  useTeacherCourses,
+  type UseTeacherCoursesReturn,
+  type CourseAnalytics
+} from './teacher/useTeacherCourses';
+
 // Shared Types
 export type {
   ApiResponse,
