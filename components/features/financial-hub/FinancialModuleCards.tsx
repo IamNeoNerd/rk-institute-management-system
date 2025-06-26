@@ -89,7 +89,7 @@ export default function FinancialModuleCards({ modules, stats }: FinancialModule
               </div>
             )}
 
-            {/* Module Actions */}
+            {/* Module Actions - Mobile Optimized */}
             <div className="space-y-2">
               <Link
                 href={module.href}
@@ -97,9 +97,10 @@ export default function FinancialModuleCards({ modules, stats }: FinancialModule
               >
                 Manage {module.title.split(' ')[0]}
               </Link>
+              {/* Hide "Quick Action" on mobile to reduce duplicate links - Quick Actions section handles this */}
               <Link
                 href={`${module.href}?action=add`}
-                className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center justify-center"
+                className="hidden md:flex w-full bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 items-center justify-center"
               >
                 Quick Action
               </Link>

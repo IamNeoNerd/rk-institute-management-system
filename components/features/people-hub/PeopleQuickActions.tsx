@@ -19,8 +19,11 @@ import { PeopleQuickActionsProps } from './types';
 export default function PeopleQuickActions({ actions }: PeopleQuickActionsProps) {
   return (
     <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
-      <h2 className="text-2xl font-bold text-gray-900 mb-4">Quick Actions</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-2xl font-bold text-gray-900">Quick Actions</h2>
+        <span className="text-sm text-gray-500 hidden sm:block">Primary actions for mobile users</span>
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         {actions.map((action) => (
           <Link
             key={action.id}
