@@ -33,6 +33,7 @@
     "@modelcontextprotocol/sdk": "^1.13.2",
     "@modelcontextprotocol/server-filesystem": "^2025.3.28",
     "@modelcontextprotocol/server-slack": "^2025.4.25",
+    "@octokit/rest": "^22.0.0",
     "@prisma/client": "^6.9.0",
     "@ramidecodes/mcp-server-notion": "^1.0.6",
     "@sentry/mcp-server": "^0.12.0",

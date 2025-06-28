@@ -7,31 +7,38 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { getDatabaseHealth, testDatabaseConnection } from '@/lib/database';
 
 // =============================================================================
-// MCP JSON-RPC TYPES
+// JSON-RPC 2.0 TYPES (Based on MCP Protocol Research)
 // =============================================================================
 
-interface MCPRequest {
-  jsonrpc: string;
+interface JSONRPCRequest {
+  jsonrpc: "2.0";
   method: string;
   params?: any;
-  id: number | string;
+  id?: string | number;
 }
 
-interface MCPResponse {
-  jsonrpc: string;
+interface JSONRPCResponse {
+  jsonrpc: "2.0";
   result?: any;
   error?: {
     code: number;
     message: string;
     data?: any;
   };
-  id: number | string;
+  id?: string | number | null;
 }
+
+// Standard JSON-RPC error codes
+const JSON_RPC_ERRORS = {
+  PARSE_ERROR: -32700,
+  INVALID_REQUEST: -32600,
+  METHOD_NOT_FOUND: -32601,
+  INVALID_PARAMS: -32602,
+  INTERNAL_ERROR: -32603
+} as const;
 
 // =============================================================================
 // MCP TOOLS IMPLEMENTATION
@@ -44,18 +51,10 @@ async function getDeploymentStatus(params: any = {}) {
   try {
     const { environment = "production", includeMetrics = true } = params;
     
-    // Database connectivity check
-    let dbStatus = "unknown";
-    let dbResponseTime = 0;
-    
-    try {
-      const startTime = Date.now();
-      await prisma.$queryRaw`SELECT 1`;
-      dbResponseTime = Date.now() - startTime;
-      dbStatus = "healthy";
-    } catch (error) {
-      dbStatus = "unhealthy";
-    }
+    // Database connectivity check using proper error handling
+    const dbHealth = await getDatabaseHealth();
+    const dbStatus = dbHealth.healthy ? "healthy" : "unhealthy";
+    const dbResponseTime = dbHealth.details.responseTime || 0;
     
     const deploymentStatus = {
       environment,
@@ -105,9 +104,9 @@ async function getDeploymentStatus(params: any = {}) {
 }
 
 /**
- * 🔧 Test database health and connectivity
+ * 🔧 Test database health and connectivity (MCP Tool)
  */
-async function getDatabaseHealth(params: any = {}) {
+async function getDatabaseHealthTool(params: any = {}) {
   try {
     const { includeQueries = false, testConnection = true } = params;
     
@@ -116,25 +115,26 @@ async function getDatabaseHealth(params: any = {}) {
     let queryResults = {};
     
     if (testConnection) {
-      try {
-        const startTime = Date.now();
-        await prisma.$queryRaw`SELECT 1 as test`;
-        responseTime = Date.now() - startTime;
-        connectionStatus = "healthy";
-        
-        if (includeQueries) {
-          const userCount = await prisma.user.count();
-          const studentCount = await prisma.student.count();
-          
+      // Use the proper database health check
+      const dbHealth = await getDatabaseHealth();
+      connectionStatus = dbHealth.healthy ? "healthy" : "unhealthy";
+      responseTime = dbHealth.details.responseTime || 0;
+
+      if (includeQueries && dbHealth.healthy) {
+        try {
+          // Only try to get counts if database is healthy
+          const dbConnection = await testDatabaseConnection();
           queryResults = {
-            users: userCount,
-            students: studentCount,
+            connectionTest: dbConnection.status,
+            responseTime: dbConnection.responseTime,
+            lastUpdated: new Date().toISOString()
+          };
+        } catch (error) {
+          queryResults = {
+            error: "Could not retrieve query results",
             lastUpdated: new Date().toISOString()
           };
         }
-      } catch (error) {
-        connectionStatus = "unhealthy";
-        responseTime = Date.now() - startTime;
       }
     }
 
@@ -251,7 +251,7 @@ async function listTools() {
 // MCP REQUEST HANDLER
 // =============================================================================
 
-async function handleMCPRequest(request: MCPRequest): Promise<MCPResponse> {
+async function handleJSONRPCRequest(request: JSONRPCRequest): Promise<JSONRPCResponse> {
   try {
     let result;
 
@@ -268,7 +268,7 @@ async function handleMCPRequest(request: MCPRequest): Promise<MCPResponse> {
             result = await getDeploymentStatus(args);
             break;
           case "database_health":
-            result = await getDatabaseHealth(args);
+            result = await getDatabaseHealthTool(args);
             break;
           case "mobile_optimization_check":
             result = await getMobileOptimizationCheck(args);
@@ -308,32 +308,62 @@ export async function GET() {
   return NextResponse.json({
     name: "RK Institute MCP Server",
     version: "1.0.0",
+    protocolVersion: "2024-11-05",
     description: "MCP server for autonomous deployment verification",
+    capabilities: {
+      tools: {}
+    },
     tools: ["deployment_status", "database_health", "mobile_optimization_check"],
     status: "operational",
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
+    implementation: "json-rpc-2.0"
+  }, {
+    headers: {
+      'Content-Type': 'application/json',
+      'Cache-Control': 'no-cache'
+    }
   });
 }
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const response = await handleMCPRequest(body);
-    
+
+    // Validate JSON-RPC 2.0 format
+    if (body.jsonrpc !== "2.0" || !body.method) {
+      return NextResponse.json({
+        jsonrpc: "2.0",
+        error: {
+          code: JSON_RPC_ERRORS.INVALID_REQUEST,
+          message: "Invalid Request - must be JSON-RPC 2.0 format"
+        },
+        id: body.id || null
+      }, {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    const response = await handleJSONRPCRequest(body);
+
     return NextResponse.json(response, {
       headers: {
         'Content-Type': 'application/json',
+        'Cache-Control': 'no-cache'
       },
     });
   } catch (error) {
     return NextResponse.json({
       jsonrpc: "2.0",
       error: {
-        code: -32700,
+        code: JSON_RPC_ERRORS.PARSE_ERROR,
         message: "Parse error",
         data: error instanceof Error ? error.message : 'Invalid JSON'
       },
       id: null
-    }, { status: 400 });
+    }, {
+      status: 400,
+      headers: { 'Content-Type': 'application/json' }
+    });
   }
 }
