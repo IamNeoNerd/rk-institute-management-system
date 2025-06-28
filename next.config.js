@@ -306,16 +306,9 @@ const nextConfig = {
   // =============================================================================
   // API CONFIGURATION
   // =============================================================================
-  
-  // API routes configuration
-  async rewrites() {
-    return [
-      {
-        source: '/api/:path*',
-        destination: '/api/:path*',
-      },
-    ]
-  },
+
+  // API routes configuration - removed redundant rewrites
+  // Next.js App Router handles API routes automatically
 }
 
 module.exports = nextConfig
