@@ -1,8 +1,11 @@
 /**
  * Vercel MCP Adapter API Route
- * 
+ *
  * Provides Model Context Protocol integration for real-time deployment monitoring,
  * automated health checks, and seamless communication with the MCP ecosystem.
+ *
+ * ✅ Environment Variables Configured: JWT_SECRET, JWT_EXPIRY
+ * 🚀 Deployment Trigger: Environment configuration complete - Ready for testing
  */
 
 import { createMcpHandler } from "@vercel/mcp-adapter";
