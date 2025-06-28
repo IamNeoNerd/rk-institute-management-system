@@ -14,6 +14,7 @@
 'use client';
 
 import React, { memo } from 'react';
+import { ProfessionalIcon } from '@/components/ui/icons/ProfessionalIconSystem';
 
 export interface OptimizedStatsCardProps {
   title: string;
@@ -52,9 +53,9 @@ const OptimizedStatsCard = memo(function OptimizedStatsCard({
     };
     
     const trendIcons = {
-      up: '↗️',
-      down: '↘️',
-      neutral: '➡️'
+      up: <ProfessionalIcon name="arrow-up-right" size={16} />,
+      down: <ProfessionalIcon name="arrow-down-right" size={16} />,
+      neutral: <ProfessionalIcon name="arrow-right" size={16} />
     };
     
     return (

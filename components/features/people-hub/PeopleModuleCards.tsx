@@ -63,7 +63,13 @@ export default function PeopleModuleCards({ modules, stats }: PeopleModuleCardsP
           {/* Module Header */}
           <div className={`bg-gradient-to-r ${module.color} p-6 text-white`}>
             <div className="flex items-center mb-4">
-              <div className="text-3xl mr-4">{module.icon}</div>
+              <div className="mr-4 flex items-center justify-center">
+                {typeof module.icon === 'string' ? (
+                  <span className="text-3xl">{module.icon}</span>
+                ) : (
+                  module.icon
+                )}
+              </div>
               <div>
                 <h3 className="text-xl font-bold">{module.title}</h3>
                 <p className="text-white/80 text-sm">{module.description}</p>
@@ -89,7 +95,7 @@ export default function PeopleModuleCards({ modules, stats }: PeopleModuleCardsP
               </div>
             )}
 
-            {/* Module Actions - Mobile Optimized */}
+            {/* Module Actions - Streamlined for Mobile-First */}
             <div className="space-y-2">
               <Link
                 href={module.href}
@@ -97,13 +103,7 @@ export default function PeopleModuleCards({ modules, stats }: PeopleModuleCardsP
               >
                 Manage {module.title}
               </Link>
-              {/* Hide "Add New" on mobile to reduce duplicate links - Quick Actions section handles this */}
-              <Link
-                href={`${module.href}?action=add`}
-                className="hidden md:flex w-full bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 items-center justify-center"
-              >
-                Add New
-              </Link>
+              {/* Removed redundant "Add New" link - Quick Actions section provides this functionality */}
             </div>
           </div>
         </div>

@@ -16,6 +16,7 @@
 
 import { OperationsSystemHealthProps } from './types';
 import { Card, StatsCard, Grid, LoadingState, EmptyState } from '@/components/ui';
+import { ProfessionalIcon } from '@/components/ui/icons/ProfessionalIconSystem';
 
 export default function OperationsSystemHealth({
   automationStatus,
@@ -31,16 +32,16 @@ export default function OperationsSystemHealth({
       case 'running':
       case 'active':
       case 'healthy':
-        return { color: 'green', icon: '✅', label: 'Healthy' };
+        return { color: 'green', icon: <ProfessionalIcon name="success" size={20} />, label: 'Healthy' };
       case 'warning':
       case 'degraded':
-        return { color: 'yellow', icon: '⚠️', label: 'Warning' };
+        return { color: 'yellow', icon: <ProfessionalIcon name="warning" size={20} />, label: 'Warning' };
       case 'error':
       case 'failed':
       case 'unhealthy':
-        return { color: 'red', icon: '❌', label: 'Error' };
+        return { color: 'red', icon: <ProfessionalIcon name="error" size={20} />, label: 'Error' };
       default:
-        return { color: 'gray', icon: '❓', label: 'Unknown' };
+        return { color: 'gray', icon: <ProfessionalIcon name="info" size={20} />, label: 'Unknown' };
     }
   };
 
@@ -137,19 +138,19 @@ export default function OperationsSystemHealth({
             title="Total Running Jobs"
             value={automationStatus.summary.totalRunningJobs}
             color="blue"
-            icon="⚡"
+            icon={<ProfessionalIcon name="zap" size={24} />}
           />
           <StatsCard
             title="Scheduled Jobs"
             value={automationStatus.summary.totalScheduledJobs}
             color="purple"
-            icon="📅"
+            icon={<ProfessionalIcon name="calendar" size={24} />}
           />
           <StatsCard
             title="Active Schedules"
             value={automationStatus.summary.activeScheduledJobs}
             color="green"
-            icon="✅"
+            icon={<ProfessionalIcon name="check" size={24} />}
           />
         </Grid>
       </Card>

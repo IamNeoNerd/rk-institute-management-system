@@ -1,0 +1,46 @@
+# Page snapshot
+
+```yaml
+- heading "Enhanced Mobile-First Cards" [level=1]
+- paragraph: Ultra-compact designs for maximum mobile productivity
+- heading "Compact Stats (Condensed Layout)" [level=2]
+- text: 245 Students Active ↗ 8.2% 12 Courses Running ₹125K Fees Outstanding ↘ 12.5% 8 Services Available 24 Teachers Active ₹2.4M Revenue Monthly ↗ 15.3%
+- heading "Horizontal Layout (Space Efficient)" [level=2]
+- text: ₹2,45,000 ↗ 15.2% Monthly Revenue This month 28 ↗ 8.5% New Enrollments This week 94.5% Attendance Rate This month
+- heading "Condensed Metrics (Ultra-Compact)" [level=2]
+- text: Total Revenue ₹12,45,000 This year ↗ 18.5% Active Students 245 Currently enrolled ↗ 12.3% Course Completion 96.5% Success rate Outstanding Fees ₹85,000 Pending collection ↘ 5.2% Teacher Satisfaction 4.8/5 Average rating System Uptime 99.9% Last 30 days
+- heading "List Cards (Progressive Disclosure)" [level=2]
+- text: "John Smith Grade 10A - Overdue: ₹5,000 Urgent 15 days Sarah Johnson Grade 9B - Overdue: ₹3,200 High 8 days Mike Wilson Grade 11C - Overdue: ₹2,800 Medium 5 days"
+- button "View 1 more"
+- text: Mathematics Grade 10 28/30 students enrolled Full 93% Physics Grade 11 22/25 students enrolled High 88%
+- button "View 1 more"
+- heading "Enhanced Mobile Features" [level=2]
+- heading "Ultra-Compact Padding:" [level=3]
+- list:
+  - listitem: "• Mobile: p-1.5, Desktop: p-3"
+  - listitem: • Minimal gaps (1.5px mobile)
+  - listitem: • 44px touch targets maintained
+- heading "Content Density:" [level=3]
+- list:
+  - listitem: • 2-6 cards per row on mobile
+  - listitem: • Horizontal layouts for efficiency
+  - listitem: • Progressive disclosure patterns
+- heading "Typography:" [level=3]
+- list:
+  - listitem: • Optimized font scaling
+  - listitem: • Smart text truncation
+  - listitem: • Improved readability
+- heading "Performance:" [level=3]
+- list:
+  - listitem: • Reduced visual complexity
+  - listitem: • Faster information scanning
+  - listitem: • Better mobile productivity
+- heading "Mobile Density Comparison" [level=2]
+- paragraph:
+  - strong: "Before:"
+  - text: 4 cards visible on mobile viewport (375px width)
+- paragraph:
+  - strong: "After:"
+  - text: 6-8 cards visible with enhanced layouts - 50-100% more content density
+- alert
+```

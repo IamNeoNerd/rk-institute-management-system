@@ -17,6 +17,7 @@
 
 import { StudentQuickActionsProps, QuickAction } from './types';
 import { Grid } from '@/components/ui';
+import { ProfessionalIcon } from '@/components/ui/icons/ProfessionalIconSystem';
 
 export default function StudentQuickActions({
   stats,
@@ -28,7 +29,7 @@ export default function StudentQuickActions({
       id: 'my-courses',
       title: 'My Courses',
       description: `View ${stats.totalCourses} enrolled courses and materials`,
-      icon: '📚',
+      icon: <ProfessionalIcon name="courses" size={24} className="text-white" />,
       bgColor: 'bg-gradient-to-r from-blue-500 to-blue-600',
       hoverColor: 'hover:from-blue-600 hover:to-blue-700'
     },
@@ -36,18 +37,20 @@ export default function StudentQuickActions({
       id: 'assignments',
       title: 'Assignments & Notes',
       description: 'Access homework, assignments, and study materials',
-      icon: '📋',
+      icon: <ProfessionalIcon name="list" size={24} className="text-white" />,
       bgColor: 'bg-gradient-to-r from-green-500 to-green-600',
       hoverColor: 'hover:from-green-600 hover:to-green-700'
     },
     {
       id: 'my-fees',
       title: 'Fees & Payments',
-      description: stats.outstandingDues > 0 
-        ? `Outstanding: ₹${stats.outstandingDues.toLocaleString()}` 
+      description: stats.outstandingDues > 0
+        ? `Outstanding: ₹${stats.outstandingDues.toLocaleString()}`
         : 'View payment history and receipts',
-      icon: stats.outstandingDues > 0 ? '⚠️' : '💰',
-      bgColor: stats.outstandingDues > 0 
+      icon: stats.outstandingDues > 0
+        ? <ProfessionalIcon name="warning" size={24} className="text-white" />
+        : <ProfessionalIcon name="fees" size={24} className="text-white" />,
+      bgColor: stats.outstandingDues > 0
         ? 'bg-gradient-to-r from-red-500 to-red-600'
         : 'bg-gradient-to-r from-purple-500 to-purple-600',
       hoverColor: stats.outstandingDues > 0
@@ -58,7 +61,7 @@ export default function StudentQuickActions({
       id: 'academic-logs',
       title: 'Academic Progress',
       description: `View ${stats.academicLogs} progress records and achievements`,
-      icon: '📝',
+      icon: <ProfessionalIcon name="academic" size={24} className="text-white" />,
       bgColor: 'bg-gradient-to-r from-indigo-500 to-indigo-600',
       hoverColor: 'hover:from-indigo-600 hover:to-indigo-700'
     }

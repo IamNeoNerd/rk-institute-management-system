@@ -1,0 +1,301 @@
+{
+  "mcpServers": {
+    "rk-institute-deployment": {
+      "command": "node",
+      "args": [
+        "dist/index.js"
+      ],
+      "env": {
+        "NODE_ENV": "production",
+        "DATABASE_URL": "${DATABASE_URL}",
+        "JWT_SECRET": "${JWT_SECRET}",
+        "NEXT_PUBLIC_APP_URL": "${NEXT_PUBLIC_APP_URL}",
+        "REDIS_URL": "${REDIS_URL}"
+      },
+      "capabilities": [
+        "deployment_monitoring",
+        "health_checks",
+        "database_validation",
+        "mobile_optimization_testing",
+        "automated_rollback"
+      ],
+      "description": "RK Institute Management System MCP Server for autonomous deployment automation"
+    },
+    "github-integration": {
+      "command": "npx",
+      "args": [
+        "@modelcontextprotocol/server-github"
+      ],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_TOKEN}"
+      },
+      "capabilities": [
+        "repository_management",
+        "workflow_automation",
+        "branch_protection",
+        "deployment_triggers"
+      ],
+      "description": "GitHub MCP integration for repository and CI/CD management"
+    },
+    "linear-integration": {
+      "command": "npx",
+      "args": [
+        "@modelcontextprotocol/server-linear"
+      ],
+      "env": {
+        "LINEAR_API_KEY": "${LINEAR_API_KEY}"
+      },
+      "capabilities": [
+        "issue_tracking",
+        "deployment_coordination",
+        "project_management",
+        "team_communication"
+      ],
+      "description": "Linear MCP integration for project tracking and deployment coordination"
+    },
+    "slack-notifications": {
+      "command": "npx",
+      "args": [
+        "@modelcontextprotocol/server-slack"
+      ],
+      "env": {
+        "SLACK_BOT_TOKEN": "${SLACK_BOT_TOKEN}",
+        "SLACK_SIGNING_SECRET": "${SLACK_SIGNING_SECRET}"
+      },
+      "capabilities": [
+        "deployment_notifications",
+        "alert_management",
+        "team_communication",
+        "status_updates"
+      ],
+      "description": "Slack MCP integration for real-time deployment notifications and alerts"
+    },
+    "sentry-monitoring": {
+      "command": "npx",
+      "args": [
+        "@modelcontextprotocol/server-sentry"
+      ],
+      "env": {
+        "SENTRY_DSN": "${SENTRY_DSN}",
+        "SENTRY_AUTH_TOKEN": "${SENTRY_AUTH_TOKEN}"
+      },
+      "capabilities": [
+        "error_monitoring",
+        "performance_tracking",
+        "alert_management",
+        "deployment_tracking"
+      ],
+      "description": "Sentry MCP integration for error monitoring and performance tracking"
+    }
+  },
+  "workflows": {
+    "autonomous_deployment": {
+      "name": "Autonomous Deployment Pipeline",
+      "description": "Fully automated deployment with MCP-powered monitoring and validation",
+      "triggers": [
+        {
+          "type": "github_push",
+          "branches": ["main", "develop"],
+          "conditions": ["ci_passed", "tests_passed"]
+        }
+      ],
+      "steps": [
+        {
+          "name": "Pre-deployment Validation",
+          "mcp_server": "rk-institute-deployment",
+          "tool": "trigger_deployment_validation",
+          "params": {
+            "environment": "staging",
+            "runFullSuite": true
+          },
+          "required": true
+        },
+        {
+          "name": "Linear Issue Creation",
+          "mcp_server": "linear-integration",
+          "tool": "create_deployment_issue",
+          "params": {
+            "title": "Deployment in Progress",
+            "description": "Automated deployment triggered by GitHub push"
+          },
+          "required": false
+        },
+        {
+          "name": "Vercel Deployment",
+          "type": "vercel_deploy",
+          "environment": "production",
+          "required": true
+        },
+        {
+          "name": "Post-deployment Health Check",
+          "mcp_server": "rk-institute-deployment",
+          "tool": "deployment_status",
+          "params": {
+            "environment": "production",
+            "includeMetrics": true
+          },
+          "required": true,
+          "retry": {
+            "attempts": 3,
+            "delay": 30
+          }
+        },
+        {
+          "name": "Database Health Validation",
+          "mcp_server": "rk-institute-deployment",
+          "tool": "database_health",
+          "params": {
+            "includeQueries": true,
+            "testConnection": true
+          },
+          "required": true
+        },
+        {
+          "name": "Mobile Optimization Check",
+          "mcp_server": "rk-institute-deployment",
+          "tool": "mobile_optimization_check",
+          "params": {
+            "testEndpoint": "/test-mobile-cards",
+            "checkPerformance": true
+          },
+          "required": true
+        },
+        {
+          "name": "Success Notification",
+          "mcp_server": "slack-notifications",
+          "tool": "send_deployment_success",
+          "params": {
+            "channel": "#deployments",
+            "include_metrics": true
+          },
+          "condition": "all_previous_passed"
+        },
+        {
+          "name": "Linear Issue Update",
+          "mcp_server": "linear-integration",
+          "tool": "update_deployment_status",
+          "params": {
+            "status": "completed",
+            "include_metrics": true
+          },
+          "condition": "all_previous_passed"
+        },
+        {
+          "name": "Sentry Release Tracking",
+          "mcp_server": "sentry-monitoring",
+          "tool": "create_release",
+          "params": {
+            "environment": "production",
+            "track_performance": true
+          },
+          "condition": "all_previous_passed"
+        }
+      ],
+      "rollback": {
+        "triggers": [
+          "health_check_failed",
+          "database_connection_failed",
+          "mobile_optimization_failed"
+        ],
+        "steps": [
+          {
+            "name": "Automatic Rollback",
+            "type": "vercel_rollback",
+            "target": "previous_version"
+          },
+          {
+            "name": "Failure Notification",
+            "mcp_server": "slack-notifications",
+            "tool": "send_deployment_failure",
+            "params": {
+              "channel": "#deployments",
+              "include_error_details": true,
+              "mention_team": true
+            }
+          },
+          {
+            "name": "Create Incident Issue",
+            "mcp_server": "linear-integration",
+            "tool": "create_incident_issue",
+            "params": {
+              "priority": "high",
+              "assignee": "deployment_team"
+            }
+          }
+        ]
+      }
+    },
+    "health_monitoring": {
+      "name": "Continuous Health Monitoring",
+      "description": "Real-time monitoring with automated alerting",
+      "schedule": "*/5 * * * *",
+      "steps": [
+        {
+          "name": "System Health Check",
+          "mcp_server": "rk-institute-deployment",
+          "tool": "deployment_status",
+          "params": {
+            "environment": "production",
+            "includeMetrics": true
+          }
+        },
+        {
+          "name": "Database Health Check",
+          "mcp_server": "rk-institute-deployment",
+          "tool": "database_health",
+          "params": {
+            "testConnection": true
+          }
+        }
+      ],
+      "alerts": [
+        {
+          "condition": "health_status != 'healthy'",
+          "action": "slack_alert",
+          "severity": "high"
+        },
+        {
+          "condition": "database_response_time > 5000",
+          "action": "slack_alert",
+          "severity": "medium"
+        },
+        {
+          "condition": "memory_usage > 90",
+          "action": "slack_alert",
+          "severity": "medium"
+        }
+      ]
+    }
+  },
+  "settings": {
+    "deployment": {
+      "auto_rollback": true,
+      "health_check_timeout": 300,
+      "max_deployment_time": 600,
+      "notification_channels": ["slack", "linear"],
+      "monitoring_interval": 300
+    },
+    "quality_gates": {
+      "required_checks": [
+        "typescript_compilation",
+        "test_suite",
+        "build_success",
+        "health_check",
+        "database_connectivity"
+      ],
+      "performance_thresholds": {
+        "page_load_time": 3000,
+        "database_response_time": 2000,
+        "memory_usage_percentage": 85
+      }
+    },
+    "automation_level": {
+      "target": "90_percent",
+      "manual_intervention_triggers": [
+        "security_vulnerability_detected",
+        "breaking_change_detected",
+        "performance_degradation_severe"
+      ]
+    }
+  }
+}

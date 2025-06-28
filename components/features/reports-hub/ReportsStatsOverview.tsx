@@ -1,6 +1,7 @@
 'use client';
 
 import { ReportsStatsOverviewProps } from './types';
+import { ProfessionalIcon } from '@/components/ui/icons/ProfessionalIconSystem';
 
 /**
  * Reports Stats Overview Component
@@ -75,7 +76,9 @@ export default function ReportsStatsOverview({
       {error && (
         <div className="bg-red-50 border border-red-200 text-red-700 px-6 py-4 rounded-xl animate-fade-in">
           <div className="flex items-center">
-            <span className="text-red-500 mr-2">⚠️</span>
+            <span className="text-red-500 mr-2">
+              <ProfessionalIcon name="warning" size={20} />
+            </span>
             {error}
           </div>
         </div>
@@ -95,9 +98,9 @@ export default function ReportsStatsOverview({
       <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
         <div className="flex space-x-1 bg-gray-100 p-1 rounded-xl">
           {[
-            { id: 'dashboard', name: 'Live Dashboard', icon: '📊' },
-            { id: 'automated', name: 'Automated Reports', icon: '🤖' },
-            { id: 'history', name: 'Report History', icon: '📋' }
+            { id: 'dashboard', name: 'Live Dashboard', icon: 'analytics' as const },
+            { id: 'automated', name: 'Automated Reports', icon: 'settings' as const },
+            { id: 'history', name: 'Report History', icon: 'list' as const }
           ].map((tab) => (
             <button
               key={tab.id}
@@ -108,7 +111,9 @@ export default function ReportsStatsOverview({
                   : 'text-gray-600 hover:text-gray-900'
               }`}
             >
-              <span className="mr-2">{tab.icon}</span>
+              <span className="mr-2">
+                <ProfessionalIcon name={tab.icon} size={16} />
+              </span>
               {tab.name}
             </button>
           ))}

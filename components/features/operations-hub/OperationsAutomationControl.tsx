@@ -16,6 +16,7 @@
 
 import { OperationsAutomationControlProps, ActiveTab, ReminderType, ReportType } from './types';
 import { Button, Grid, Card } from '@/components/ui';
+import { ProfessionalIcon } from '@/components/ui/icons/ProfessionalIconSystem';
 
 export default function OperationsAutomationControl({
   automationStatus,
@@ -82,7 +83,9 @@ export default function OperationsAutomationControl({
                   'Sending...'
                 ) : (
                   <>
-                    <div className="text-lg mb-1">📅</div>
+                    <div className="text-lg mb-1">
+                      <ProfessionalIcon name="calendar" size={24} />
+                    </div>
                     <div>Early Reminders</div>
                     <div className="text-xs opacity-80">3 days before due</div>
                   </>
@@ -99,7 +102,9 @@ export default function OperationsAutomationControl({
                   'Sending...'
                 ) : (
                   <>
-                    <div className="text-lg mb-1">⏰</div>
+                    <div className="text-lg mb-1">
+                      <ProfessionalIcon name="clock" size={24} />
+                    </div>
                     <div>Due Date Reminders</div>
                     <div className="text-xs opacity-80">Due today</div>
                   </>
@@ -116,7 +121,9 @@ export default function OperationsAutomationControl({
                   'Sending...'
                 ) : (
                   <>
-                    <div className="text-lg mb-1">🚨</div>
+                    <div className="text-lg mb-1">
+                      <ProfessionalIcon name="alert" size={24} />
+                    </div>
                     <div>Overdue Reminders</div>
                     <div className="text-xs opacity-80">Past due date</div>
                   </>
@@ -171,7 +178,9 @@ export default function OperationsAutomationControl({
                   'Generating...'
                 ) : (
                   <>
-                    <div className="text-lg mb-1">📊</div>
+                    <div className="text-lg mb-1">
+                      <ProfessionalIcon name="analytics" size={24} />
+                    </div>
                     <div>Weekly Report</div>
                     <div className="text-xs opacity-80">Last 7 days</div>
                   </>
@@ -188,7 +197,9 @@ export default function OperationsAutomationControl({
                   'Generating...'
                 ) : (
                   <>
-                    <div className="text-lg mb-1">📈</div>
+                    <div className="text-lg mb-1">
+                      <ProfessionalIcon name="trending-up" size={24} />
+                    </div>
                     <div>Monthly Report</div>
                     <div className="text-xs opacity-80">Current month</div>
                   </>
@@ -205,7 +216,9 @@ export default function OperationsAutomationControl({
                   'Generating...'
                 ) : (
                   <>
-                    <div className="text-lg mb-1">💰</div>
+                    <div className="text-lg mb-1">
+                      <ProfessionalIcon name="money" size={24} />
+                    </div>
                     <div>Outstanding Dues</div>
                     <div className="text-xs opacity-80">Overdue payments</div>
                   </>

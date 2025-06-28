@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { FinancialStatsOverviewProps } from './types';
+import { ProfessionalIcon } from '@/components/ui/icons/ProfessionalIconSystem';
 
 /**
  * Financial Stats Overview Component
@@ -37,15 +38,17 @@ export default function FinancialStatsOverview({
         <div className="flex space-x-4">
           <Link
             href="/admin/financials/analytics"
-            className="bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 shadow-lg hover:shadow-xl"
+            className="bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 shadow-lg hover:shadow-xl flex items-center gap-2"
           >
-            📈 Financial Analytics
+            <ProfessionalIcon name="trending-up" size={16} />
+            Financial Analytics
           </Link>
           <Link
             href="/admin/reports"
-            className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 shadow-lg hover:shadow-xl"
+            className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 shadow-lg hover:shadow-xl flex items-center gap-2"
           >
-            📊 Reports & Analytics
+            <ProfessionalIcon name="analytics" size={16} />
+            Reports & Analytics
           </Link>
         </div>
       </div>
@@ -54,7 +57,9 @@ export default function FinancialStatsOverview({
       {error && (
         <div className="bg-red-50 border border-red-200 text-red-700 px-6 py-4 rounded-xl animate-fade-in">
           <div className="flex items-center">
-            <span className="text-red-500 mr-2">⚠️</span>
+            <span className="text-red-500 mr-2">
+              <ProfessionalIcon name="warning" size={20} />
+            </span>
             {error}
           </div>
         </div>
@@ -81,7 +86,9 @@ export default function FinancialStatsOverview({
                   ₹{stats?.totalRevenueThisMonth?.toLocaleString() || '0'}
                 </p>
               </div>
-              <div className="text-green-500 text-2xl">💰</div>
+              <div className="text-green-500 text-2xl">
+                <ProfessionalIcon name="money" size={32} />
+              </div>
             </div>
             <p className="text-xs text-gray-500 mt-2">Current month collections</p>
           </div>
@@ -94,7 +101,9 @@ export default function FinancialStatsOverview({
                   ₹{stats?.totalOutstandingDues?.toLocaleString() || '0'}
                 </p>
               </div>
-              <div className="text-red-500 text-2xl">⚠️</div>
+              <div className="text-red-500 text-2xl">
+                <ProfessionalIcon name="warning" size={32} />
+              </div>
             </div>
             <p className="text-xs text-gray-500 mt-2">Pending collections</p>
           </div>
@@ -107,7 +116,9 @@ export default function FinancialStatsOverview({
                   {stats?.collectionEfficiency || 0}%
                 </p>
               </div>
-              <div className="text-blue-500 text-2xl">📊</div>
+              <div className="text-blue-500 text-2xl">
+                <ProfessionalIcon name="analytics" size={32} />
+              </div>
             </div>
             <p className="text-xs text-gray-500 mt-2">Payment efficiency</p>
           </div>
@@ -120,7 +131,9 @@ export default function FinancialStatsOverview({
                   {stats?.recentPaymentActivity || 0}
                 </p>
               </div>
-              <div className="text-purple-500 text-2xl">🔄</div>
+              <div className="text-purple-500 text-2xl">
+                <ProfessionalIcon name="refresh" size={32} />
+              </div>
             </div>
             <p className="text-xs text-gray-500 mt-2">Last 7 days</p>
           </div>

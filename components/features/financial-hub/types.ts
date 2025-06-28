@@ -1,11 +1,13 @@
 /**
  * Financial Hub Feature Components - Type Definitions
- * 
+ *
  * Defines TypeScript interfaces for the Financial Hub feature components
  * following the three-principle methodology for component breakdown.
- * 
+ *
  * Design Consistency: Maintains RK Institute professional standards
  */
+
+import React from 'react';
 
 export interface FinancialStats {
   totalRevenueThisMonth: number;
@@ -26,7 +28,7 @@ export interface FinancialQuickAction {
   id: string;
   title: string;
   description: string;
-  icon: string;
+  icon: string | React.ReactNode;
   href: string;
   color: string;
 }
@@ -40,7 +42,7 @@ export interface FinancialModuleCard {
   id: string;
   title: string;
   description: string;
-  icon: string;
+  icon: string | React.ReactNode;
   href: string;
   color: string;
   stats: FinancialModuleStat[];

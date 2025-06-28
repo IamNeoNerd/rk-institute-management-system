@@ -6,7 +6,7 @@ interface InsightCardProps {
   title: string;
   description: string;
   value: string | number;
-  icon: string;
+  icon: React.ReactNode;
   color: 'blue' | 'green' | 'purple' | 'red' | 'yellow' | 'indigo' | 'pink' | 'orange';
   href: string;
   badge?: {
@@ -89,31 +89,31 @@ export default function InsightCard({
 
   return (
     <Link href={href}>
-      <div className={`group relative bg-gradient-to-br ${colors.bg} p-6 rounded-2xl border ${colors.border} transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer ${className}`}>
+      <div className={`group relative bg-gradient-to-br ${colors.bg} p-3 sm:p-6 rounded-2xl border ${colors.border} transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer ${className}`}>
         {badge && (
-          <div className="absolute top-4 right-4">
-            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${badgeClasses[badge.color]}`}>
+          <div className="absolute top-2 right-2 sm:top-4 sm:right-4">
+            <span className={`inline-flex items-center px-2 py-0.5 sm:px-2.5 rounded-full text-xs font-medium border ${badgeClasses[badge.color]}`}>
               {badge.text}
             </span>
           </div>
         )}
-        
-        <div className="flex items-start justify-between mb-4">
-          <div className={`flex items-center justify-center w-12 h-12 bg-gradient-to-br ${colors.iconBg} rounded-xl group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
-            <span className="text-xl text-white">{icon}</span>
+
+        <div className="flex items-start justify-between mb-3 sm:mb-4">
+          <div className={`flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br ${colors.iconBg} rounded-xl group-hover:scale-110 transition-transform duration-300 shadow-lg flex-shrink-0`}>
+            <span className="text-lg sm:text-xl text-white">{icon}</span>
           </div>
           <div className="text-right">
-            <div className={`text-2xl font-bold ${colors.value}`}>
+            <div className={`text-xl sm:text-2xl font-bold ${colors.value}`}>
               {value}
             </div>
           </div>
         </div>
-        
+
         <div>
-          <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors duration-200">
+          <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-1 sm:mb-2 group-hover:text-blue-600 transition-colors duration-200">
             {title}
           </h3>
-          <p className="text-gray-600 text-sm">
+          <p className="text-gray-600 text-xs sm:text-sm">
             {description}
           </p>
         </div>

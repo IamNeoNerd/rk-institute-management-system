@@ -17,6 +17,7 @@
 
 import { TeacherQuickActionsProps, QuickAction } from './types';
 import { Grid } from '@/components/ui';
+import { ProfessionalIcon } from '@/components/ui/icons/ProfessionalIconSystem';
 
 export default function TeacherQuickActions({
   stats,
@@ -92,22 +93,30 @@ export default function TeacherQuickActions({
         <h4 className="text-lg font-semibold text-gray-900 mb-4">Teaching Performance Summary</h4>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div className="text-center p-4 bg-teal-50 rounded-lg">
-            <div className="text-2xl mb-2">👨‍🎓</div>
+            <div className="text-2xl mb-2 flex justify-center">
+              <ProfessionalIcon name="students" size={32} className="text-teal-600" />
+            </div>
             <p className="text-sm font-medium text-teal-800">Students</p>
             <p className="text-xs text-teal-600">{stats.totalStudents} active</p>
           </div>
           <div className="text-center p-4 bg-blue-50 rounded-lg">
-            <div className="text-2xl mb-2">📚</div>
+            <div className="text-2xl mb-2 flex justify-center">
+              <ProfessionalIcon name="courses" size={32} className="text-blue-600" />
+            </div>
             <p className="text-sm font-medium text-blue-800">Courses</p>
             <p className="text-xs text-blue-600">{stats.totalCourses} teaching</p>
           </div>
           <div className="text-center p-4 bg-green-50 rounded-lg">
-            <div className="text-2xl mb-2">⭐</div>
+            <div className="text-2xl mb-2 flex justify-center">
+              <ProfessionalIcon name="achievement" size={32} className="text-green-600" />
+            </div>
             <p className="text-sm font-medium text-green-800">Achievements</p>
             <p className="text-xs text-green-600">{stats.achievements} recorded</p>
           </div>
           <div className="text-center p-4 bg-purple-50 rounded-lg">
-            <div className="text-2xl mb-2">📊</div>
+            <div className="text-2xl mb-2 flex justify-center">
+              <ProfessionalIcon name="analytics" size={32} className="text-purple-600" />
+            </div>
             <p className="text-sm font-medium text-purple-800">Reports</p>
             <p className="text-xs text-purple-600">{stats.progressReports} created</p>
           </div>
@@ -119,7 +128,7 @@ export default function TeacherQuickActions({
         <div className="bg-red-50 border border-red-200 rounded-xl p-6">
           <div className="flex items-center mb-4">
             <div className="p-2 bg-red-100 rounded-lg">
-              <span className="text-xl">⚠️</span>
+              <ProfessionalIcon name="warning" size={24} className="text-red-600" />
             </div>
             <div className="ml-3">
               <h4 className="text-lg font-semibold text-red-800">Attention Required</h4>

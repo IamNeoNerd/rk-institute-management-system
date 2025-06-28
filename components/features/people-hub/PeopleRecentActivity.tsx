@@ -1,6 +1,7 @@
 'use client';
 
 import { PeopleRecentActivityProps } from './types';
+import { ProfessionalIcon } from '@/components/ui/icons/ProfessionalIconSystem';
 
 /**
  * People Recent Activity Component
@@ -26,7 +27,9 @@ export default function PeopleRecentActivity({ activities }: PeopleRecentActivit
           {activities.map((activity, index) => (
             <div key={index} className="flex items-center p-4 bg-gray-50 rounded-lg">
               <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mr-4">
-                <span className="text-blue-600 text-sm">📋</span>
+                <span className="text-blue-600 text-sm">
+                  <ProfessionalIcon name="list" size={16} />
+                </span>
               </div>
               <div className="flex-1">
                 <p className="text-sm text-gray-900">{activity.description}</p>
@@ -38,7 +41,9 @@ export default function PeopleRecentActivity({ activities }: PeopleRecentActivit
       ) : (
         /* Placeholder for Future Implementation */
         <div className="text-center py-8">
-          <div className="text-gray-400 text-4xl mb-4">📋</div>
+          <div className="text-gray-400 text-4xl mb-4 flex justify-center">
+            <ProfessionalIcon name="list" size={48} />
+          </div>
           <p className="text-gray-500 font-medium">Recent activity tracking coming soon</p>
           <p className="text-sm text-gray-400 mt-2">
             This will show recent enrollments, family registrations, and user activities
@@ -48,15 +53,19 @@ export default function PeopleRecentActivity({ activities }: PeopleRecentActivit
           <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4 text-left">
             <div className="bg-gray-50 rounded-lg p-4">
               <div className="flex items-center mb-2">
-                <span className="text-blue-500 mr-2">👨‍🎓</span>
+                <span className="text-blue-500 mr-2">
+                  <ProfessionalIcon name="enrollment" size={20} />
+                </span>
                 <span className="text-sm font-medium text-gray-700">Student Enrollments</span>
               </div>
               <p className="text-xs text-gray-500">Track new student registrations and enrollment status changes</p>
             </div>
-            
+
             <div className="bg-gray-50 rounded-lg p-4">
               <div className="flex items-center mb-2">
-                <span className="text-green-500 mr-2">👨‍👩‍👧‍👦</span>
+                <span className="text-green-500 mr-2">
+                  <ProfessionalIcon name="family" size={20} />
+                </span>
                 <span className="text-sm font-medium text-gray-700">Family Updates</span>
               </div>
               <p className="text-xs text-gray-500">Monitor family profile changes and new family registrations</p>
@@ -64,7 +73,9 @@ export default function PeopleRecentActivity({ activities }: PeopleRecentActivit
             
             <div className="bg-gray-50 rounded-lg p-4">
               <div className="flex items-center mb-2">
-                <span className="text-purple-500 mr-2">👤</span>
+                <span className="text-purple-500 mr-2">
+                  <ProfessionalIcon name="user" size={20} />
+                </span>
                 <span className="text-sm font-medium text-gray-700">User Activities</span>
               </div>
               <p className="text-xs text-gray-500">View user account creation, role changes, and access logs</p>

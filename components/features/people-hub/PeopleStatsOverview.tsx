@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { PeopleStatsOverviewProps } from './types';
 import { PageHeader, Grid, StatsCard, ErrorState, StatsCardSkeleton } from '@/components/ui';
+import { ProfessionalIcon } from '@/components/ui/icons/ProfessionalIconSystem';
 
 /**
  * People Stats Overview Component
@@ -32,15 +33,17 @@ export default function PeopleStatsOverview({
           <>
             <Link
               href="/admin/people/search"
-              className="bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 shadow-lg hover:shadow-xl"
+              className="bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 shadow-lg hover:shadow-xl flex items-center gap-2"
             >
-              🔍 Advanced Search
+              <ProfessionalIcon name="search" size={16} />
+              Advanced Search
             </Link>
             <Link
               href="/admin/people/reports"
-              className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 shadow-lg hover:shadow-xl"
+              className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 shadow-lg hover:shadow-xl flex items-center gap-2"
             >
-              📊 People Reports
+              <ProfessionalIcon name="analytics" size={16} />
+              People Reports
             </Link>
           </>
         }

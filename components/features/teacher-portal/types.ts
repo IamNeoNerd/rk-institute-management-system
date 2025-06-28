@@ -1,11 +1,13 @@
 /**
  * Teacher Portal Feature Components - Type Definitions
- * 
+ *
  * Defines TypeScript interfaces for the Teacher Portal feature components
  * following the three-principle methodology for component breakdown.
- * 
+ *
  * Design Consistency: Maintains RK Institute professional standards
  */
+
+import React from 'react';
 
 export interface User {
   id: string;
@@ -97,7 +99,7 @@ export interface StatCardData {
   title: string;
   value: string | number;
   subtitle: string;
-  icon: string;
+  icon: string | React.ReactNode;
   bgColor: string;
   textColor?: string;
   valueColor?: string;

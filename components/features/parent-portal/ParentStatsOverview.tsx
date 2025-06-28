@@ -17,6 +17,7 @@
 
 import { ParentStatsOverviewProps, StatCardData } from './types';
 import { StatsCard, Grid, LoadingState } from '@/components/ui';
+import { ProfessionalIcon } from '@/components/ui/icons/ProfessionalIconSystem';
 
 export default function ParentStatsOverview({
   familyProfile,
@@ -33,7 +34,7 @@ export default function ParentStatsOverview({
       title: 'Total Children',
       value: stats.totalChildren,
       subtitle: 'Enrolled students',
-      icon: '👨‍👩‍👧‍👦',
+      icon: <ProfessionalIcon name="family" size={24} />,
       bgColor: 'bg-blue-100',
       textColor: 'text-blue-600'
     },
@@ -41,7 +42,7 @@ export default function ParentStatsOverview({
       title: 'Monthly Fee',
       value: `₹${stats.totalMonthlyFee.toLocaleString()}`,
       subtitle: 'After family discount',
-      icon: '💰',
+      icon: <ProfessionalIcon name="fees" size={24} />,
       bgColor: 'bg-green-100',
       textColor: 'text-green-600'
     },

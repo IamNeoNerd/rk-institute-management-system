@@ -1,11 +1,13 @@
 /**
  * People Hub Feature Components - Type Definitions
- * 
+ *
  * Defines TypeScript interfaces for the People Hub feature components
  * following the three-principle methodology for component breakdown.
- * 
+ *
  * Design Consistency: Maintains RK Institute professional standards
  */
+
+import React from 'react';
 
 export interface PeopleStats {
   totalStudents: number;
@@ -20,7 +22,7 @@ export interface QuickAction {
   id: string;
   title: string;
   description: string;
-  icon: string;
+  icon: string | React.ReactNode;
   href: string;
   color: string;
 }
@@ -34,7 +36,7 @@ export interface ModuleCard {
   id: string;
   title: string;
   description: string;
-  icon: string;
+  icon: string | React.ReactNode;
   href: string;
   color: string;
   stats: ModuleStat[];

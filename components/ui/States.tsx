@@ -15,6 +15,7 @@
 import React from 'react';
 import { cn } from '@/lib/utils';
 import { Button } from './Button';
+import { ProfessionalIcon } from './icons/ProfessionalIconSystem';
 
 // Loading State Component
 export interface LoadingStateProps {
@@ -97,15 +98,17 @@ export interface ErrorStateProps {
   className?: string;
 }
 
-export function ErrorState({ 
+export function ErrorState({
   title = 'Something went wrong',
-  message, 
+  message,
   retry,
-  className 
+  className
 }: ErrorStateProps) {
   return (
     <div className={cn('text-center py-8', className)}>
-      <div className="text-red-400 text-4xl mb-4">⚠️</div>
+      <div className="text-red-400 text-4xl mb-4 flex justify-center">
+        <ProfessionalIcon name="warning" size={48} />
+      </div>
       <h3 className="text-lg font-medium text-gray-900 mb-2">{title}</h3>
       <p className="text-gray-600 mb-6 max-w-md mx-auto">{message}</p>
       {retry && (

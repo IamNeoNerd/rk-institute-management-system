@@ -1,6 +1,7 @@
 'use client';
 
 import { ReportsLiveDashboardProps } from './types';
+import { ProfessionalIcon } from '@/components/ui/icons/ProfessionalIconSystem';
 
 /**
  * Reports Live Dashboard Component
@@ -25,7 +26,9 @@ export default function ReportsLiveDashboard({
   if (loading || !reportData) {
     return (
       <div className="text-center py-8">
-        <div className="text-gray-400 text-4xl mb-4">📊</div>
+        <div className="text-gray-400 text-4xl mb-4 flex justify-center">
+          <ProfessionalIcon name="analytics" size={48} />
+        </div>
         <p className="text-gray-500 font-medium">Loading dashboard data...</p>
         <div className="flex justify-center mt-4">
           <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
@@ -44,7 +47,9 @@ export default function ReportsLiveDashboard({
           <div className="space-y-4">
             {reportData.recentPayments.length === 0 ? (
               <div className="text-center py-8">
-                <div className="text-gray-400 text-3xl mb-2">💰</div>
+                <div className="text-gray-400 text-3xl mb-2 flex justify-center">
+                  <ProfessionalIcon name="money" size={36} />
+                </div>
                 <p className="text-gray-500 text-center">No recent payments found</p>
                 <p className="text-sm text-gray-400 mt-1">Payments will appear here when recorded</p>
               </div>

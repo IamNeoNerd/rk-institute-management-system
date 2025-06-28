@@ -16,6 +16,7 @@
 
 import { OperationsStatsOverviewProps } from './types';
 import { PageHeader, Grid, StatsCard, ErrorState, LoadingState } from '@/components/ui';
+import { ProfessionalIcon } from '@/components/ui/icons/ProfessionalIconSystem';
 
 export default function OperationsStatsOverview({
   automationStatus,
@@ -52,9 +53,9 @@ export default function OperationsStatsOverview({
       <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
         <div className="flex space-x-1 bg-gray-100 p-1 rounded-xl">
           {[
-            { id: 'overview', name: 'Overview', icon: '📊' },
-            { id: 'reminders', name: 'Fee Reminders', icon: '📧' },
-            { id: 'reports', name: 'Reports', icon: '📈' }
+            { id: 'overview', name: 'Overview', icon: 'analytics' as const },
+            { id: 'reminders', name: 'Fee Reminders', icon: 'email' as const },
+            { id: 'reports', name: 'Reports', icon: 'report' as const }
           ].map((tab) => (
             <button
               key={tab.id}
@@ -65,7 +66,9 @@ export default function OperationsStatsOverview({
                   : 'text-gray-600 hover:text-gray-900'
               }`}
             >
-              <span className="mr-2">{tab.icon}</span>
+              <span className="mr-2">
+                <ProfessionalIcon name={tab.icon} size={16} />
+              </span>
               {tab.name}
             </button>
           ))}
@@ -124,26 +127,28 @@ export default function OperationsStatsOverview({
                   title="Running Jobs"
                   value={automationStatus.summary.totalRunningJobs}
                   color="blue"
-                  icon="⚡"
+                  icon={<ProfessionalIcon name="zap" size={24} />}
                 />
                 <StatsCard
                   title="Scheduled Jobs"
                   value={automationStatus.summary.totalScheduledJobs}
                   color="purple"
-                  icon="📅"
+                  icon={<ProfessionalIcon name="calendar" size={24} />}
                 />
                 <StatsCard
                   title="Active Schedules"
                   value={automationStatus.summary.activeScheduledJobs}
                   color="green"
-                  icon="✅"
+                  icon={<ProfessionalIcon name="check" size={24} />}
                 />
               </Grid>
             </>
           ) : (
             <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
               <div className="text-center py-8">
-                <div className="text-gray-400 text-4xl mb-4">🔧</div>
+                <div className="text-gray-400 text-4xl mb-4 flex justify-center">
+                  <ProfessionalIcon name="settings" size={48} />
+                </div>
                 <p className="text-gray-500">No automation status available</p>
               </div>
             </div>

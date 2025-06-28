@@ -62,10 +62,10 @@ const gridCols = {
 };
 
 const gridGaps = {
-  sm: 'gap-3',
-  md: 'gap-4',
-  lg: 'gap-6',
-  xl: 'gap-8'
+  sm: 'gap-2 sm:gap-3',
+  md: 'gap-3 sm:gap-4',
+  lg: 'gap-4 sm:gap-6',
+  xl: 'gap-6 sm:gap-8'
 };
 
 export function Grid({ 
@@ -88,6 +88,63 @@ export function Grid({
 
   return (
     <div className={cn(baseClasses, colClasses, gapClasses, responsiveClasses, className)}>
+      {children}
+    </div>
+  );
+}
+
+// Mobile-Optimized Card Grid Component
+export interface CardGridProps {
+  children: React.ReactNode;
+  className?: string;
+  density?: 'comfortable' | 'compact' | 'condensed';
+}
+
+export function CardGrid({ children, className, density = 'comfortable' }: CardGridProps) {
+  const densityClasses = {
+    comfortable: 'grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3 lg:gap-6 xl:grid-cols-4',
+    compact: 'grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-3 lg:grid-cols-3 lg:gap-4 xl:grid-cols-4',
+    condensed: 'grid grid-cols-1 gap-1.5 sm:grid-cols-2 sm:gap-2 lg:grid-cols-4 lg:gap-3 xl:grid-cols-5'
+  };
+
+  return (
+    <div className={cn(densityClasses[density], className)}>
+      {children}
+    </div>
+  );
+}
+
+// Mobile-Optimized Stats Grid Component
+export function StatsGrid({ children, className, density = 'compact' }: CardGridProps) {
+  const densityClasses = {
+    comfortable: 'grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4',
+    compact: 'grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-3 lg:grid-cols-4',
+    condensed: 'grid grid-cols-2 gap-1.5 sm:grid-cols-3 sm:gap-2 lg:grid-cols-4 lg:gap-3 xl:grid-cols-6'
+  };
+
+  return (
+    <div className={cn(densityClasses[density], className)}>
+      {children}
+    </div>
+  );
+}
+
+// Ultra-Compact Grid for Maximum Mobile Density
+export function CompactGrid({ children, className }: CardGridProps) {
+  return (
+    <div className={cn(
+      'grid grid-cols-2 gap-1.5 sm:grid-cols-3 sm:gap-2 md:grid-cols-4 md:gap-3 lg:grid-cols-5 lg:gap-4 xl:grid-cols-6',
+      className
+    )}>
+      {children}
+    </div>
+  );
+}
+
+// Horizontal List Layout for Mobile
+export function HorizontalList({ children, className }: CardGridProps) {
+  return (
+    <div className={cn('space-y-1.5 sm:space-y-2', className)}>
       {children}
     </div>
   );

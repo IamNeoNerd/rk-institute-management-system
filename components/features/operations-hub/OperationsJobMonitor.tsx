@@ -16,6 +16,7 @@
 
 import { OperationsJobMonitorProps } from './types';
 import { Card, EmptyState, LoadingState } from '@/components/ui';
+import { ProfessionalIcon } from '@/components/ui/icons/ProfessionalIconSystem';
 
 export default function OperationsJobMonitor({
   automationStatus,
@@ -56,7 +57,7 @@ export default function OperationsJobMonitor({
         <h2 className="text-2xl font-bold text-gray-900 mb-4">Scheduled Jobs</h2>
         {automationStatus.scheduledJobs.length === 0 ? (
           <EmptyState
-            icon="📅"
+            icon={<ProfessionalIcon name="calendar" size={48} />}
             title="No Scheduled Jobs"
             description="No scheduled jobs configured in the system"
           />
@@ -105,7 +106,7 @@ export default function OperationsJobMonitor({
         <h2 className="text-2xl font-bold text-gray-900 mb-4">Running Jobs</h2>
         {automationStatus.runningJobs.length === 0 ? (
           <EmptyState
-            icon="⚡"
+            icon={<ProfessionalIcon name="zap" size={48} />}
             title="No Running Jobs"
             description="No jobs are currently running in the system"
           />

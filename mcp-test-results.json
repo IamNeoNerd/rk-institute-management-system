@@ -1,0 +1,36 @@
+{
+  "timestamp": "2025-06-28T13:53:12.156Z",
+  "baseUrl": "http://localhost:3000",
+  "tests": [
+    {
+      "name": "Health Endpoint",
+      "passed": false,
+      "category": "infrastructure"
+    },
+    {
+      "name": "Mobile Cards Endpoint",
+      "passed": false,
+      "category": "mobile_optimization"
+    },
+    {
+      "name": "MCP Deployment Status",
+      "passed": false,
+      "category": "mcp_tools"
+    },
+    {
+      "name": "MCP Database Health",
+      "passed": false,
+      "category": "mcp_tools"
+    },
+    {
+      "name": "MCP Mobile Optimization",
+      "passed": false,
+      "category": "mcp_tools"
+    },
+    {
+      "name": "MCP Deployment Validation",
+      "passed": false,
+      "category": "mcp_tools"
+    }
+  ]
+}

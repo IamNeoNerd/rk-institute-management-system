@@ -17,6 +17,7 @@
 
 import { StudentStatsOverviewProps, StatCardData } from './types';
 import { StatsCard, Grid, LoadingState } from '@/components/ui';
+import { ProfessionalIcon } from '@/components/ui/icons/ProfessionalIconSystem';
 
 export default function StudentStatsOverview({
   studentProfile,
@@ -33,7 +34,7 @@ export default function StudentStatsOverview({
       title: 'Enrolled Courses',
       value: stats.totalCourses,
       subtitle: 'Active subjects',
-      icon: '📚',
+      icon: <ProfessionalIcon name="courses" size={24} />,
       bgColor: 'bg-blue-100',
       textColor: 'text-blue-600'
     },
@@ -41,7 +42,7 @@ export default function StudentStatsOverview({
       title: 'Services',
       value: stats.totalServices,
       subtitle: 'Active services',
-      icon: '🚌',
+      icon: <ProfessionalIcon name="transport" size={24} />,
       bgColor: 'bg-green-100',
       textColor: 'text-green-600'
     },
@@ -49,7 +50,7 @@ export default function StudentStatsOverview({
       title: 'Monthly Fee',
       value: `₹${stats.currentMonthFee.toLocaleString()}`,
       subtitle: 'Current month',
-      icon: '💰',
+      icon: <ProfessionalIcon name="fees" size={24} />,
       bgColor: 'bg-purple-100',
       textColor: 'text-purple-600'
     },

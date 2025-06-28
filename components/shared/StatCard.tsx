@@ -37,23 +37,23 @@ export default function StatCard({
 
   return (
     <div
-      className={`bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow ${
+      className={`bg-white p-3 sm:p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow ${
         onClick ? 'cursor-pointer' : ''
       }`}
       onClick={onClick}
     >
       <div className="flex items-center justify-between">
-        <div>
-          <p className="text-sm font-medium text-gray-600">{title}</p>
-          <p className={`text-3xl font-bold ${textColorClasses[color]}`}>
+        <div className="flex-1 min-w-0">
+          <p className="text-xs sm:text-sm font-medium text-gray-600">{title}</p>
+          <p className={`text-xl sm:text-3xl font-bold ${textColorClasses[color]} truncate`}>
             {typeof value === 'number' ? value.toLocaleString() : value}
           </p>
           {subtitle && (
-            <p className={`text-sm mt-1 ${textColorClasses[color]}`}>{subtitle}</p>
+            <p className={`text-xs sm:text-sm mt-1 ${textColorClasses[color]}`}>{subtitle}</p>
           )}
         </div>
-        <div className={`p-3 rounded-lg ${colorClasses[color]}`}>
-          <span className="text-3xl">{icon}</span>
+        <div className={`p-2 sm:p-3 rounded-lg ${colorClasses[color]} ml-2 sm:ml-3 flex-shrink-0`}>
+          <span className="text-xl sm:text-3xl">{icon}</span>
         </div>
       </div>
     </div>

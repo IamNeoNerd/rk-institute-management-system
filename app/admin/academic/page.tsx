@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import AdminLayout from '@/components/layout/AdminLayout';
 import Link from 'next/link';
+import { ProfessionalIcon } from '@/components/ui/icons/ProfessionalIconSystem';
 
 interface AcademicStats {
   totalCourses: number;
@@ -19,7 +20,7 @@ interface QuickAction {
   id: string;
   title: string;
   description: string;
-  icon: string;
+  icon: React.ReactNode;
   href: string;
   color: string;
 }
@@ -60,7 +61,7 @@ export default function AcademicsHubPage() {
       id: 'add-course',
       title: 'Add New Course',
       description: 'Create a new academic course offering',
-      icon: '📚',
+      icon: <ProfessionalIcon name="courses" size={20} />,
       href: '/admin/courses?action=add',
       color: 'from-blue-500 to-blue-600'
     },
@@ -68,7 +69,7 @@ export default function AcademicsHubPage() {
       id: 'add-service',
       title: 'Add New Service',
       description: 'Create a new institute service',
-      icon: '🚌',
+      icon: <ProfessionalIcon name="transport" size={20} />,
       href: '/admin/services?action=add',
       color: 'from-green-500 to-green-600'
     },
@@ -76,7 +77,7 @@ export default function AcademicsHubPage() {
       id: 'create-log',
       title: 'Create Academic Log',
       description: 'Record student academic progress',
-      icon: '📝',
+      icon: <ProfessionalIcon name="report" size={20} />,
       href: '/admin/academic-logs?action=add',
       color: 'from-purple-500 to-purple-600'
     },
@@ -84,7 +85,7 @@ export default function AcademicsHubPage() {
       id: 'bulk-import',
       title: 'Bulk Operations',
       description: 'Import courses or manage enrollments',
-      icon: '📊',
+      icon: <ProfessionalIcon name="upload" size={20} />,
       href: '/admin/academic/bulk',
       color: 'from-orange-500 to-orange-600'
     }
@@ -95,7 +96,7 @@ export default function AcademicsHubPage() {
       id: 'courses',
       title: 'Course Management',
       description: 'Manage academic courses, curriculum, and course-related fee structures',
-      icon: '📚',
+      icon: <ProfessionalIcon name="courses" size={32} className="text-white" />,
       href: '/admin/courses',
       color: 'from-blue-500 to-blue-600',
       stats: stats ? [
@@ -108,7 +109,7 @@ export default function AcademicsHubPage() {
       id: 'services',
       title: 'Service Management',
       description: 'Manage institute services like transport, meals, and extracurricular activities',
-      icon: '🚌',
+      icon: <ProfessionalIcon name="transport" size={32} className="text-white" />,
       href: '/admin/services',
       color: 'from-green-500 to-green-600',
       stats: stats ? [
@@ -121,7 +122,7 @@ export default function AcademicsHubPage() {
       id: 'academic-logs',
       title: 'Academic Progress',
       description: 'Track student academic performance, assignments, and progress reports',
-      icon: '📝',
+      icon: <ProfessionalIcon name="academic" size={32} className="text-white" />,
       href: '/admin/academic-logs',
       color: 'from-purple-500 to-purple-600',
       stats: stats ? [
@@ -158,15 +159,17 @@ export default function AcademicsHubPage() {
           <div className="flex space-x-4">
             <Link
               href="/admin/academic/analytics"
-              className="bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 shadow-lg hover:shadow-xl"
+              className="bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 shadow-lg hover:shadow-xl flex items-center gap-2"
             >
-              📈 Academic Analytics
+              <ProfessionalIcon name="trending-up" size={16} />
+              Academic Analytics
             </Link>
             <Link
               href="/admin/academic/reports"
-              className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 shadow-lg hover:shadow-xl"
+              className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 shadow-lg hover:shadow-xl flex items-center gap-2"
             >
-              📊 Academic Reports
+              <ProfessionalIcon name="analytics" size={16} />
+              Academic Reports
             </Link>
           </div>
         </div>
@@ -174,7 +177,9 @@ export default function AcademicsHubPage() {
         {error && (
           <div className="bg-red-50 border border-red-200 text-red-700 px-6 py-4 rounded-xl animate-fade-in">
             <div className="flex items-center">
-              <span className="text-red-500 mr-2">⚠️</span>
+              <span className="text-red-500 mr-2">
+                <ProfessionalIcon name="warning" size={20} />
+              </span>
               {error}
             </div>
           </div>
@@ -207,7 +212,7 @@ export default function AcademicsHubPage() {
         </div>
 
         {/* Academic Overview Cards */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
           {moduleCards.map((module) => (
             <div key={module.id} className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
               {/* Module Header */}
@@ -282,7 +287,9 @@ export default function AcademicsHubPage() {
             </div>
           ) : (
             <div className="text-center py-8">
-              <div className="text-gray-400 text-4xl mb-4">📊</div>
+              <div className="text-gray-400 text-4xl mb-4 flex justify-center">
+                <ProfessionalIcon name="analytics" size={48} />
+              </div>
               <p className="text-gray-500">Loading performance data...</p>
             </div>
           )}
@@ -292,7 +299,9 @@ export default function AcademicsHubPage() {
         <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
           <h2 className="text-2xl font-bold text-gray-900 mb-4">Recent Academic Activity</h2>
           <div className="text-center py-8">
-            <div className="text-gray-400 text-4xl mb-4">📋</div>
+            <div className="text-gray-400 text-4xl mb-4 flex justify-center">
+              <ProfessionalIcon name="list" size={48} />
+            </div>
             <p className="text-gray-500">Recent activity tracking coming soon</p>
             <p className="text-sm text-gray-400 mt-2">This will show recent course enrollments, academic log entries, and service subscriptions</p>
           </div>

@@ -1,6 +1,7 @@
 'use client';
 
 import { FinancialHealthOverviewProps } from './types';
+import { ProfessionalIcon } from '@/components/ui/icons/ProfessionalIconSystem';
 
 /**
  * Financial Health Overview Component
@@ -60,7 +61,9 @@ export default function FinancialHealthOverview({ stats }: FinancialHealthOvervi
           </div>
         ) : (
           <div className="text-center py-8">
-            <div className="text-gray-400 text-4xl mb-4">💰</div>
+            <div className="text-gray-400 text-4xl mb-4 flex justify-center">
+              <ProfessionalIcon name="financial" size={48} />
+            </div>
             <p className="text-gray-500 font-medium">Loading financial health data...</p>
             <div className="flex justify-center mt-4">
               <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
@@ -73,25 +76,31 @@ export default function FinancialHealthOverview({ stats }: FinancialHealthOvervi
       <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
         <h2 className="text-2xl font-bold text-gray-900 mb-4">Recent Financial Activity</h2>
         <div className="text-center py-8">
-          <div className="text-gray-400 text-4xl mb-4">📋</div>
+          <div className="text-gray-400 text-4xl mb-4 flex justify-center">
+            <ProfessionalIcon name="list" size={48} />
+          </div>
           <p className="text-gray-500 font-medium">Recent activity tracking coming soon</p>
           <p className="text-sm text-gray-400 mt-2">
             This will show recent payments, fee allocations, and financial transactions
           </p>
-          
+
           {/* Preview of Future Features */}
           <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4 text-left">
             <div className="bg-gray-50 rounded-lg p-4">
               <div className="flex items-center mb-2">
-                <span className="text-green-500 mr-2">💰</span>
+                <span className="text-green-500 mr-2">
+                  <ProfessionalIcon name="money" size={20} />
+                </span>
                 <span className="text-sm font-medium text-gray-700">Payment Records</span>
               </div>
               <p className="text-xs text-gray-500">Track recent payment transactions and receipts</p>
             </div>
-            
+
             <div className="bg-gray-50 rounded-lg p-4">
               <div className="flex items-center mb-2">
-                <span className="text-blue-500 mr-2">📄</span>
+                <span className="text-blue-500 mr-2">
+                  <ProfessionalIcon name="report" size={20} />
+                </span>
                 <span className="text-sm font-medium text-gray-700">Fee Allocations</span>
               </div>
               <p className="text-xs text-gray-500">Monitor new fee allocations and billing cycles</p>
@@ -99,7 +108,9 @@ export default function FinancialHealthOverview({ stats }: FinancialHealthOvervi
             
             <div className="bg-gray-50 rounded-lg p-4">
               <div className="flex items-center mb-2">
-                <span className="text-orange-500 mr-2">📧</span>
+                <span className="text-orange-500 mr-2">
+                  <ProfessionalIcon name="email" size={20} />
+                </span>
                 <span className="text-sm font-medium text-gray-700">Reminder Activities</span>
               </div>
               <p className="text-xs text-gray-500">View payment reminder history and responses</p>

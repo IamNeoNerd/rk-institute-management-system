@@ -16,6 +16,18 @@
 export { Card, StatsCard, QuickActionCard } from './Card';
 export type { CardProps, StatsCardProps, QuickActionCardProps } from './Card';
 
+// Mobile-Optimized Components
+export {
+  CompactStatsCard,
+  CondensedMetricCard,
+  ListCard
+} from './MobileCards';
+export type {
+  CompactStatsCardProps,
+  CondensedMetricCardProps,
+  ListCardProps
+} from './MobileCards';
+
 export { Button, IconButton, ButtonGroup } from './Button';
 export type { ButtonProps, IconButtonProps, ButtonGroupProps } from './Button';
 
@@ -23,21 +35,26 @@ export { Input, Textarea, Select } from './Input';
 export type { InputProps, TextareaProps, SelectProps } from './Input';
 
 // Layout Components
-export { 
-  Container, 
-  Grid, 
-  Stack, 
-  Flex, 
-  Section, 
-  PageHeader 
+export {
+  Container,
+  Grid,
+  Stack,
+  Flex,
+  Section,
+  PageHeader,
+  CardGrid,
+  StatsGrid,
+  CompactGrid,
+  HorizontalList
 } from './Layout';
-export type { 
-  ContainerProps, 
-  GridProps, 
-  StackProps, 
-  FlexProps, 
-  SectionProps, 
-  PageHeaderProps 
+export type {
+  ContainerProps,
+  GridProps,
+  StackProps,
+  FlexProps,
+  SectionProps,
+  PageHeaderProps,
+  CardGridProps
 } from './Layout';
 
 // State Components

@@ -5,7 +5,7 @@ import Link from 'next/link';
 interface ActionCardProps {
   title: string;
   description: string;
-  icon: string;
+  icon: React.ReactNode;
   color: 'blue' | 'green' | 'purple' | 'red' | 'yellow' | 'indigo' | 'pink' | 'orange';
   action: {
     type: 'link' | 'button';
@@ -80,16 +80,16 @@ export default function ActionCard({
   const colors = colorClasses[color];
 
   const cardContent = (
-    <div className={`group relative bg-gradient-to-br ${colors.bg} p-6 rounded-2xl border ${colors.border} transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'} ${className}`}>
-      <div className="flex items-center mb-4">
-        <div className={`flex items-center justify-center w-12 h-12 bg-gradient-to-br ${colors.iconBg} rounded-xl mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg mr-4`}>
-          <span className="text-xl text-white">{icon}</span>
+    <div className={`group relative bg-gradient-to-br ${colors.bg} p-3 sm:p-6 rounded-2xl border ${colors.border} transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'} ${className}`}>
+      <div className="flex items-start mb-3 sm:mb-4">
+        <div className={`flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br ${colors.iconBg} rounded-xl group-hover:scale-110 transition-transform duration-300 shadow-lg mr-3 sm:mr-4 flex-shrink-0`}>
+          <span className="text-lg sm:text-xl text-white">{icon}</span>
         </div>
-        <div className="flex-1">
-          <h3 className="text-lg font-bold text-gray-900 mb-1">
+        <div className="flex-1 min-w-0">
+          <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-1">
             {title}
           </h3>
-          <p className="text-gray-600 text-sm">
+          <p className="text-gray-600 text-xs sm:text-sm">
             {description}
           </p>
         </div>
