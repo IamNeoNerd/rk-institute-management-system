@@ -6,6 +6,5 @@
       "maxDuration": 30
     }
   },
-  "regions": ["iad1"],
-  "buildCommand": "npm run build:ci"
+  "regions": ["iad1"]
 }
