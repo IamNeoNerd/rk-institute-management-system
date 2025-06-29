@@ -89,7 +89,7 @@ export interface QuickAction {
   id: ActiveTab;
   title: string;
   description: string;
-  icon: string;
+  icon: React.ReactNode; // Standardized to React.ReactNode
   bgColor: string;
   hoverColor: string;
 }

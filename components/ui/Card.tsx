@@ -90,7 +90,7 @@ export interface StatsCardProps {
   value: string | number;
   subtitle?: string;
   icon?: React.ReactNode;
-  color?: 'blue' | 'green' | 'purple' | 'orange' | 'teal' | 'red';
+  color?: 'primary' | 'success' | 'warning' | 'error' | 'info' | 'blue' | 'green' | 'purple' | 'orange' | 'teal' | 'red';
   trend?: {
     value: number;
     isPositive: boolean;
@@ -98,7 +98,15 @@ export interface StatsCardProps {
   className?: string;
 }
 
+// Standardized color system for consistent card theming
 const colorVariants = {
+  // Primary semantic colors (recommended)
+  primary: 'text-blue-600',
+  success: 'text-green-600',
+  warning: 'text-yellow-600',
+  error: 'text-red-600',
+  info: 'text-indigo-600',
+  // Legacy color support for backward compatibility
   blue: 'text-blue-600',
   green: 'text-green-600',
   purple: 'text-purple-600',
