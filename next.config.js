@@ -15,8 +15,8 @@ const nextConfig = {
   // Enable SWC minification for better performance
   swcMinify: true,
   
-  // Output configuration for standalone deployment
-  output: 'standalone',
+  // Output configuration - removed 'standalone' for Vercel compatibility
+  // 'standalone' is for Docker deployments, not Vercel serverless functions
   
   // Compress responses
   compress: true,
