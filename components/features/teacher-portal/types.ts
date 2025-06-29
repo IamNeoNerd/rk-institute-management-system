@@ -81,7 +81,7 @@ export interface TeacherDataInsightsProps {
 export interface NavigationTab {
   id: ActiveTab;
   name: string;
-  icon: string;
+  icon: React.ReactNode; // Changed from string to ReactNode
 }
 
 // Quick Action Interface

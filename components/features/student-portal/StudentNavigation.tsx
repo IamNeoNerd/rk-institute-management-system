@@ -14,6 +14,7 @@
 
 'use client';
 
+import { LayoutDashboard, BookOpen, CreditCard, FileText, TrendingUp } from 'lucide-react';
 import { StudentNavigationProps, NavigationTab } from './types';
 
 export default function StudentNavigation({
@@ -22,11 +23,11 @@ export default function StudentNavigation({
 }: StudentNavigationProps) {
 
   const navigationTabs: NavigationTab[] = [
-    { id: 'overview', name: 'Dashboard', icon: '📊' },
-    { id: 'my-courses', name: 'My Courses', icon: '📚' },
-    { id: 'my-fees', name: 'Fees & Payments', icon: '💰' },
-    { id: 'assignments', name: 'Assignments & Notes', icon: '📋' },
-    { id: 'academic-logs', name: 'Academic Progress', icon: '📝' },
+    { id: 'overview', name: 'Dashboard', icon: <LayoutDashboard size={16} /> },
+    { id: 'my-courses', name: 'My Courses', icon: <BookOpen size={16} /> },
+    { id: 'my-fees', name: 'Fees & Payments', icon: <CreditCard size={16} /> },
+    { id: 'assignments', name: 'Assignments & Notes', icon: <FileText size={16} /> },
+    { id: 'academic-logs', name: 'Academic Progress', icon: <TrendingUp size={16} /> },
   ];
 
   return (

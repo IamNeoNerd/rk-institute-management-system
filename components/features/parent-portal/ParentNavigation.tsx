@@ -14,6 +14,7 @@
 
 'use client';
 
+import { Home, Users, CreditCard, FileText, BookOpen } from 'lucide-react';
 import { ParentNavigationProps, NavigationTab } from './types';
 
 export default function ParentNavigation({
@@ -22,11 +23,11 @@ export default function ParentNavigation({
 }: ParentNavigationProps) {
 
   const navigationTabs: NavigationTab[] = [
-    { id: 'overview', name: 'Family Overview', icon: '🏠' },
-    { id: 'children', name: 'My Children', icon: '👨‍👩‍👧‍👦' },
-    { id: 'fees', name: 'Fees & Payments', icon: '💰' },
-    { id: 'assignments', name: 'Assignments & Notes', icon: '📋' },
-    { id: 'academic', name: 'Academic Progress', icon: '📚' },
+    { id: 'overview', name: 'Family Overview', icon: <Home size={16} /> },
+    { id: 'children', name: 'My Children', icon: <Users size={16} /> },
+    { id: 'fees', name: 'Fees & Payments', icon: <CreditCard size={16} /> },
+    { id: 'assignments', name: 'Assignments & Notes', icon: <FileText size={16} /> },
+    { id: 'academic', name: 'Academic Progress', icon: <BookOpen size={16} /> },
   ];
 
   return (
