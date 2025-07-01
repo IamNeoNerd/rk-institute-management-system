@@ -11,7 +11,9 @@ import {
   ChartPie, Database, Download, Edit, Eye, Filter,
   Globe, Heart, Home, Info, Layout, List, Lock,
   LogOut, Map, Monitor, Printer, Search, Shield,
-  Upload, Wifi, Zap
+  Upload, Wifi, Zap, HelpCircle, X, Pause, Play,
+  History, Loader, Plus, Minus, WifiOff, Bell,
+  Trash, MoreHorizontal
 } from 'lucide-react';
 
 interface IconProps {
@@ -45,6 +47,7 @@ export const PROFESSIONAL_ICON_MAP = {
   // Financial Icons
   'money': CreditCard,
   'fees': CreditCard,
+  'finance': CreditCard,
   'payment': Banknote,
   'financial': CreditCard,
   'calculator': Calculator,
@@ -108,8 +111,12 @@ export const PROFESSIONAL_ICON_MAP = {
   'filter': Filter,
   'download': Download,
   'upload': Upload,
+  'export': Upload,
   'print': Printer,
   'logout': LogOut,
+  'help': HelpCircle,
+  'file': FileText,
+  'close': X,
 
   // Time & Calendar
   'calendar': Calendar,
@@ -160,6 +167,22 @@ export const PROFESSIONAL_ICON_MAP = {
   'briefcase': Briefcase,
   'work': Briefcase,
   'business': Building2,
+
+  // Media Controls
+  'pause': Pause,
+  'play': Play,
+  'history': History,
+  'loading': Loader,
+
+  // Basic Actions
+  'plus': Plus,
+  'minus': Minus,
+  'more': MoreHorizontal,
+  'trash': Trash,
+  'bell': Bell,
+
+  // Network & Connectivity
+  'wifi-off': WifiOff,
 } as const;
 
 // Professional Icon Component

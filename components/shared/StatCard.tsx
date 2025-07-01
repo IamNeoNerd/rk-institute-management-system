@@ -1,10 +1,12 @@
 'use client';
 
+import React from 'react';
+
 interface StatCardProps {
   title: string;
   value: string | number;
   subtitle?: string;
-  icon: string;
+  icon: string | React.ReactNode;
   color?: 'blue' | 'green' | 'purple' | 'red' | 'yellow' | 'indigo';
   onClick?: () => void;
 }
@@ -53,7 +55,11 @@ export default function StatCard({
           )}
         </div>
         <div className={`p-2 sm:p-3 rounded-lg ${colorClasses[color]} ml-2 sm:ml-3 flex-shrink-0`}>
-          <span className="text-xl sm:text-3xl">{icon}</span>
+          {typeof icon === 'string' ? (
+            <span className="text-xl sm:text-3xl">{icon}</span>
+          ) : (
+            <div className="flex items-center justify-center">{icon}</div>
+          )}
         </div>
       </div>
     </div>
