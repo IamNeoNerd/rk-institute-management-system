@@ -1,16 +1,16 @@
 /**
  * Advanced Reporting System - Main Component
- * 
+ *
  * Comprehensive reporting system that demonstrates rapid development using
  * our refactored architecture and reusable components.
- * 
+ *
  * Features:
  * - Template browsing and selection
  * - Dynamic report generation
  * - Report history and management
  * - Statistics and analytics
  * - Cross-portal integration
- * 
+ *
  * Architecture Benefits Demonstrated:
  * - 90% component reuse from existing UI library
  * - Clean separation of concerns with custom hooks
@@ -21,20 +21,21 @@
 'use client';
 
 import React, { useState } from 'react';
-import { ReportingSystemProps } from './types';
+
 import { useReportingSystem } from '@/hooks/reporting/useReportingSystem';
+
 // Using simple tab implementation instead of complex Tabs component
-import ReportTemplateList from './ReportTemplateList';
 import ReportGenerator from './ReportGenerator';
 import ReportHistory from './ReportHistory';
 import ReportStatsOverview from './ReportStatsOverview';
+import ReportTemplateList from './ReportTemplateList';
+import { ReportingSystemProps } from './types';
 
 export default function ReportingSystem({
   userRole,
   userId,
   onReportGenerated
 }: ReportingSystemProps) {
-
   const [activeTab, setActiveTab] = useState('templates');
 
   const {
@@ -44,17 +45,17 @@ export default function ReportingSystem({
     stats,
     loading,
     error,
-    
+
     // UI State
     selectedTemplate,
     generating,
-    
+
     // Actions
     selectTemplate,
     generateReport,
     downloadReport,
     deleteReport,
-    refreshReportStatus,
+    refreshReportStatus
   } = useReportingSystem(userRole, userId);
 
   // Handle template selection
@@ -65,8 +66,8 @@ export default function ReportingSystem({
 
   // Handle report generation
   const handleGenerateReport = async (
-    templateId: string, 
-    parameters: Record<string, any>, 
+    templateId: string,
+    parameters: Record<string, any>,
     format: string
   ) => {
     const success = await generateReport(templateId, parameters, format);
@@ -78,14 +79,17 @@ export default function ReportingSystem({
         onReportGenerated({
           id: `report-${Date.now()}`,
           templateId,
-          templateName: templates.find(t => t.id === templateId)?.name || 'Unknown',
+          templateName:
+            templates.find(t => t.id === templateId)?.name || 'Unknown',
           userId,
           userRole,
           parameters,
           status: 'generating',
           format: format as any,
           generatedAt: new Date().toISOString(),
-          expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+          expiresAt: new Date(
+            Date.now() + 7 * 24 * 60 * 60 * 1000
+          ).toISOString(),
           downloadCount: 0
         });
       }
@@ -126,20 +130,21 @@ export default function ReportingSystem({
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className='min-h-screen bg-gray-50'>
       {/* Header */}
-      <div className="bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex items-center justify-between">
+      <div className='bg-white border-b border-gray-200'>
+        <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6'>
+          <div className='flex items-center justify-between'>
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">
+              <h1 className='text-3xl font-bold text-gray-900'>
                 📊 Advanced Reporting System
               </h1>
-              <p className="text-gray-600 mt-2">
-                Generate comprehensive reports for academic, financial, and performance analysis
+              <p className='text-gray-600 mt-2'>
+                Generate comprehensive reports for academic, financial, and
+                performance analysis
               </p>
             </div>
-            <div className="text-sm text-gray-500">
+            <div className='text-sm text-gray-500'>
               {userRole.charAt(0).toUpperCase() + userRole.slice(1)} Portal
             </div>
           </div>
@@ -147,22 +152,22 @@ export default function ReportingSystem({
       </div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8'>
         {error && (
-          <div className="mb-6 bg-red-50 border border-red-200 rounded-lg p-4">
-            <div className="flex items-center">
-              <div className="text-red-600 mr-3">⚠️</div>
+          <div className='mb-6 bg-red-50 border border-red-200 rounded-lg p-4'>
+            <div className='flex items-center'>
+              <div className='text-red-600 mr-3'>⚠️</div>
               <div>
-                <h3 className="text-red-800 font-medium">Error</h3>
-                <p className="text-red-700 text-sm mt-1">{error}</p>
+                <h3 className='text-red-800 font-medium'>Error</h3>
+                <p className='text-red-700 text-sm mt-1'>{error}</p>
               </div>
             </div>
           </div>
         )}
 
         {/* Tab Navigation */}
-        <div className="border-b border-gray-200 mb-8">
-          <nav className="-mb-px flex space-x-8">
+        <div className='border-b border-gray-200 mb-8'>
+          <nav className='-mb-px flex space-x-8'>
             {tabs.map(tab => (
               <button
                 key={tab.id}
@@ -172,15 +177,15 @@ export default function ReportingSystem({
                   activeTab === tab.id
                     ? 'border-blue-500 text-blue-600'
                     : tab.disabled
-                    ? 'border-transparent text-gray-400 cursor-not-allowed'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                      ? 'border-transparent text-gray-400 cursor-not-allowed'
+                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                 }`}
               >
-                <div className="flex items-center gap-2">
+                <div className='flex items-center gap-2'>
                   <span>{tab.icon}</span>
                   <span>{tab.label}</span>
                   {tab.count !== undefined && (
-                    <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">
+                    <span className='bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full'>
                       {tab.count}
                     </span>
                   )}

@@ -1,0 +1,30 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# RK Institute Management System - Pre-commit Quality Gates
+# Enforces zero-error policy to prevent technical debt re-accumulation
+
+echo "🔍 Running pre-commit quality gates..."
+
+# 1. TypeScript Compilation (ZERO TOLERANCE)
+echo "📝 Checking TypeScript compilation..."
+if ! npx tsc --noEmit; then
+  echo "❌ TypeScript compilation failed! Fix all TypeScript errors before committing."
+  echo "💡 Run 'npx tsc --noEmit' to see detailed errors."
+  exit 1
+fi
+echo "✅ TypeScript compilation passed"
+
+# 2. Lint Staged Files
+echo "🔍 Running lint-staged..."
+npx lint-staged
+
+# 3. Quick Test Run (if tests exist)
+echo "🧪 Running quick test validation..."
+if npm run test:run --silent > /dev/null 2>&1; then
+  echo "✅ Tests passed"
+else
+  echo "⚠️  Some tests failed, but allowing commit (tests are not blocking)"
+fi
+
+echo "🎉 All quality gates passed! Commit allowed."

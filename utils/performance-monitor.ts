@@ -1,10 +1,10 @@
 /**
  * Performance Monitoring Utility
- * 
+ *
  * Provides performance tracking and monitoring capabilities for the RK Institute
  * Management System. Tracks component render times, API response times, and
  * user interaction metrics.
- * 
+ *
  * Features:
  * - Component render time tracking
  * - API response time monitoring
@@ -50,9 +50,9 @@ class PerformanceMonitor {
    */
   private initializePerformanceObserver() {
     try {
-      const observer = new PerformanceObserver((list) => {
+      const observer = new PerformanceObserver(list => {
         const entries = list.getEntries();
-        entries.forEach((entry) => {
+        entries.forEach(entry => {
           if (entry.entryType === 'navigation') {
             this.recordMetric('page-load', entry.duration, 'navigation', {
               url: window.location.href,
@@ -74,9 +74,9 @@ class PerformanceMonitor {
    * Record a performance metric
    */
   recordMetric(
-    name: string, 
-    value: number, 
-    type: PerformanceMetric['type'], 
+    name: string,
+    value: number,
+    type: PerformanceMetric['type'],
     metadata?: Record<string, any>
   ) {
     if (!this.isEnabled) return;
@@ -107,7 +107,7 @@ class PerformanceMonitor {
     const startTime = performance.now();
     const result = renderFn();
     const endTime = performance.now();
-    
+
     this.recordMetric(
       `component-${componentName}`,
       endTime - startTime,
@@ -122,7 +122,7 @@ class PerformanceMonitor {
    * Track API response time
    */
   async trackApiCall<T>(
-    apiName: string, 
+    apiName: string,
     apiCall: () => Promise<T>
   ): Promise<T> {
     if (!this.isEnabled) return apiCall();
@@ -131,25 +131,22 @@ class PerformanceMonitor {
     try {
       const result = await apiCall();
       const endTime = performance.now();
-      
-      this.recordMetric(
-        `api-${apiName}`,
-        endTime - startTime,
-        'api',
-        { apiName, status: 'success' }
-      );
-      
+
+      this.recordMetric(`api-${apiName}`, endTime - startTime, 'api', {
+        apiName,
+        status: 'success'
+      });
+
       return result;
     } catch (error) {
       const endTime = performance.now();
-      
-      this.recordMetric(
-        `api-${apiName}`,
-        endTime - startTime,
-        'api',
-        { apiName, status: 'error', error: error instanceof Error ? error.message : 'Unknown error' }
-      );
-      
+
+      this.recordMetric(`api-${apiName}`, endTime - startTime, 'api', {
+        apiName,
+        status: 'error',
+        error: error instanceof Error ? error.message : 'Unknown error'
+      });
+
       throw error;
     }
   }
@@ -208,13 +205,16 @@ class PerformanceMonitor {
     const apiMetrics = relevantMetrics.filter(m => m.type === 'api');
 
     // Calculate averages
-    const averageRenderTime = renderMetrics.length > 0
-      ? renderMetrics.reduce((sum, m) => sum + m.value, 0) / renderMetrics.length
-      : 0;
+    const averageRenderTime =
+      renderMetrics.length > 0
+        ? renderMetrics.reduce((sum, m) => sum + m.value, 0) /
+          renderMetrics.length
+        : 0;
 
-    const averageApiTime = apiMetrics.length > 0
-      ? apiMetrics.reduce((sum, m) => sum + m.value, 0) / apiMetrics.length
-      : 0;
+    const averageApiTime =
+      apiMetrics.length > 0
+        ? apiMetrics.reduce((sum, m) => sum + m.value, 0) / apiMetrics.length
+        : 0;
 
     // Find slowest components
     const componentTimes = new Map<string, number[]>();
@@ -255,7 +255,8 @@ class PerformanceMonitor {
       if (m.type === 'render') return m.value > this.thresholds.componentRender;
       if (m.type === 'api') return m.value > this.thresholds.apiResponse;
       if (m.type === 'navigation') return m.value > this.thresholds.pageLoad;
-      if (m.type === 'interaction') return m.value > this.thresholds.userInteraction;
+      if (m.type === 'interaction')
+        return m.value > this.thresholds.userInteraction;
       return false;
     }).length;
 
@@ -315,7 +316,10 @@ export function usePerformanceTracking(componentName: string) {
   };
 
   const trackInteraction = (interactionName: string, duration: number) => {
-    performanceMonitor.trackInteraction(`${componentName}-${interactionName}`, duration);
+    performanceMonitor.trackInteraction(
+      `${componentName}-${interactionName}`,
+      duration
+    );
   };
 
   return { trackRender, trackInteraction };

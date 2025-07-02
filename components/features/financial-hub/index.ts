@@ -1,9 +1,9 @@
 /**
  * Financial Hub Feature Components - Export Index
- * 
+ *
  * Centralized exports for all Financial Hub feature components following
  * the three-principle methodology for component breakdown.
- * 
+ *
  * Components:
  * - FinancialStatsOverview: Header and KPI metrics display
  * - FinancialQuickActions: Quick action cards for financial operations

@@ -1,5 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
 import jwt from 'jsonwebtoken';
+import { NextRequest, NextResponse } from 'next/server';
+
 import { reportStorageService } from '@/lib/services/report-storage.service';
 
 export async function GET(
@@ -15,7 +16,7 @@ export async function GET(
 
     const token = authHeader.substring(7);
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as any;
-    
+
     if (!decoded || decoded.role !== 'ADMIN') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -24,13 +25,16 @@ export async function GET(
 
     // Get the report
     const report = await reportStorageService.getReportById(reportId);
-    
+
     if (!report) {
       return NextResponse.json({ error: 'Report not found' }, { status: 404 });
     }
 
     if (report.status !== 'COMPLETED') {
-      return NextResponse.json({ error: 'Report is not ready for download' }, { status: 400 });
+      return NextResponse.json(
+        { error: 'Report is not ready for download' },
+        { status: 400 }
+      );
     }
 
     // Increment download count
@@ -46,7 +50,8 @@ export async function GET(
         fileName = fileName.replace('.json', '.pdf');
         break;
       case 'EXCEL':
-        contentType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+        contentType =
+          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
         fileName = fileName.replace('.json', '.xlsx');
         break;
       case 'CSV':
@@ -79,7 +84,6 @@ export async function GET(
         'Cache-Control': 'no-cache'
       }
     });
-
   } catch (error) {
     console.error('Error downloading report:', error);
     return NextResponse.json(

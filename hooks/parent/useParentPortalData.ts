@@ -1,9 +1,9 @@
 /**
  * Parent Portal Data Hook
- * 
+ *
  * Main custom hook for Parent Portal data management.
  * Handles user authentication, family profile, dashboard stats, and navigation state.
- * 
+ *
  * Features:
  * - User authentication and profile management
  * - Family dashboard statistics
@@ -16,7 +16,13 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { User, FamilyProfile, DashboardStats, ActiveTab } from '@/components/features/parent-portal/types';
+
+import {
+  User,
+  FamilyProfile,
+  DashboardStats,
+  ActiveTab
+} from '@/components/features/parent-portal/types';
 
 export interface UseParentPortalDataReturn {
   // Data State
@@ -24,11 +30,11 @@ export interface UseParentPortalDataReturn {
   familyProfile: FamilyProfile | null;
   stats: DashboardStats;
   loading: boolean;
-  
+
   // UI State
   activeTab: ActiveTab;
   selectedChild: string;
-  
+
   // Actions
   setUser: (user: User | null) => void;
   setFamilyProfile: (profile: FamilyProfile | null) => void;
@@ -42,7 +48,9 @@ export interface UseParentPortalDataReturn {
 export function useParentPortalData(): UseParentPortalDataReturn {
   // Data State
   const [user, setUser] = useState<User | null>(null);
-  const [familyProfile, setFamilyProfile] = useState<FamilyProfile | null>(null);
+  const [familyProfile, setFamilyProfile] = useState<FamilyProfile | null>(
+    null
+  );
   const [stats, setStats] = useState<DashboardStats>({
     totalChildren: 0,
     totalMonthlyFee: 0,
@@ -52,7 +60,7 @@ export function useParentPortalData(): UseParentPortalDataReturn {
     lastPaymentDate: ''
   });
   const [loading, setLoading] = useState(true);
-  
+
   // UI State
   const [activeTab, setActiveTab] = useState<ActiveTab>('overview');
   const [selectedChild, setSelectedChild] = useState<string>('all');
@@ -63,8 +71,8 @@ export function useParentPortalData(): UseParentPortalDataReturn {
       const response = await fetch('/api/auth/logout', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-        },
+          'Content-Type': 'application/json'
+        }
       });
 
       if (response.ok) {
@@ -79,7 +87,7 @@ export function useParentPortalData(): UseParentPortalDataReturn {
           totalConcerns: 0,
           lastPaymentDate: ''
         });
-        
+
         // Redirect to login
         window.location.href = '/login';
       } else {
@@ -100,11 +108,11 @@ export function useParentPortalData(): UseParentPortalDataReturn {
     familyProfile,
     stats,
     loading,
-    
+
     // UI State
     activeTab,
     selectedChild,
-    
+
     // Actions
     setUser,
     setFamilyProfile,
@@ -112,6 +120,6 @@ export function useParentPortalData(): UseParentPortalDataReturn {
     setLoading,
     setActiveTab,
     setSelectedChild,
-    handleLogout,
+    handleLogout
   };
 }

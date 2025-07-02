@@ -1,6 +1,6 @@
 /**
  * 🗄️ Database Connection Management
- * 
+ *
  * Proper Prisma client initialization with error handling
  * Based on retrospective analysis findings
  */
@@ -22,17 +22,21 @@ export async function getPrismaClient(): Promise<PrismaClient> {
 
       console.log('🔗 Initializing Prisma client...');
       prisma = new PrismaClient({
-        log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
+        log:
+          process.env.NODE_ENV === 'development'
+            ? ['query', 'error', 'warn']
+            : ['error']
       });
 
       // Test the connection
       await prisma.$connect();
       console.log('✅ Database connection established');
-      
     } catch (error) {
       console.error('❌ Failed to connect to database:', error);
       prisma = null;
-      throw new Error(`Database connection failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Database connection failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
   return prisma;
@@ -45,21 +49,21 @@ export async function testDatabaseConnection() {
   try {
     const client = await getPrismaClient();
     const startTime = Date.now();
-    
+
     // Simple query to test connection
     await client.$queryRaw`SELECT 1 as test`;
-    
+
     const responseTime = Date.now() - startTime;
-    
-    return { 
-      status: 'connected', 
+
+    return {
+      status: 'connected',
       responseTime,
       timestamp: new Date().toISOString(),
       message: 'Database connection healthy'
     };
   } catch (error) {
-    return { 
-      status: 'disconnected', 
+    return {
+      status: 'disconnected',
       error: error instanceof Error ? error.message : 'Unknown error',
       timestamp: new Date().toISOString(),
       message: 'Database connection failed'
@@ -117,13 +121,14 @@ export async function executeDatabaseOperation<T>(
     const data = await operation(client);
     return { success: true, data };
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : 'Unknown database error';
+    const errorMessage =
+      error instanceof Error ? error.message : 'Unknown database error';
     console.error('Database operation failed:', errorMessage);
-    
-    return { 
-      success: false, 
+
+    return {
+      success: false,
       error: errorMessage,
-      data: fallbackValue 
+      data: fallbackValue
     };
   }
 }

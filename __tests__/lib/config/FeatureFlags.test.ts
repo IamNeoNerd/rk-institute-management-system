@@ -6,14 +6,20 @@
  */
 
 import { vi } from 'vitest';
+
 import {
   isFeatureEnabled,
   getAllFeatureFlags,
   getEnabledFeatures,
   getFeatureFlagAnalytics,
   validateFeatureFlags,
-  FeatureFlags
+  FeatureFlags,
 } from '@/lib/config/FeatureFlags';
+
+// Type assertions for dynamic imports in tests
+const typedIsFeatureEnabled = isFeatureEnabled as any;
+const typedGetAllFeatureFlags = getAllFeatureFlags as any;
+const typedGetFeatureFlagAnalytics = getFeatureFlagAnalytics as any;
 
 // Mock environment variables for testing
 const originalEnv = process.env;
@@ -51,13 +57,13 @@ describe('Feature Flags System', () => {
 
       // Re-import to get fresh configuration
       vi.resetModules();
-      const { isFeatureEnabled  } = await vi.importActual('@/lib/config/FeatureFlags');
+      const { isFeatureEnabled  } = await vi.importActual('@/lib/config/FeatureFlags') as any;
 
-      expect(isFeatureEnabled('realTimeCollaboration')).toBe(true);
-      expect(isFeatureEnabled('advancedReporting')).toBe(true);
-      expect(isFeatureEnabled('aiPersonalization')).toBe(true);
-      expect(isFeatureEnabled('mobileOptimization')).toBe(true);
-      expect(isFeatureEnabled('twoFactorAuth')).toBe(true);
+      expect((isFeatureEnabled as any)('realTimeCollaboration')).toBe(true);
+      expect((isFeatureEnabled as any)('advancedReporting')).toBe(true);
+      expect((isFeatureEnabled as any)('aiPersonalization')).toBe(true);
+      expect((isFeatureEnabled as any)('mobileOptimization')).toBe(true);
+      expect((isFeatureEnabled as any)('twoFactorAuth')).toBe(true);
     });
 
     test('should parse false values correctly', async () => {
@@ -98,10 +104,10 @@ describe('Feature Flags System', () => {
       const { isFeatureEnabled  } = await vi.importActual('@/lib/config/FeatureFlags');
 
       // These should use default values
-      expect(isFeatureEnabled('realTimeCollaboration')).toBe(false); // default false
-      expect(isFeatureEnabled('advancedReporting')).toBe(true); // default true
-      expect(isFeatureEnabled('auditLogging')).toBe(true); // default true
-      expect(isFeatureEnabled('caching')).toBe(true); // default true
+      expect((isFeatureEnabled as any)('realTimeCollaboration')).toBe(false); // default false
+      expect((isFeatureEnabled as any)('advancedReporting')).toBe(true); // default true
+      expect((isFeatureEnabled as any)('auditLogging')).toBe(true); // default true
+      expect((isFeatureEnabled as any)('caching')).toBe(true); // default true
     });
 
     test('should handle invalid environment variable values', async () => {
@@ -121,9 +127,9 @@ describe('Feature Flags System', () => {
 
   describe('Feature Flag Functions', () => {
     test('isFeatureEnabled should return correct boolean values', () => {
-      expect(typeof isFeatureEnabled('realTimeCollaboration')).toBe('boolean');
-      expect(typeof isFeatureEnabled('advancedReporting')).toBe('boolean');
-      expect(typeof isFeatureEnabled('auditLogging')).toBe('boolean');
+      expect(typeof typedIsFeatureEnabled('realTimeCollaboration')).toBe('boolean');
+      expect(typeof typedIsFeatureEnabled('advancedReporting')).toBe('boolean');
+      expect(typeof typedIsFeatureEnabled('auditLogging')).toBe('boolean');
     });
 
     test('getAllFeatureFlags should return complete FeatureFlags object', () => {
@@ -278,7 +284,7 @@ describe('Feature Flags System', () => {
       vi.resetModules();
       const { isFeatureEnabled  } = await vi.importActual('@/lib/config/FeatureFlags');
       
-      expect(isFeatureEnabled('debugMode')).toBe(true);
+      expect((isFeatureEnabled as any)('debugMode')).toBe(true);
     });
 
     test('should respect explicit debug mode setting', async () => {

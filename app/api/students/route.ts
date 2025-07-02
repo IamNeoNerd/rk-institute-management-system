@@ -1,50 +1,67 @@
-import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
+import { NextResponse } from 'next/server';
 
 const prisma = new PrismaClient();
 
-// GET - Fetch all students
-export async function GET() {
+// GET - Fetch all students with optimized query
+export async function GET(request: Request) {
   try {
+    const { searchParams } = new URL(request.url);
+    const limit = parseInt(searchParams.get('limit') || '50');
+    const offset = parseInt(searchParams.get('offset') || '0');
+    const includeSubscriptions =
+      searchParams.get('include') === 'subscriptions';
+
+    // Optimized query with pagination and conditional includes
     const students = await prisma.student.findMany({
-      include: {
+      take: limit,
+      skip: offset,
+      select: {
+        id: true,
+        name: true,
+        studentId: true,
+        grade: true,
+        createdAt: true,
         family: {
           select: {
             id: true,
             name: true,
-            discountAmount: true,
-          },
+            discountAmount: true
+          }
         },
-        subscriptions: {
-          include: {
-            course: {
-              select: {
-                id: true,
-                name: true,
-                feeStructure: true,
+        ...(includeSubscriptions && {
+          subscriptions: {
+            select: {
+              id: true,
+              startDate: true,
+              endDate: true,
+              course: {
+                select: {
+                  id: true,
+                  name: true
+                }
               },
+              service: {
+                select: {
+                  id: true,
+                  name: true
+                }
+              }
             },
-            service: {
-              select: {
-                id: true,
-                name: true,
-                feeStructure: true,
-              },
-            },
-          },
-          where: {
-            endDate: null, // Active subscriptions only
-          },
-        },
+            where: {
+              endDate: null // Active subscriptions only
+            }
+          }
+        }),
         _count: {
           select: {
-            subscriptions: true,
-          },
-        },
+            subscriptions: true
+          }
+        }
       },
       orderBy: {
-        createdAt: 'desc',
-      },
+        createdAt: 'desc'
+      }
     });
 
     return NextResponse.json(students);
@@ -73,14 +90,11 @@ export async function POST(request: Request) {
 
     // Verify family exists
     const family = await prisma.family.findUnique({
-      where: { id: familyId },
+      where: { id: familyId }
     });
 
     if (!family) {
-      return NextResponse.json(
-        { error: 'Family not found' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'Family not found' }, { status: 404 });
     }
 
     // Create student
@@ -90,15 +104,15 @@ export async function POST(request: Request) {
         grade: grade || null,
         dateOfBirth: dateOfBirth ? new Date(dateOfBirth) : null,
         enrollmentDate: enrollmentDate ? new Date(enrollmentDate) : new Date(),
-        familyId,
+        familyId
       },
       include: {
         family: {
           select: {
             id: true,
             name: true,
-            discountAmount: true,
-          },
+            discountAmount: true
+          }
         },
         subscriptions: {
           include: {
@@ -106,27 +120,27 @@ export async function POST(request: Request) {
               select: {
                 id: true,
                 name: true,
-                feeStructure: true,
-              },
+                feeStructure: true
+              }
             },
             service: {
               select: {
                 id: true,
                 name: true,
-                feeStructure: true,
-              },
-            },
+                feeStructure: true
+              }
+            }
           },
           where: {
-            endDate: null,
-          },
+            endDate: null
+          }
         },
         _count: {
           select: {
-            subscriptions: true,
-          },
-        },
-      },
+            subscriptions: true
+          }
+        }
+      }
     });
 
     return NextResponse.json(student, { status: 201 });

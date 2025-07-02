@@ -1,9 +1,9 @@
 /**
  * Optimized Stats Card Component
- * 
+ *
  * Performance-optimized version of StatsCard with React.memo and optimized rendering.
  * Addresses performance issues identified in Phase F integration testing.
- * 
+ *
  * Performance Improvements:
  * - React.memo for preventing unnecessary re-renders
  * - Optimized prop comparison
@@ -14,6 +14,7 @@
 'use client';
 
 import React, { memo } from 'react';
+
 import { ProfessionalIcon } from '@/components/ui/icons/ProfessionalIconSystem';
 
 export interface OptimizedStatsCardProps {
@@ -41,26 +42,25 @@ const OptimizedStatsCard = memo(function OptimizedStatsCard({
   trendValue,
   loading = false
 }: OptimizedStatsCardProps) {
-  
   // Memoized trend indicator
   const trendIndicator = React.useMemo(() => {
     if (!trend || !trendValue) return null;
-    
+
     const trendColors = {
       up: 'text-green-600',
       down: 'text-red-600',
       neutral: 'text-gray-600'
     };
-    
+
     const trendIcons = {
-      up: <ProfessionalIcon name="arrow-up-right" size={16} />,
-      down: <ProfessionalIcon name="arrow-down-right" size={16} />,
-      neutral: <ProfessionalIcon name="arrow-right" size={16} />
+      up: <ProfessionalIcon name='arrow-up-right' size={16} />,
+      down: <ProfessionalIcon name='arrow-down-right' size={16} />,
+      neutral: <ProfessionalIcon name='arrow-right' size={16} />
     };
-    
+
     return (
       <div className={`flex items-center text-sm ${trendColors[trend]}`}>
-        <span className="mr-1">{trendIcons[trend]}</span>
+        <span className='mr-1'>{trendIcons[trend]}</span>
         <span>{trendValue}</span>
       </div>
     );
@@ -69,15 +69,17 @@ const OptimizedStatsCard = memo(function OptimizedStatsCard({
   // Loading state
   if (loading) {
     return (
-      <div className={`${bgColor} p-6 rounded-xl shadow-sm border border-gray-200`}>
-        <div className="animate-pulse">
-          <div className="flex items-center justify-between">
-            <div className="space-y-2">
-              <div className="h-4 bg-gray-200 rounded w-20"></div>
-              <div className="h-8 bg-gray-200 rounded w-16"></div>
-              <div className="h-3 bg-gray-200 rounded w-24"></div>
+      <div
+        className={`${bgColor} p-6 rounded-xl shadow-sm border border-gray-200`}
+      >
+        <div className='animate-pulse'>
+          <div className='flex items-center justify-between'>
+            <div className='space-y-2'>
+              <div className='h-4 bg-gray-200 rounded w-20'></div>
+              <div className='h-8 bg-gray-200 rounded w-16'></div>
+              <div className='h-3 bg-gray-200 rounded w-24'></div>
             </div>
-            <div className="w-12 h-12 bg-gray-200 rounded-lg"></div>
+            <div className='w-12 h-12 bg-gray-200 rounded-lg'></div>
           </div>
         </div>
       </div>
@@ -85,24 +87,24 @@ const OptimizedStatsCard = memo(function OptimizedStatsCard({
   }
 
   return (
-    <div className={`${bgColor} p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow`}>
-      <div className="flex items-center justify-between">
-        <div className="flex-1">
+    <div
+      className={`${bgColor} p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow`}
+    >
+      <div className='flex items-center justify-between'>
+        <div className='flex-1'>
           <p className={`text-sm font-medium ${textColor}`}>{title}</p>
           <p className={`text-3xl font-bold ${valueColor} mt-1`}>
             {typeof value === 'number' ? value.toLocaleString() : value}
           </p>
           {subtitle && (
-            <p className={`text-sm mt-1 ${textColor}`}>
-              {subtitle}
-            </p>
+            <p className={`text-sm mt-1 ${textColor}`}>{subtitle}</p>
           )}
           {trendIndicator}
         </div>
-        
+
         {icon && (
-          <div className="ml-4 p-3 bg-gray-50 rounded-lg flex-shrink-0">
-            <span className="text-2xl" role="img" aria-label={title}>
+          <div className='ml-4 p-3 bg-gray-50 rounded-lg flex-shrink-0'>
+            <span className='text-2xl' role='img' aria-label={title}>
               {icon}
             </span>
           </div>

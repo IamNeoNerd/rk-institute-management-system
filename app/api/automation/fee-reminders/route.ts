@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+
 import AutomationEngineService from '@/lib/services/automation-engine.service';
 
 // POST - Manually trigger fee reminder job
@@ -15,14 +16,17 @@ export async function POST(request: Request) {
       );
     }
 
-    console.log(`[API] Manual fee reminder trigger requested (${reminderType})`);
+    console.log(
+      `[API] Manual fee reminder trigger requested (${reminderType})`
+    );
 
     // Execute the fee reminder job
-    const result = await AutomationEngineService.executeFeeReminderJob(reminderType);
+    const result =
+      await AutomationEngineService.executeFeeReminderJob(reminderType);
 
     return NextResponse.json({
       success: result.success,
-      message: result.success 
+      message: result.success
         ? `Fee reminders (${reminderType}) sent successfully. Processed ${result.successfulBills} reminders out of ${result.totalStudents} due allocations.`
         : `Fee reminders (${reminderType}) completed with errors. ${result.failedBills} reminders failed out of ${result.totalStudents} due allocations.`,
       data: {
@@ -35,11 +39,10 @@ export async function POST(request: Request) {
         errors: result.errors
       }
     });
-
   } catch (error) {
     console.error('[API] Fee reminder error:', error);
     return NextResponse.json(
-      { 
+      {
         success: false,
         error: 'Failed to execute fee reminder job',
         details: error instanceof Error ? error.message : 'Unknown error'
@@ -57,11 +60,13 @@ export async function GET(request: Request) {
 
     // Get running jobs
     const runningJobs = AutomationEngineService.getRunningJobs();
-    const reminderJobs = runningJobs.filter(job => job.jobType === 'FEE_REMINDER');
+    const reminderJobs = runningJobs.filter(
+      job => job.jobType === 'FEE_REMINDER'
+    );
 
     // Get overdue allocations summary (simplified for now)
     const today = new Date();
-    
+
     // This would normally query the database, but for now we'll return a placeholder
     const overdueStats = {
       totalOverdue: 0,
@@ -80,11 +85,10 @@ export async function GET(request: Request) {
         lastUpdate: new Date().toISOString()
       }
     });
-
   } catch (error) {
     console.error('[API] Get fee reminder status error:', error);
     return NextResponse.json(
-      { 
+      {
         success: false,
         error: 'Failed to get fee reminder status',
         details: error instanceof Error ? error.message : 'Unknown error'

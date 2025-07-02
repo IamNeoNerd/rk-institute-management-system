@@ -12,10 +12,11 @@ import {
   ActiveTab
 } from '@/components/features/student-portal';
 import { useStudentPortalData } from '@/hooks';
+
+import AssignmentsView from '../components/AssignmentsView';
+import MyAcademicLogsView from '../components/MyAcademicLogsView';
 import MyCoursesView from '../components/MyCoursesView';
 import MyFeesView from '../components/MyFeesView';
-import MyAcademicLogsView from '../components/MyAcademicLogsView';
-import AssignmentsView from '../components/AssignmentsView';
 
 export default function StudentDashboard() {
   const {
@@ -45,8 +46,8 @@ export default function StudentDashboard() {
       family: {
         name: 'The Johnson Family',
         email: 'johnson.family@email.com',
-        phone: '+1-217-555-0101',
-      },
+        phone: '+1-217-555-0101'
+      }
     });
 
     setStats({
@@ -55,14 +56,14 @@ export default function StudentDashboard() {
       currentMonthFee: 8500,
       outstandingDues: 0,
       academicLogs: 5,
-      achievements: 2,
+      achievements: 2
     });
 
     setLoading(false);
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className='min-h-screen bg-gray-50'>
       {/* Data Management Component - handles all API calls and state */}
       <StudentDataInsights
         onUserUpdate={setUser}
@@ -72,21 +73,15 @@ export default function StudentDashboard() {
       />
 
       {/* Header */}
-      <StudentHeader
-        studentProfile={studentProfile}
-        onLogout={handleLogout}
-      />
+      <StudentHeader studentProfile={studentProfile} onLogout={handleLogout} />
 
       {/* Navigation */}
-      <StudentNavigation
-        activeTab={activeTab}
-        onTabChange={setActiveTab}
-      />
+      <StudentNavigation activeTab={activeTab} onTabChange={setActiveTab} />
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8'>
         {activeTab === 'overview' && (
-          <div className="space-y-8">
+          <div className='space-y-8'>
             {/* Stats Overview */}
             <StudentStatsOverview
               studentProfile={studentProfile}
@@ -95,10 +90,7 @@ export default function StudentDashboard() {
             />
 
             {/* Quick Actions */}
-            <StudentQuickActions
-              stats={stats}
-              onTabChange={setActiveTab}
-            />
+            <StudentQuickActions stats={stats} onTabChange={setActiveTab} />
           </div>
         )}
 

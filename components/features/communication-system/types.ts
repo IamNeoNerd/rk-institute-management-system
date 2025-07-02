@@ -1,9 +1,9 @@
 /**
  * Real-time Communication System - Type Definitions
- * 
+ *
  * Comprehensive messaging and notification system for RK Institute Management System.
  * Leverages existing architecture patterns for rapid development.
- * 
+ *
  * Features:
  * - Cross-portal messaging between all user roles
  * - Real-time notifications and status updates
@@ -92,7 +92,13 @@ export interface ConversationParticipant {
 export interface Notification {
   id: string;
   userId: string;
-  type: 'message' | 'announcement' | 'reminder' | 'system' | 'grade' | 'attendance';
+  type:
+    | 'message'
+    | 'announcement'
+    | 'reminder'
+    | 'system'
+    | 'grade'
+    | 'attendance';
   title: string;
   content: string;
   actionUrl?: string;
@@ -193,7 +199,11 @@ export interface UserSelectorProps {
 }
 
 export interface ConversationCreatorProps {
-  onCreateConversation: (participants: string[], title?: string, type?: Conversation['type']) => void;
+  onCreateConversation: (
+    participants: string[],
+    title?: string,
+    type?: Conversation['type']
+  ) => void;
   onCancel: () => void;
   userRole: string;
   availableUsers: User[];
@@ -223,14 +233,22 @@ export interface UpdateNotificationPreferencesRequest {
 
 // Real-time Event Types
 export interface MessageEvent {
-  type: 'message_sent' | 'message_edited' | 'message_deleted' | 'message_reaction';
+  type:
+    | 'message_sent'
+    | 'message_edited'
+    | 'message_deleted'
+    | 'message_reaction';
   conversationId: string;
   message: Message;
   userId: string;
 }
 
 export interface ConversationEvent {
-  type: 'conversation_created' | 'conversation_updated' | 'participant_added' | 'participant_removed';
+  type:
+    | 'conversation_created'
+    | 'conversation_updated'
+    | 'participant_added'
+    | 'participant_removed';
   conversation: Conversation;
   userId: string;
 }

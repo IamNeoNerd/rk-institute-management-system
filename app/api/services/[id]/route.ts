@@ -1,5 +1,5 @@
-import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
+import { NextResponse } from 'next/server';
 
 const prisma = new PrismaClient();
 
@@ -15,17 +15,14 @@ export async function GET(
         feeStructure: true,
         _count: {
           select: {
-            subscriptions: true,
-          },
-        },
-      },
+            subscriptions: true
+          }
+        }
+      }
     });
 
     if (!service) {
-      return NextResponse.json(
-        { error: 'Service not found' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'Service not found' }, { status: 404 });
     }
 
     return NextResponse.json(service);
@@ -60,14 +57,14 @@ export async function PUT(
       where: { id: params.id },
       data: {
         name,
-        description: description || null,
-      },
+        description: description || null
+      }
     });
 
     // Handle fee structure update
     if (feeStructure) {
       const existingFeeStructure = await prisma.feeStructure.findUnique({
-        where: { serviceId: params.id },
+        where: { serviceId: params.id }
       });
 
       if (existingFeeStructure) {
@@ -76,8 +73,8 @@ export async function PUT(
           where: { serviceId: params.id },
           data: {
             amount: parseFloat(feeStructure.amount),
-            billingCycle: feeStructure.billingCycle || 'MONTHLY',
-          },
+            billingCycle: feeStructure.billingCycle || 'MONTHLY'
+          }
         });
       } else if (feeStructure.amount) {
         // Create new fee structure
@@ -85,8 +82,8 @@ export async function PUT(
           data: {
             amount: parseFloat(feeStructure.amount),
             billingCycle: feeStructure.billingCycle || 'MONTHLY',
-            serviceId: params.id,
-          },
+            serviceId: params.id
+          }
         });
       }
     }
@@ -98,10 +95,10 @@ export async function PUT(
         feeStructure: true,
         _count: {
           select: {
-            subscriptions: true,
-          },
-        },
-      },
+            subscriptions: true
+          }
+        }
+      }
     });
 
     return NextResponse.json(updatedService);
@@ -122,10 +119,10 @@ export async function DELETE(
   try {
     // Check if service has active subscriptions
     const subscriptionCount = await prisma.studentSubscription.count({
-      where: { 
+      where: {
         serviceId: params.id,
-        endDate: null, // Active subscriptions
-      },
+        endDate: null // Active subscriptions
+      }
     });
 
     if (subscriptionCount > 0) {
@@ -137,12 +134,12 @@ export async function DELETE(
 
     // Delete fee structure first (if exists)
     await prisma.feeStructure.deleteMany({
-      where: { serviceId: params.id },
+      where: { serviceId: params.id }
     });
 
     // Delete the service
     await prisma.service.delete({
-      where: { id: params.id },
+      where: { id: params.id }
     });
 
     return NextResponse.json({ message: 'Service deleted successfully' });

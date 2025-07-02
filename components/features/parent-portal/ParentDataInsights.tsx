@@ -1,10 +1,10 @@
 /**
  * Parent Data Insights Component
- * 
+ *
  * Handles all data fetching, state management, and real-time updates
  * for the Parent Portal. Provides clean separation of business logic
  * from presentation components.
- * 
+ *
  * Design Features:
  * - Real-time data fetching with authentication
  * - Comprehensive error handling
@@ -16,7 +16,13 @@
 'use client';
 
 import { useEffect } from 'react';
-import { ParentDataInsightsProps, User, FamilyProfile, DashboardStats } from './types';
+
+import {
+  ParentDataInsightsProps,
+  User,
+  FamilyProfile,
+  DashboardStats
+} from './types';
 
 export default function ParentDataInsights({
   onUserUpdate,
@@ -24,7 +30,6 @@ export default function ParentDataInsights({
   onStatsUpdate,
   onLoadingChange
 }: ParentDataInsightsProps) {
-
   useEffect(() => {
     // Initial data fetch
     fetchFamilyData();
@@ -37,14 +42,14 @@ export default function ParentDataInsights({
       // Fetch user data
       const userResponse = await fetch('/api/auth/me');
       const userData = await userResponse.json();
-      
+
       if (userData.success) {
         onUserUpdate(userData.user);
-        
+
         // Fetch family profile
         const profileResponse = await fetch('/api/parents/profile');
         const profileData = await profileResponse.json();
-        
+
         if (profileData.success) {
           onFamilyProfileUpdate(profileData.family);
         }
@@ -52,7 +57,7 @@ export default function ParentDataInsights({
         // Fetch dashboard stats
         const statsResponse = await fetch('/api/parents/dashboard-stats');
         const statsData = await statsResponse.json();
-        
+
         if (statsData.success) {
           onStatsUpdate(statsData.stats);
         } else {

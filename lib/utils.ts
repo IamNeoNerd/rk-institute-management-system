@@ -1,6 +1,6 @@
 /**
  * Utility Functions
- * 
+ *
  * Common utility functions used across the application.
  * Provides helper functions for className merging, data formatting,
  * and other common operations.
@@ -40,10 +40,13 @@ export function formatRelativeTime(date: string | Date): string {
   const diffInSeconds = Math.floor((now.getTime() - target.getTime()) / 1000);
 
   if (diffInSeconds < 60) return 'Just now';
-  if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} minutes ago`;
-  if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} hours ago`;
-  if (diffInSeconds < 2592000) return `${Math.floor(diffInSeconds / 86400)} days ago`;
-  
+  if (diffInSeconds < 3600)
+    return `${Math.floor(diffInSeconds / 60)} minutes ago`;
+  if (diffInSeconds < 86400)
+    return `${Math.floor(diffInSeconds / 3600)} hours ago`;
+  if (diffInSeconds < 2592000)
+    return `${Math.floor(diffInSeconds / 86400)} days ago`;
+
   return formatDate(date);
 }
 

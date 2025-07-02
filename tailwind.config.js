@@ -23,8 +23,8 @@ module.exports = {
       },
       backdropBlur: {
         'xs': '2px',
-      }
+      },
     },
   },
   plugins: [],
-}
+};

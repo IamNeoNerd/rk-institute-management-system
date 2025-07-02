@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import AdminLayout from '@/components/layout/AdminLayout';
+
 import {
   ReportsStatsOverview,
   ReportsLiveDashboard,
@@ -13,6 +13,7 @@ import {
   ActiveTab,
   ReportType
 } from '@/components/features/reports-hub';
+import AdminLayout from '@/components/layout/AdminLayout';
 
 export default function ReportsPage() {
   const [reportData, setReportData] = useState<ReportData | null>(null);
@@ -21,7 +22,9 @@ export default function ReportsPage() {
   const [selectedMonth, setSelectedMonth] = useState(6); // June - where we have test data
   const [selectedYear, setSelectedYear] = useState(2024); // 2024 - where we have test data
   const [activeTab, setActiveTab] = useState<ActiveTab>('dashboard');
-  const [automationReports, setAutomationReports] = useState<AutomationReport[]>([]);
+  const [automationReports, setAutomationReports] = useState<
+    AutomationReport[]
+  >([]);
   const [generatingReport, setGeneratingReport] = useState<string | null>(null);
 
   // This function is now handled by the useReportGeneration hook
@@ -32,15 +35,17 @@ export default function ReportsPage() {
       const response = await fetch('/api/automation/reports', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ reportType }),
+        body: JSON.stringify({ reportType })
       });
 
       const data = await response.json();
 
       if (data.success) {
-        alert(`${reportType.charAt(0).toUpperCase() + reportType.slice(1)} report generated successfully!`);
+        alert(
+          `${reportType.charAt(0).toUpperCase() + reportType.slice(1)} report generated successfully!`
+        );
       } else {
         alert(`Failed to generate ${reportType} report: ${data.error}`);
       }
@@ -65,7 +70,7 @@ export default function ReportsPage() {
         onAutomationReportsUpdate={setAutomationReports}
       />
 
-      <div className="space-y-8">
+      <div className='space-y-8'>
         {/* Header, Navigation, and Key Metrics */}
         <ReportsStatsOverview
           reportData={reportData}
@@ -81,10 +86,7 @@ export default function ReportsPage() {
 
         {/* Dashboard Tab Content */}
         {activeTab === 'dashboard' && (
-          <ReportsLiveDashboard
-            reportData={reportData}
-            loading={loading}
-          />
+          <ReportsLiveDashboard reportData={reportData} loading={loading} />
         )}
 
         {/* Automated Reports Tab Content */}
@@ -97,9 +99,7 @@ export default function ReportsPage() {
         )}
 
         {/* History Tab Content */}
-        {activeTab === 'history' && (
-          <ReportsHistoryManager />
-        )}
+        {activeTab === 'history' && <ReportsHistoryManager />}
       </div>
     </AdminLayout>
   );

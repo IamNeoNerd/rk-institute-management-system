@@ -1,9 +1,9 @@
 /**
  * Reports Hub Feature Components - Type Definitions
- * 
+ *
  * Defines TypeScript interfaces for the Reports Hub feature components
  * following the three-principle methodology for component breakdown.
- * 
+ *
  * Design Consistency: Maintains RK Institute professional standards
  */
 

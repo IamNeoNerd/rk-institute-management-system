@@ -1,9 +1,9 @@
 /**
  * Reports Hub Feature Components - Export Index
- * 
+ *
  * Centralized exports for all Reports Hub feature components following
  * the three-principle methodology for component breakdown.
- * 
+ *
  * Components:
  * - ReportsStatsOverview: Header, navigation, and key metrics display
  * - ReportsLiveDashboard: Live dashboard with charts and recent data

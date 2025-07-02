@@ -1,10 +1,10 @@
 /**
  * Custom Hooks - Export Index
- * 
+ *
  * Centralized exports for all custom hooks following the three-principle
  * methodology for logic extraction. Provides clean separation of business
  * logic from presentation components.
- * 
+ *
  * Architecture:
  * - Shared hooks for common functionality (auth, API, forms)
  * - Hub-specific hooks for domain logic (people, financial, reports)
@@ -16,7 +16,7 @@ export { useAuth } from './shared/useAuth';
 export { useApiData, useApiMutation } from './shared/useApiData';
 
 // People Hub Hooks
-export { 
+export {
   usePeopleHubData,
   useStudentData,
   useFamilyData,

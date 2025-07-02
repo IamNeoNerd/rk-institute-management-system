@@ -10,6 +10,7 @@
  */
 
 import { vi } from 'vitest';
+
 import { registerModules, getModuleStatus, moduleRegistry } from '@/lib/modules/index';
 
 beforeEach(() => {
@@ -148,7 +149,7 @@ describe('Module Registration System', () => {
       expect(status.statistics.total).toBeGreaterThan(0);
       expect(status.statistics.enabled).toBeGreaterThan(0);
       expect(status.statistics.total).toBe(
-        status.statistics.enabled + status.statistics.disabled + status.statistics.errors
+        status.statistics.enabled + status.statistics.disabled + status.statistics.errors,
       );
     });
 
@@ -245,7 +246,7 @@ describe('Module Registration System', () => {
     });
 
     test('should respect feature flag states during registration', async () => {
-      const { isFeatureEnabled  } = await vi.importActual('@/lib/config/FeatureFlags');
+      const { isFeatureEnabled } = await import('@/lib/config/FeatureFlags');
       
       // Modules requiring disabled features should be disabled
       const reportingModule = moduleRegistry.getModule('reporting');

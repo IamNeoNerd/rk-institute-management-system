@@ -5,6 +5,7 @@
   "private": true,
   "scripts": {
     "build": "prisma migrate deploy && prisma generate && next build",
+    "build:analyze": "ANALYZE=true next build",
     "start": "next start",
     "postinstall": "prisma generate",
     "db:migrate": "prisma migrate deploy",
@@ -23,11 +24,54 @@
     "test:components": "vitest run __tests__/components",
     "test:services": "vitest run __tests__/services",
     "test:integration": "vitest run __tests__/integration",
+    "docs:chronological": "node scripts/generate-chronological-index.js",
+    "docs:update-dates": "node scripts/generate-chronological-index.js",
     "test:performance": "vitest run --reporter=verbose --pool=forks",
-    "test:migrate": "node scripts/migrate-tests.js"
+    "test:migrate": "node scripts/migrate-tests.js",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "quality:check": "npm run type-check && npm run lint && npm run format:check",
+    "quality:fix": "npm run lint:fix && npm run format",
+    "quality:gates": "node scripts/quality-gates.js",
+    "quality:gates:fix": "node scripts/quality-gates.js --fix",
+    "quality:gates:strict": "node scripts/quality-gates.js --strict",
+    "type-check": "tsc --noEmit",
+    "pre-commit": "npm run quality:check && npm run test:run",
+    "staging:validate": "node scripts/staging-validation.js",
+    "staging:report": "node scripts/generate-staging-report.js",
+    "staging:deploy": "vercel --env=staging",
+    "staging:test": "npm run test:run && npm run staging:validate",
+    "staging:full": "npm run quality:gates && npm run test:run && npm run build && npm run staging:deploy",
+    "db:seed:staging": "NODE_ENV=staging tsx prisma/seed.ts",
+    "quality:gates:staging": "NODE_ENV=staging node scripts/quality-gates.js",
+    "validate:staging:comprehensive": "npm run quality:gates:staging && npm run test:run && npm run staging:validate",
+    "production:validate": "node scripts/production-validation.js",
+    "production:rollback": "node scripts/automated-rollback.js",
+    "production:monitor": "node monitoring/scripts/health-check-monitor.js",
+    "production:setup-monitoring": "node scripts/setup-monitoring-dashboard.js --env=production",
+    "production:health": "npm run production:validate",
+    "production:deploy": "npm run quality:gates && npm run test:run && npm run build",
+    "production:full-validation": "npm run production:validate && npm run production:monitor",
+    "monitoring:setup": "node scripts/setup-monitoring-dashboard.js",
+    "monitoring:start": "node monitoring/scripts/health-check-monitor.js"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "eslint --fix --max-warnings 0",
+      "prettier --write"
+    ],
+    "*.{js,jsx}": [
+      "eslint --fix --max-warnings 0",
+      "prettier --write"
+    ],
+    "*.{json,md,yml,yaml}": [
+      "prettier --write"
+    ]
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",

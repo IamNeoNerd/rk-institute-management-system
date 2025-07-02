@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import jwt from 'jsonwebtoken';
+import { NextRequest, NextResponse } from 'next/server';
 
 const prisma = new PrismaClient();
 
@@ -16,8 +16,11 @@ export async function PATCH(
     }
 
     const token = authHeader.substring(7);
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallback-secret') as any;
-    
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET || 'fallback-secret'
+    ) as any;
+
     if (!['TEACHER', 'ADMIN'].includes(decoded.role)) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
@@ -26,7 +29,10 @@ export async function PATCH(
     const { grade, feedback, status } = body;
 
     if (!grade || !status) {
-      return NextResponse.json({ error: 'Grade and status are required' }, { status: 400 });
+      return NextResponse.json(
+        { error: 'Grade and status are required' },
+        { status: 400 }
+      );
     }
 
     // Check if submission exists
@@ -43,12 +49,21 @@ export async function PATCH(
     });
 
     if (!submission) {
-      return NextResponse.json({ error: 'Submission not found' }, { status: 404 });
+      return NextResponse.json(
+        { error: 'Submission not found' },
+        { status: 404 }
+      );
     }
 
     // Check if teacher owns this assignment (unless admin)
-    if (decoded.role === 'TEACHER' && submission.assignment.teacherId !== decoded.userId) {
-      return NextResponse.json({ error: 'You can only grade submissions for your assignments' }, { status: 403 });
+    if (
+      decoded.role === 'TEACHER' &&
+      submission.assignment.teacherId !== decoded.userId
+    ) {
+      return NextResponse.json(
+        { error: 'You can only grade submissions for your assignments' },
+        { status: 403 }
+      );
     }
 
     const updatedSubmission = await prisma.assignmentSubmission.update({
@@ -84,7 +99,10 @@ export async function PATCH(
     return NextResponse.json({ submission: updatedSubmission });
   } catch (error) {
     console.error('Error grading submission:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
   }
 }
 
@@ -100,7 +118,10 @@ export async function GET(
     }
 
     const token = authHeader.substring(7);
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallback-secret') as any;
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET || 'fallback-secret'
+    ) as any;
 
     const submission = await prisma.assignmentSubmission.findUnique({
       where: { id: params.id },
@@ -136,15 +157,21 @@ export async function GET(
     });
 
     if (!submission) {
-      return NextResponse.json({ error: 'Submission not found' }, { status: 404 });
+      return NextResponse.json(
+        { error: 'Submission not found' },
+        { status: 404 }
+      );
     }
 
     // Check permissions
-    const canView = 
+    const canView =
       decoded.role === 'ADMIN' ||
-      (decoded.role === 'TEACHER' && submission.assignment.teacherId === decoded.userId) ||
-      (decoded.role === 'STUDENT' && submission.student.family.users.some(u => u.id === decoded.userId)) ||
-      (decoded.role === 'PARENT' && submission.student.family.users.some(u => u.id === decoded.userId));
+      (decoded.role === 'TEACHER' &&
+        submission.assignment.teacherId === decoded.userId) ||
+      (decoded.role === 'STUDENT' &&
+        submission.student.family.users.some(u => u.id === decoded.userId)) ||
+      (decoded.role === 'PARENT' &&
+        submission.student.family.users.some(u => u.id === decoded.userId));
 
     if (!canView) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
@@ -153,6 +180,9 @@ export async function GET(
     return NextResponse.json({ submission });
   } catch (error) {
     console.error('Error fetching submission:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
   }
 }

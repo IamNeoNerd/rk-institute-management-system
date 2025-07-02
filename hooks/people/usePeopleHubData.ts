@@ -1,9 +1,9 @@
 /**
  * usePeopleHubData Hook
- * 
+ *
  * Custom hook for People hub data management. Extracts all business logic
  * from the PeopleDataInsights component into a reusable hook pattern.
- * 
+ *
  * Design Features:
  * - Centralized People hub data fetching and state management
  * - SSR-safe API calls with proper authentication
@@ -15,8 +15,10 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { useApiData } from '../shared/useApiData';
+
 import { PeopleStats } from '@/components/features/people-hub/types';
+
+import { useApiData } from '../shared/useApiData';
 
 interface UsePeopleHubDataReturn {
   stats: PeopleStats | null;
@@ -127,7 +129,9 @@ export function useUserData(userId?: string) {
 // Hook for People hub search functionality
 export function usePeopleSearch() {
   const [searchQuery, setSearchQuery] = useState('');
-  const [searchType, setSearchType] = useState<'students' | 'families' | 'users'>('students');
+  const [searchType, setSearchType] = useState<
+    'students' | 'families' | 'users'
+  >('students');
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [searching, setSearching] = useState(false);
 
@@ -139,11 +143,14 @@ export function usePeopleSearch() {
 
     setSearching(true);
     try {
-      const response = await fetch(`/api/people/search?q=${encodeURIComponent(query)}&type=${type}`, {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
-        },
-      });
+      const response = await fetch(
+        `/api/people/search?q=${encodeURIComponent(query)}&type=${type}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+          }
+        }
+      );
 
       if (response.ok) {
         const data = await response.json();
@@ -158,12 +165,15 @@ export function usePeopleSearch() {
     }
   }, []);
 
-  const search = useCallback((query: string, type?: 'students' | 'families' | 'users') => {
-    const searchTypeToUse = type || searchType;
-    setSearchQuery(query);
-    if (type) setSearchType(type);
-    performSearch(query, searchTypeToUse);
-  }, [searchType, performSearch]);
+  const search = useCallback(
+    (query: string, type?: 'students' | 'families' | 'users') => {
+      const searchTypeToUse = type || searchType;
+      setSearchQuery(query);
+      if (type) setSearchType(type);
+      performSearch(query, searchTypeToUse);
+    },
+    [searchType, performSearch]
+  );
 
   const clearSearch = useCallback(() => {
     setSearchQuery('');

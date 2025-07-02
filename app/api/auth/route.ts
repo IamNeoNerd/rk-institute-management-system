@@ -1,7 +1,9 @@
-import { NextResponse } from 'next/server';
+import crypto from 'crypto';
+
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import { NextResponse } from 'next/server';
 
 const prisma = new PrismaClient();
 
@@ -29,7 +31,7 @@ export async function POST(request: Request) {
 
     // Find user by email
     const user = await prisma.user.findUnique({
-      where: { email },
+      where: { email }
     });
 
     if (!user) {
@@ -48,22 +50,52 @@ export async function POST(request: Request) {
       );
     }
 
-    // Generate JWT token
+    // Generate JWT token with enhanced security
+    const jwtSecret = process.env.JWT_SECRET;
+    if (!jwtSecret || jwtSecret === 'fallback-secret') {
+      console.error('⚠️ SECURITY WARNING: JWT_SECRET not properly configured');
+      return NextResponse.json(
+        { error: 'Server configuration error' },
+        { status: 500 }
+      );
+    }
+
     const token = jwt.sign(
-      { userId: user.id, email: user.email, role: user.role },
-      process.env.JWT_SECRET || 'fallback-secret',
-      { expiresIn: '8h' }
+      {
+        userId: user.id,
+        email: user.email,
+        role: user.role,
+        iat: Math.floor(Date.now() / 1000),
+        jti: crypto.randomUUID() // JWT ID for token tracking
+      },
+      jwtSecret,
+      {
+        expiresIn: '4h', // Reduced from 8h for better security
+        algorithm: 'HS256',
+        issuer: 'rk-institute',
+        audience: 'rk-institute-users'
+      }
     );
 
-    return NextResponse.json({
+    // Create response with security headers
+    const response = NextResponse.json({
       token,
       user: {
         id: user.id,
         name: user.name,
         email: user.email,
-        role: user.role,
+        role: user.role
       },
+      expiresAt: new Date(Date.now() + 4 * 60 * 60 * 1000).toISOString() // 4 hours
     });
+
+    // Add security headers
+    response.headers.set('X-Content-Type-Options', 'nosniff');
+    response.headers.set('X-Frame-Options', 'DENY');
+    response.headers.set('X-XSS-Protection', '1; mode=block');
+    response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+
+    return response;
   } catch (error) {
     console.error('Authentication error:', error);
     return NextResponse.json(

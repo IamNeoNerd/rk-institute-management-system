@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import jwt from 'jsonwebtoken';
+import { NextRequest, NextResponse } from 'next/server';
 
 const prisma = new PrismaClient();
 
@@ -13,8 +13,11 @@ export async function GET(request: NextRequest) {
     }
 
     const token = authHeader.substring(7);
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallback-secret') as any;
-    
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET || 'fallback-secret'
+    ) as any;
+
     const { searchParams } = new URL(request.url);
     const studentId = searchParams.get('studentId');
     const grade = searchParams.get('grade');
@@ -31,16 +34,16 @@ export async function GET(request: NextRequest) {
       });
 
       if (!student) {
-        return NextResponse.json({ error: 'Student not found' }, { status: 404 });
+        return NextResponse.json(
+          { error: 'Student not found' },
+          { status: 404 }
+        );
       }
 
       assignments = await prisma.assignment.findMany({
         where: {
           isActive: true,
-          OR: [
-            { grade: student.grade },
-            { studentId: student.id }
-          ],
+          OR: [{ grade: student.grade }, { studentId: student.id }],
           ...(subject && { subject }),
           ...(type && { assignmentType: type })
         },
@@ -71,19 +74,25 @@ export async function GET(request: NextRequest) {
       });
 
       if (!family) {
-        return NextResponse.json({ error: 'Family not found' }, { status: 404 });
+        return NextResponse.json(
+          { error: 'Family not found' },
+          { status: 404 }
+        );
       }
 
       const studentIds = family.students.map(s => s.id);
-      const grades = Array.from(new Set(family.students.map(s => s.grade).filter((grade): grade is string => Boolean(grade))));
+      const grades = Array.from(
+        new Set(
+          family.students
+            .map(s => s.grade)
+            .filter((grade): grade is string => Boolean(grade))
+        )
+      );
 
       assignments = await prisma.assignment.findMany({
         where: {
           isActive: true,
-          OR: [
-            { grade: { in: grades } },
-            { studentId: { in: studentIds } }
-          ],
+          OR: [{ grade: { in: grades } }, { studentId: { in: studentIds } }],
           ...(subject && { subject }),
           ...(type && { assignmentType: type })
         },
@@ -122,9 +131,7 @@ export async function GET(request: NextRequest) {
             }
           }
         },
-        orderBy: [
-          { createdAt: 'desc' }
-        ]
+        orderBy: [{ createdAt: 'desc' }]
       });
     } else if (decoded.role === 'ADMIN') {
       // Admins see all assignments
@@ -144,16 +151,17 @@ export async function GET(request: NextRequest) {
             }
           }
         },
-        orderBy: [
-          { createdAt: 'desc' }
-        ]
+        orderBy: [{ createdAt: 'desc' }]
       });
     }
 
     return NextResponse.json({ assignments });
   } catch (error) {
     console.error('Error fetching assignments:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
   }
 }
 
@@ -166,8 +174,11 @@ export async function POST(request: NextRequest) {
     }
 
     const token = authHeader.substring(7);
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallback-secret') as any;
-    
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET || 'fallback-secret'
+    ) as any;
+
     if (!['TEACHER', 'ADMIN'].includes(decoded.role)) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
@@ -187,7 +198,10 @@ export async function POST(request: NextRequest) {
     } = body;
 
     if (!title || !description || !subject) {
-      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+      return NextResponse.json(
+        { error: 'Missing required fields' },
+        { status: 400 }
+      );
     }
 
     const assignment = await prisma.assignment.create({
@@ -213,6 +227,9 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ assignment }, { status: 201 });
   } catch (error) {
     console.error('Error creating assignment:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
   }
 }

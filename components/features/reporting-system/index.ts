@@ -1,6 +1,6 @@
 /**
  * Advanced Reporting System - Component Exports
- * 
+ *
  * Centralized exports for the reporting system components.
  * Demonstrates clean module organization and reusable architecture.
  */

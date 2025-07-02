@@ -4,6 +4,7 @@
  */
 
 import * as cron from 'node-cron';
+
 import AutomationEngineService from './automation-engine.service';
 
 export interface ScheduledJob {
@@ -41,7 +42,8 @@ export class SchedulerService {
       id: 'monthly-billing',
       name: 'Monthly Billing Generation',
       schedule: '0 10 5 * *', // At 10:00 AM on the 5th day of every month
-      description: 'Automatically generates monthly bills for all active students',
+      description:
+        'Automatically generates monthly bills for all active students',
       isActive: true
     });
 
@@ -105,7 +107,9 @@ export class SchedulerService {
     try {
       // Validate cron expression
       if (!cron.validate(jobConfig.schedule)) {
-        console.error(`[Scheduler Service] Invalid cron expression: ${jobConfig.schedule}`);
+        console.error(
+          `[Scheduler Service] Invalid cron expression: ${jobConfig.schedule}`
+        );
         return false;
       }
 
@@ -114,12 +118,16 @@ export class SchedulerService {
       if (jobConfig.isActive) {
         // Create the scheduled task
         task = cron.schedule(jobConfig.schedule, async () => {
-          console.log(`[Scheduler Service] Executing scheduled job: ${jobConfig.name}`);
+          console.log(
+            `[Scheduler Service] Executing scheduled job: ${jobConfig.name}`
+          );
           await this.executeJob(jobConfig.id);
         });
 
         // Don't start the task immediately - will be started in initialize()
-        console.log(`[Scheduler Service] ✅ Scheduled job '${jobConfig.name}' with schedule '${jobConfig.schedule}'`);
+        console.log(
+          `[Scheduler Service] ✅ Scheduled job '${jobConfig.name}' with schedule '${jobConfig.schedule}'`
+        );
       }
 
       // Store the job
@@ -131,9 +139,11 @@ export class SchedulerService {
 
       this.jobs.set(jobConfig.id, job);
       return true;
-
     } catch (error) {
-      console.error(`[Scheduler Service] Failed to schedule job '${jobConfig.name}':`, error);
+      console.error(
+        `[Scheduler Service] Failed to schedule job '${jobConfig.name}':`,
+        error
+      );
       return false;
     }
   }
@@ -180,10 +190,14 @@ export class SchedulerService {
           console.warn(`[Scheduler Service] Unknown job type: ${jobId}`);
       }
 
-      console.log(`[Scheduler Service] ✅ Completed execution of job: ${job.name}`);
-
+      console.log(
+        `[Scheduler Service] ✅ Completed execution of job: ${job.name}`
+      );
     } catch (error) {
-      console.error(`[Scheduler Service] ❌ Failed to execute job '${job.name}':`, error);
+      console.error(
+        `[Scheduler Service] ❌ Failed to execute job '${job.name}':`,
+        error
+      );
     }
   }
 
@@ -195,9 +209,13 @@ export class SchedulerService {
       const result = await AutomationEngineService.executeMonthlyBillingJob();
 
       if (result.success) {
-        console.log(`[Scheduler Service] Monthly billing completed successfully: ${result.successfulBills}/${result.totalStudents} bills generated`);
+        console.log(
+          `[Scheduler Service] Monthly billing completed successfully: ${result.successfulBills}/${result.totalStudents} bills generated`
+        );
       } else {
-        console.error(`[Scheduler Service] Monthly billing completed with errors: ${result.failedBills} failed out of ${result.totalStudents}`);
+        console.error(
+          `[Scheduler Service] Monthly billing completed with errors: ${result.failedBills} failed out of ${result.totalStudents}`
+        );
         console.error('Errors:', result.errors);
       }
     } catch (error) {
@@ -208,36 +226,56 @@ export class SchedulerService {
   /**
    * Execute fee reminder job
    */
-  private async executeFeeReminderJob(reminderType: 'early' | 'due' | 'overdue'): Promise<void> {
+  private async executeFeeReminderJob(
+    reminderType: 'early' | 'due' | 'overdue'
+  ): Promise<void> {
     try {
-      const result = await AutomationEngineService.executeFeeReminderJob(reminderType);
+      const result =
+        await AutomationEngineService.executeFeeReminderJob(reminderType);
 
       if (result.success) {
-        console.log(`[Scheduler Service] Fee reminder (${reminderType}) completed successfully: ${result.successfulBills} reminders sent`);
+        console.log(
+          `[Scheduler Service] Fee reminder (${reminderType}) completed successfully: ${result.successfulBills} reminders sent`
+        );
       } else {
-        console.error(`[Scheduler Service] Fee reminder (${reminderType}) completed with errors: ${result.failedBills} failed out of ${result.totalStudents}`);
+        console.error(
+          `[Scheduler Service] Fee reminder (${reminderType}) completed with errors: ${result.failedBills} failed out of ${result.totalStudents}`
+        );
         console.error('Errors:', result.errors);
       }
     } catch (error) {
-      console.error(`[Scheduler Service] Fee reminder (${reminderType}) job failed:`, error);
+      console.error(
+        `[Scheduler Service] Fee reminder (${reminderType}) job failed:`,
+        error
+      );
     }
   }
 
   /**
    * Execute report generation job
    */
-  private async executeReportGenerationJob(reportType: 'monthly' | 'weekly' | 'outstanding'): Promise<void> {
+  private async executeReportGenerationJob(
+    reportType: 'monthly' | 'weekly' | 'outstanding'
+  ): Promise<void> {
     try {
-      const result = await AutomationEngineService.generateAutomatedReport(reportType);
+      const result =
+        await AutomationEngineService.generateAutomatedReport(reportType);
 
       if (result.success) {
-        console.log(`[Scheduler Service] Report generation (${reportType}) completed successfully`);
+        console.log(
+          `[Scheduler Service] Report generation (${reportType}) completed successfully`
+        );
       } else {
-        console.error(`[Scheduler Service] Report generation (${reportType}) failed`);
+        console.error(
+          `[Scheduler Service] Report generation (${reportType}) failed`
+        );
         console.error('Errors:', result.errors);
       }
     } catch (error) {
-      console.error(`[Scheduler Service] Report generation (${reportType}) job failed:`, error);
+      console.error(
+        `[Scheduler Service] Report generation (${reportType}) job failed:`,
+        error
+      );
     }
   }
 
@@ -251,7 +289,10 @@ export class SchedulerService {
       const nextRun = new Date(now.getTime() + 24 * 60 * 60 * 1000); // Placeholder: next day
       return nextRun;
     } catch (error) {
-      console.error('[Scheduler Service] Failed to calculate next run time:', error);
+      console.error(
+        '[Scheduler Service] Failed to calculate next run time:',
+        error
+      );
       return undefined;
     }
   }
@@ -292,7 +333,10 @@ export class SchedulerService {
       console.log(`[Scheduler Service] Started job: ${job.name}`);
       return true;
     } catch (error) {
-      console.error(`[Scheduler Service] Failed to start job '${job.name}':`, error);
+      console.error(
+        `[Scheduler Service] Failed to start job '${job.name}':`,
+        error
+      );
       return false;
     }
   }
@@ -310,7 +354,10 @@ export class SchedulerService {
       console.log(`[Scheduler Service] Stopped job: ${job.name}`);
       return true;
     } catch (error) {
-      console.error(`[Scheduler Service] Failed to stop job '${job.name}':`, error);
+      console.error(
+        `[Scheduler Service] Failed to stop job '${job.name}':`,
+        error
+      );
       return false;
     }
   }
@@ -324,7 +371,10 @@ export class SchedulerService {
       await this.executeJob(jobId);
       return true;
     } catch (error) {
-      console.error(`[Scheduler Service] Failed to trigger job '${jobId}':`, error);
+      console.error(
+        `[Scheduler Service] Failed to trigger job '${jobId}':`,
+        error
+      );
       return false;
     }
   }
@@ -343,7 +393,9 @@ export class SchedulerService {
       }
     }
 
-    console.log(`[Scheduler Service] ✅ Scheduler initialized with ${this.jobs.size} jobs`);
+    console.log(
+      `[Scheduler Service] ✅ Scheduler initialized with ${this.jobs.size} jobs`
+    );
   }
 
   /**

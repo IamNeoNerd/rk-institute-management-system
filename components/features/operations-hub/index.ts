@@ -1,9 +1,9 @@
 /**
  * Operations Hub Feature Components - Export Index
- * 
+ *
  * Centralized exports for all Operations Hub feature components following
  * the three-principle methodology for component breakdown.
- * 
+ *
  * Components:
  * - OperationsStatsOverview: Header, navigation, and system status display
  * - OperationsAutomationControl: Job triggering and automation controls

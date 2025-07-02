@@ -1,6 +1,7 @@
-import { defineConfig } from 'vitest/config'
-import react from '@vitejs/plugin-react'
-import path from 'path'
+import path from 'path';
+
+import react from '@vitejs/plugin-react';
+import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   plugins: [react()],
@@ -13,8 +14,13 @@ export default defineConfig({
     // Optimized file patterns
     include: ['**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
     exclude: [
-      'node_modules', 'dist', '.next', 'coverage', 'migration-backup',
-      'playwright.config.ts', 'tests/**' // Exclude Playwright E2E tests
+      'node_modules',
+      'dist',
+      '.next',
+      'coverage',
+      'migration-backup',
+      'playwright.config.ts',
+      'tests/**' // Exclude Playwright E2E tests
     ],
 
     // Performance optimization (latest patterns)
@@ -22,8 +28,8 @@ export default defineConfig({
     poolOptions: {
       forks: {
         singleFork: false,
-        isolate: true,
-      },
+        isolate: true
+      }
     },
 
     // Enhanced coverage configuration
@@ -31,9 +37,14 @@ export default defineConfig({
       provider: 'v8',
       reporter: ['text', 'json', 'html', 'lcov'],
       exclude: [
-        'coverage/**', 'dist/**', '.next/**', 'node_modules/**',
-        '**/*.d.ts', '**/*.config.{js,ts}', '**/migration-backup/**',
-        'app/test-*/**', // Exclude test pages
+        'coverage/**',
+        'dist/**',
+        '.next/**',
+        'node_modules/**',
+        '**/*.d.ts',
+        '**/*.config.{js,ts}',
+        '**/migration-backup/**',
+        'app/test-*/**' // Exclude test pages
       ],
       thresholds: {
         global: {
@@ -48,11 +59,11 @@ export default defineConfig({
     // Timeout configuration
     testTimeout: 10000,
     hookTimeout: 10000,
-    
+
     // Sequence configuration for consistent execution
     sequence: {
-      hooks: 'list', // Sequential hook execution like Jest
-    },
+      hooks: 'list' // Sequential hook execution like Jest
+    }
   },
 
   resolve: {
@@ -63,13 +74,13 @@ export default defineConfig({
       '@/hooks': path.resolve(__dirname, './hooks'),
       '@/services': path.resolve(__dirname, './lib/services'),
       '@/utils': path.resolve(__dirname, './lib/utils'),
-      '@/app': path.resolve(__dirname, './app'),
-    },
+      '@/app': path.resolve(__dirname, './app')
+    }
   },
 
   // Environment variables for tests
   define: {
     'process.env.NODE_ENV': '"test"',
-    'process.env.NEXT_PUBLIC_APP_URL': '"http://localhost:3000"',
-  },
-})
+    'process.env.NEXT_PUBLIC_APP_URL': '"http://localhost:3000"'
+  }
+});

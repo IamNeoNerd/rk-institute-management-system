@@ -1,10 +1,10 @@
 /**
  * Operations Data Insights Component
- * 
+ *
  * Handles all data fetching, state management, and real-time updates
  * for the Operations Hub. Provides clean separation of business logic
  * from presentation components.
- * 
+ *
  * Design Features:
  * - Real-time data fetching with 30-second intervals
  * - Comprehensive error handling
@@ -16,6 +16,7 @@
 'use client';
 
 import { useEffect } from 'react';
+
 import { OperationsDataInsightsProps, AutomationStatus } from './types';
 
 export default function OperationsDataInsights({
@@ -23,14 +24,13 @@ export default function OperationsDataInsights({
   onLoadingChange,
   onErrorChange
 }: OperationsDataInsightsProps) {
-
   useEffect(() => {
     // Initial data fetch
     fetchAutomationStatus();
-    
+
     // Set up real-time updates every 30 seconds
     const interval = setInterval(fetchAutomationStatus, 30000);
-    
+
     // Cleanup interval on unmount
     return () => clearInterval(interval);
   }, []);
@@ -42,7 +42,7 @@ export default function OperationsDataInsights({
 
       const response = await fetch('/api/automation/status');
       const data = await response.json();
-      
+
       if (data.success) {
         onAutomationStatusUpdate(data.data);
         onErrorChange(null);

@@ -17,7 +17,7 @@ export default function StatCard({
   subtitle,
   icon,
   color = 'blue',
-  onClick,
+  onClick
 }: StatCardProps) {
   const colorClasses = {
     blue: 'bg-blue-100 text-blue-600',
@@ -25,7 +25,7 @@ export default function StatCard({
     purple: 'bg-purple-100 text-purple-600',
     red: 'bg-red-100 text-red-600',
     yellow: 'bg-yellow-100 text-yellow-600',
-    indigo: 'bg-indigo-100 text-indigo-600',
+    indigo: 'bg-indigo-100 text-indigo-600'
   };
 
   const textColorClasses = {
@@ -34,7 +34,7 @@ export default function StatCard({
     purple: 'text-purple-600',
     red: 'text-red-600',
     yellow: 'text-yellow-600',
-    indigo: 'text-indigo-600',
+    indigo: 'text-indigo-600'
   };
 
   return (
@@ -44,21 +44,29 @@ export default function StatCard({
       }`}
       onClick={onClick}
     >
-      <div className="flex items-center justify-between">
-        <div className="flex-1 min-w-0">
-          <p className="text-xs sm:text-sm font-medium text-gray-600">{title}</p>
-          <p className={`text-xl sm:text-3xl font-bold ${textColorClasses[color]} truncate`}>
+      <div className='flex items-center justify-between'>
+        <div className='flex-1 min-w-0'>
+          <p className='text-xs sm:text-sm font-medium text-gray-600'>
+            {title}
+          </p>
+          <p
+            className={`text-xl sm:text-3xl font-bold ${textColorClasses[color]} truncate`}
+          >
             {typeof value === 'number' ? value.toLocaleString() : value}
           </p>
           {subtitle && (
-            <p className={`text-xs sm:text-sm mt-1 ${textColorClasses[color]}`}>{subtitle}</p>
+            <p className={`text-xs sm:text-sm mt-1 ${textColorClasses[color]}`}>
+              {subtitle}
+            </p>
           )}
         </div>
-        <div className={`p-2 sm:p-3 rounded-lg ${colorClasses[color]} ml-2 sm:ml-3 flex-shrink-0`}>
+        <div
+          className={`p-2 sm:p-3 rounded-lg ${colorClasses[color]} ml-2 sm:ml-3 flex-shrink-0`}
+        >
           {typeof icon === 'string' ? (
-            <span className="text-xl sm:text-3xl">{icon}</span>
+            <span className='text-xl sm:text-3xl'>{icon}</span>
           ) : (
-            <div className="flex items-center justify-center">{icon}</div>
+            <div className='flex items-center justify-center'>{icon}</div>
           )}
         </div>
       </div>

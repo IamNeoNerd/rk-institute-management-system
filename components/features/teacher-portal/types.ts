@@ -36,7 +36,12 @@ export interface DashboardStats {
   progressReports: number;
 }
 
-export type ActiveTab = 'overview' | 'assignments' | 'academic-logs' | 'my-students' | 'my-courses';
+export type ActiveTab =
+  | 'overview'
+  | 'assignments'
+  | 'academic-logs'
+  | 'my-students'
+  | 'my-courses';
 
 // Component Props Interfaces
 export interface TeacherPortalProps {
@@ -81,7 +86,7 @@ export interface TeacherDataInsightsProps {
 export interface NavigationTab {
   id: ActiveTab;
   name: string;
-  icon: string;
+  icon: string | React.ReactNode;
 }
 
 // Quick Action Interface
@@ -89,7 +94,7 @@ export interface QuickAction {
   id: ActiveTab;
   title: string;
   description: string;
-  icon: string;
+  icon: string | React.ReactNode;
   bgColor: string;
   hoverColor: string;
 }

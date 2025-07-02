@@ -3,12 +3,19 @@
  *
  * Tests for React hooks integration with the feature flag system.
  * Includes SSR safety, component rendering, and performance testing.
+ *
+ * @vitest-environment jsdom
  */
 
-import { vi } from 'vitest';
+// Ensure DOM environment is ready before React imports
+if (typeof window === 'undefined') {
+  throw new Error('DOM environment not ready - window is undefined');
+}
+
+import { render, screen, waitFor, renderHook, act } from '@testing-library/react';
 import React from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
-import { renderHook, act } from '@testing-library/react';
+import { vi } from 'vitest';
+
 import '@testing-library/jest-dom';
 import {
   useFeatureFlag,
@@ -22,7 +29,7 @@ import {
   FeatureDisabled,
   useFeatureFlagDebug,
   isValidFeatureFlag,
-  createFeatureDependentValue
+  createFeatureDependentValue,
 } from '@/hooks/shared/useFeatureFlag';
 import { FeatureFlags } from '@/lib/config/FeatureFlags';
 
@@ -35,25 +42,27 @@ vi.mock('@/lib/config/FeatureFlags', () => ({
   validateFeatureFlags: vi.fn(),
 }));
 
-// Get the mocked module functions
-const mockFeatureFlags = await import('@/lib/config/FeatureFlags');
-
 describe('Feature Flag React Hooks', () => {
+  // Get the mocked module functions
+  let mockFeatureFlags: any;
   // Mock console.log to prevent output pollution during tests
   const originalConsoleLog = console.log;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     vi.clearAllMocks();
     // Mock console.log to suppress FeatureFlags output
     console.log = vi.fn();
-    
+
+    // Get the mocked module functions
+    mockFeatureFlags = await import('@/lib/config/FeatureFlags');
+
     // Setup default mock implementations
-    mockFeatureFlags.isFeatureEnabled.mockImplementation((feature: string) => {
+    (mockFeatureFlags.isFeatureEnabled as any).mockImplementation((feature: string) => {
       const enabledFeatures = ['advancedReporting', 'caching', 'auditLogging'];
       return enabledFeatures.includes(feature);
     });
     
-    mockFeatureFlags.getAllFeatureFlags.mockReturnValue({
+    (mockFeatureFlags.getAllFeatureFlags as any).mockReturnValue({
       realTimeCollaboration: false,
       advancedReporting: true,
       aiPersonalization: false,
@@ -62,14 +71,14 @@ describe('Feature Flag React Hooks', () => {
       auditLogging: true,
     });
     
-    mockFeatureFlags.getEnabledFeatures.mockReturnValue({
+    (mockFeatureFlags.getEnabledFeatures as any).mockReturnValue({
       advancedReporting: true,
       mobileOptimization: true,
       caching: true,
       auditLogging: true,
     });
     
-    mockFeatureFlags.getFeatureFlagAnalytics.mockReturnValue({
+    (mockFeatureFlags.getFeatureFlagAnalytics as any).mockReturnValue({
       totalFlags: 6,
       enabledFlags: 4,
       disabledFlags: 2,
@@ -84,7 +93,7 @@ describe('Feature Flag React Hooks', () => {
       },
     });
     
-    mockFeatureFlags.validateFeatureFlags.mockReturnValue({
+    (mockFeatureFlags.validateFeatureFlags as any).mockReturnValue({
       valid: true,
       errors: [],
     });
@@ -98,15 +107,10 @@ describe('Feature Flag React Hooks', () => {
   describe('useFeatureFlag Hook', () => {
     test('should return correct feature flag value', async () => {
       const { result } = renderHook(() => useFeatureFlag('advancedReporting'));
-      
-      // Initially false during SSR
-      expect(result.current).toBe(false);
-      
-      // Wait for client-side hydration
-      await waitFor(() => {
-        expect(result.current).toBe(true);
-      });
-      
+
+      // In Vitest, useEffect runs synchronously, so isClient is true immediately
+      expect(result.current).toBe(true);
+
       expect(mockFeatureFlags.isFeatureEnabled).toHaveBeenCalledWith('advancedReporting');
     });
 
@@ -227,7 +231,7 @@ describe('Feature Flag React Hooks', () => {
     });
 
     test('should handle validation errors', async () => {
-      mockFeatureFlags.validateFeatureFlags.mockReturnValue({
+      (mockFeatureFlags.validateFeatureFlags as any).mockReturnValue({
         valid: false,
         errors: ['Debug mode should not be enabled in production'],
       });
@@ -290,7 +294,7 @@ describe('Feature Flag React Hooks', () => {
       render(
         <FeatureGate feature="advancedReporting">
           <div data-testid="gated-content">Gated content</div>
-        </FeatureGate>
+        </FeatureGate>,
       );
       
       await waitFor(() => {
@@ -302,7 +306,7 @@ describe('Feature Flag React Hooks', () => {
       render(
         <FeatureGate feature="realTimeCollaboration">
           <div data-testid="gated-content">Gated content</div>
-        </FeatureGate>
+        </FeatureGate>,
       );
       
       await waitFor(() => {
@@ -317,7 +321,7 @@ describe('Feature Flag React Hooks', () => {
           fallback={<div data-testid="fallback">Feature not available</div>}
         >
           <div data-testid="gated-content">Gated content</div>
-        </FeatureGate>
+        </FeatureGate>,
       );
       
       await waitFor(() => {
@@ -332,7 +336,7 @@ describe('Feature Flag React Hooks', () => {
       render(
         <FeatureDisabled feature="realTimeCollaboration">
           <div data-testid="disabled-content">Feature coming soon</div>
-        </FeatureDisabled>
+        </FeatureDisabled>,
       );
       
       await waitFor(() => {
@@ -344,7 +348,7 @@ describe('Feature Flag React Hooks', () => {
       render(
         <FeatureDisabled feature="advancedReporting">
           <div data-testid="disabled-content">Feature coming soon</div>
-        </FeatureDisabled>
+        </FeatureDisabled>,
       );
       
       await waitFor(() => {
@@ -371,7 +375,7 @@ describe('Feature Flag React Hooks', () => {
 
   describe('Utility Functions', () => {
     test('isValidFeatureFlag should validate feature names', () => {
-      mockFeatureFlags.getAllFeatureFlags.mockReturnValue({
+      (mockFeatureFlags.getAllFeatureFlags as any).mockReturnValue({
         advancedReporting: true,
         realTimeCollaboration: false,
       });

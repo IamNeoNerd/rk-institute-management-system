@@ -1,9 +1,9 @@
 /**
  * Reporting System Hook
- * 
+ *
  * Custom hook for managing reporting system data and operations.
  * Follows the established pattern from our refactored architecture.
- * 
+ *
  * Features:
  * - Template management and filtering
  * - Report generation and tracking
@@ -15,11 +15,12 @@
 'use client';
 
 import { useState, useCallback, useEffect } from 'react';
-import { 
-  ReportTemplate, 
-  GeneratedReport, 
+
+import {
+  ReportTemplate,
+  GeneratedReport,
   ReportStats,
-  ReportGenerationRequest 
+  ReportGenerationRequest
 } from '@/components/features/reporting-system/types';
 
 export interface UseReportingSystemReturn {
@@ -29,17 +30,21 @@ export interface UseReportingSystemReturn {
   stats: ReportStats;
   loading: boolean;
   error: string | null;
-  
+
   // UI State
   selectedTemplate: ReportTemplate | null;
   generating: boolean;
-  
+
   // Actions
   fetchTemplates: () => Promise<void>;
   fetchReports: () => Promise<void>;
   fetchStats: () => Promise<void>;
   selectTemplate: (template: ReportTemplate | null) => void;
-  generateReport: (templateId: string, parameters: Record<string, any>, format: string) => Promise<boolean>;
+  generateReport: (
+    templateId: string,
+    parameters: Record<string, any>,
+    format: string
+  ) => Promise<boolean>;
   downloadReport: (reportId: string) => Promise<void>;
   deleteReport: (reportId: string) => Promise<boolean>;
   refreshReportStatus: (reportId: string) => Promise<void>;
@@ -49,7 +54,6 @@ export function useReportingSystem(
   userRole: string,
   userId: string
 ): UseReportingSystemReturn {
-  
   // Data State
   const [templates, setTemplates] = useState<ReportTemplate[]>([]);
   const [reports, setReports] = useState<GeneratedReport[]>([]);
@@ -63,9 +67,10 @@ export function useReportingSystem(
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  
+
   // UI State
-  const [selectedTemplate, setSelectedTemplate] = useState<ReportTemplate | null>(null);
+  const [selectedTemplate, setSelectedTemplate] =
+    useState<ReportTemplate | null>(null);
   const [generating, setGenerating] = useState(false);
 
   // Fetch report templates
@@ -73,12 +78,12 @@ export function useReportingSystem(
     try {
       setLoading(true);
       setError(null);
-      
+
       const token = localStorage.getItem('token');
       const response = await fetch(`/api/reports/templates?role=${userRole}`, {
-        headers: { 'Authorization': `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${token}` }
       });
-      
+
       if (response.ok) {
         const data = await response.json();
         setTemplates(data.templates || []);
@@ -101,12 +106,12 @@ export function useReportingSystem(
     try {
       setLoading(true);
       setError(null);
-      
+
       const token = localStorage.getItem('token');
       const response = await fetch(`/api/reports/history?userId=${userId}`, {
-        headers: { 'Authorization': `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${token}` }
       });
-      
+
       if (response.ok) {
         const data = await response.json();
         setReports(data.reports || []);
@@ -129,9 +134,9 @@ export function useReportingSystem(
     try {
       const token = localStorage.getItem('token');
       const response = await fetch(`/api/reports/stats?userId=${userId}`, {
-        headers: { 'Authorization': `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${token}` }
       });
-      
+
       if (response.ok) {
         const data = await response.json();
         setStats(data.stats);
@@ -152,78 +157,83 @@ export function useReportingSystem(
   }, []);
 
   // Generate report
-  const generateReport = useCallback(async (
-    templateId: string, 
-    parameters: Record<string, any>, 
-    format: string
-  ): Promise<boolean> => {
-    try {
-      setGenerating(true);
-      setError(null);
-      
-      const token = localStorage.getItem('token');
-      const request: ReportGenerationRequest = {
-        templateId,
-        parameters,
-        format: format as 'pdf' | 'excel' | 'csv',
-        userId,
-        userRole
-      };
-      
-      const response = await fetch('/api/reports/generate', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(request),
-      });
-      
-      if (response.ok) {
-        const data = await response.json();
-        const newReport = data.report;
-        
-        // Add new report to the list
-        setReports(prev => [newReport, ...prev]);
-        
-        // Start polling for status updates
-        pollReportStatus(newReport.id);
-        
-        return true;
-      } else {
-        setError('Failed to generate report');
+  const generateReport = useCallback(
+    async (
+      templateId: string,
+      parameters: Record<string, any>,
+      format: string
+    ): Promise<boolean> => {
+      try {
+        setGenerating(true);
+        setError(null);
+
+        const token = localStorage.getItem('token');
+        const request: ReportGenerationRequest = {
+          templateId,
+          parameters,
+          format: format as 'pdf' | 'excel' | 'csv',
+          userId,
+          userRole
+        };
+
+        const response = await fetch('/api/reports/generate', {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(request)
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          const newReport = data.report;
+
+          // Add new report to the list
+          setReports(prev => [newReport, ...prev]);
+
+          // Start polling for status updates
+          pollReportStatus(newReport.id);
+
+          return true;
+        } else {
+          setError('Failed to generate report');
+          return false;
+        }
+      } catch (err) {
+        setError('Network error while generating report');
+        console.error('Error generating report:', err);
         return false;
+      } finally {
+        setGenerating(false);
       }
-    } catch (err) {
-      setError('Network error while generating report');
-      console.error('Error generating report:', err);
-      return false;
-    } finally {
-      setGenerating(false);
-    }
-  }, [userId, userRole]);
+    },
+    [userId, userRole]
+  );
 
   // Poll report status
   const pollReportStatus = useCallback(async (reportId: string) => {
     const maxAttempts = 30; // 5 minutes with 10-second intervals
     let attempts = 0;
-    
+
     const poll = async () => {
       try {
         const token = localStorage.getItem('token');
         const response = await fetch(`/api/reports/${reportId}/status`, {
-          headers: { 'Authorization': `Bearer ${token}` },
+          headers: { Authorization: `Bearer ${token}` }
         });
-        
+
         if (response.ok) {
           const data = await response.json();
           const updatedReport = data.report;
-          
+
           // Update report in the list
-          setReports(prev => prev.map(report => 
-            report.id === reportId ? updatedReport : report
-          ));
-          
+          setReports(prev =>
+            prev.map(report =>
+              report.id === reportId ? updatedReport : report
+            )
+          );
+
           // Continue polling if still generating
           if (updatedReport.status === 'generating' && attempts < maxAttempts) {
             attempts++;
@@ -234,7 +244,7 @@ export function useReportingSystem(
         console.error('Error polling report status:', err);
       }
     };
-    
+
     poll();
   }, []);
 
@@ -243,9 +253,9 @@ export function useReportingSystem(
     try {
       const token = localStorage.getItem('token');
       const response = await fetch(`/api/reports/${reportId}/download`, {
-        headers: { 'Authorization': `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${token}` }
       });
-      
+
       if (response.ok) {
         const blob = await response.blob();
         const url = window.URL.createObjectURL(blob);
@@ -256,13 +266,15 @@ export function useReportingSystem(
         a.click();
         window.URL.revokeObjectURL(url);
         document.body.removeChild(a);
-        
+
         // Update download count
-        setReports(prev => prev.map(report => 
-          report.id === reportId 
-            ? { ...report, downloadCount: report.downloadCount + 1 }
-            : report
-        ));
+        setReports(prev =>
+          prev.map(report =>
+            report.id === reportId
+              ? { ...report, downloadCount: report.downloadCount + 1 }
+              : report
+          )
+        );
       } else {
         setError('Failed to download report');
       }
@@ -273,43 +285,46 @@ export function useReportingSystem(
   }, []);
 
   // Delete report
-  const deleteReport = useCallback(async (reportId: string): Promise<boolean> => {
-    try {
-      const token = localStorage.getItem('token');
-      const response = await fetch(`/api/reports/${reportId}`, {
-        method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${token}` },
-      });
-      
-      if (response.ok) {
-        setReports(prev => prev.filter(report => report.id !== reportId));
-        return true;
-      } else {
-        setError('Failed to delete report');
+  const deleteReport = useCallback(
+    async (reportId: string): Promise<boolean> => {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`/api/reports/${reportId}`, {
+          method: 'DELETE',
+          headers: { Authorization: `Bearer ${token}` }
+        });
+
+        if (response.ok) {
+          setReports(prev => prev.filter(report => report.id !== reportId));
+          return true;
+        } else {
+          setError('Failed to delete report');
+          return false;
+        }
+      } catch (err) {
+        setError('Network error while deleting report');
+        console.error('Error deleting report:', err);
         return false;
       }
-    } catch (err) {
-      setError('Network error while deleting report');
-      console.error('Error deleting report:', err);
-      return false;
-    }
-  }, []);
+    },
+    []
+  );
 
   // Refresh report status
   const refreshReportStatus = useCallback(async (reportId: string) => {
     try {
       const token = localStorage.getItem('token');
       const response = await fetch(`/api/reports/${reportId}/status`, {
-        headers: { 'Authorization': `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${token}` }
       });
-      
+
       if (response.ok) {
         const data = await response.json();
         const updatedReport = data.report;
-        
-        setReports(prev => prev.map(report => 
-          report.id === reportId ? updatedReport : report
-        ));
+
+        setReports(prev =>
+          prev.map(report => (report.id === reportId ? updatedReport : report))
+        );
       }
     } catch (err) {
       console.error('Error refreshing report status:', err);
@@ -330,11 +345,11 @@ export function useReportingSystem(
     stats,
     loading,
     error,
-    
+
     // UI State
     selectedTemplate,
     generating,
-    
+
     // Actions
     fetchTemplates,
     fetchReports,
@@ -343,7 +358,7 @@ export function useReportingSystem(
     generateReport,
     downloadReport,
     deleteReport,
-    refreshReportStatus,
+    refreshReportStatus
   };
 }
 
@@ -355,7 +370,12 @@ function getMockTemplates(userRole: string): ReportTemplate[] {
       name: 'Academic Progress Report',
       description: 'Comprehensive academic performance analysis for students',
       category: 'academic' as const,
-      userRoles: ['admin', 'teacher', 'parent'] as ('admin' | 'teacher' | 'parent' | 'student')[],
+      userRoles: ['admin', 'teacher', 'parent'] as (
+        | 'admin'
+        | 'teacher'
+        | 'parent'
+        | 'student'
+      )[],
       parameters: [
         {
           id: 'studentId',
@@ -391,9 +411,15 @@ function getMockTemplates(userRole: string): ReportTemplate[] {
     {
       id: 'financial-summary',
       name: 'Financial Summary Report',
-      description: 'Detailed financial overview including fees, payments, and outstanding amounts',
+      description:
+        'Detailed financial overview including fees, payments, and outstanding amounts',
       category: 'financial' as const,
-      userRoles: ['admin', 'parent'] as ('admin' | 'teacher' | 'parent' | 'student')[],
+      userRoles: ['admin', 'parent'] as (
+        | 'admin'
+        | 'teacher'
+        | 'parent'
+        | 'student'
+      )[],
       parameters: [
         {
           id: 'period',
@@ -418,7 +444,7 @@ function getMockTemplates(userRole: string): ReportTemplate[] {
     }
   ];
 
-  return allTemplates.filter(template => 
+  return allTemplates.filter(template =>
     template.userRoles.includes(userRole as any)
   );
 }
@@ -448,8 +474,16 @@ function getMockStats(): ReportStats {
     totalReports: 15,
     reportsThisMonth: 8,
     popularTemplates: [
-      { templateId: 'academic-progress', templateName: 'Academic Progress Report', usageCount: 12 },
-      { templateId: 'financial-summary', templateName: 'Financial Summary Report', usageCount: 8 }
+      {
+        templateId: 'academic-progress',
+        templateName: 'Academic Progress Report',
+        usageCount: 12
+      },
+      {
+        templateId: 'financial-summary',
+        templateName: 'Financial Summary Report',
+        usageCount: 8
+      }
     ],
     averageGenerationTime: 12,
     successRate: 95,

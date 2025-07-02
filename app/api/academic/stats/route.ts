@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import jwt from 'jsonwebtoken';
+import { NextRequest, NextResponse } from 'next/server';
 
 const prisma = new PrismaClient();
 
@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
 
     const token = authHeader.substring(7);
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as any;
-    
+
     if (!decoded || decoded.role !== 'ADMIN') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -31,13 +31,13 @@ export async function GET(request: NextRequest) {
     ] = await Promise.all([
       // Total courses count
       prisma.course.count(),
-      
+
       // Total services count
       prisma.service.count(),
-      
+
       // Total academic logs count
       prisma.academicLog.count(),
-      
+
       // Active courses (those with current subscriptions)
       prisma.course.count({
         where: {
@@ -65,7 +65,7 @@ export async function GET(request: NextRequest) {
           }
         }
       }),
-      
+
       // Recent academic logs (last 7 days)
       prisma.academicLog.count({
         where: {
@@ -74,7 +74,7 @@ export async function GET(request: NextRequest) {
           }
         }
       }),
-      
+
       // Total enrollments (active subscriptions)
       prisma.studentSubscription.count({
         where: {
@@ -118,7 +118,7 @@ export async function GET(request: NextRequest) {
           ]
         }
       }),
-      
+
       // Top courses by enrollment
       prisma.course.findMany({
         include: {
@@ -143,7 +143,7 @@ export async function GET(request: NextRequest) {
         },
         take: 5
       }),
-      
+
       // Top services by subscription
       prisma.service.findMany({
         include: {
@@ -168,7 +168,7 @@ export async function GET(request: NextRequest) {
         },
         take: 5
       }),
-      
+
       // Recent enrollments (last 30 days)
       prisma.studentSubscription.count({
         where: {
@@ -214,12 +214,12 @@ export async function GET(request: NextRequest) {
       recentLogs,
       totalEnrollments,
       averageProgress,
-      
+
       // Additional insights
       courseEnrollments,
       serviceSubscriptions,
       recentEnrollments,
-      
+
       // Top performers
       topCourses: topCourses.map((course: any) => ({
         id: course.id,
@@ -234,7 +234,7 @@ export async function GET(request: NextRequest) {
         subscriptions: service._count.subscriptions,
         description: service.description
       })),
-      
+
       // Recent activity
       recentActivity: recentActivity.map((log: any) => ({
         id: log.id,
@@ -248,7 +248,6 @@ export async function GET(request: NextRequest) {
     };
 
     return NextResponse.json(stats);
-
   } catch (error) {
     console.error('Error fetching academic statistics:', error);
     return NextResponse.json(

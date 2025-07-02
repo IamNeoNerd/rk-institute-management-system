@@ -55,7 +55,12 @@ export interface DashboardStats {
   lastPaymentDate: string;
 }
 
-export type ActiveTab = 'overview' | 'children' | 'fees' | 'assignments' | 'academic';
+export type ActiveTab =
+  | 'overview'
+  | 'children'
+  | 'fees'
+  | 'assignments'
+  | 'academic';
 
 // Component Props Interfaces
 export interface ParentPortalProps {

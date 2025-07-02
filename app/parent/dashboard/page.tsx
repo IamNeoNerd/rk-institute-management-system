@@ -13,11 +13,12 @@ import {
   ActiveTab
 } from '@/components/features/parent-portal';
 import { useParentPortalData } from '@/hooks';
-import FamilyOverview from '../components/FamilyOverview';
+
 import ChildrenView from '../components/ChildrenView';
-import FamilyFeesView from '../components/FamilyFeesView';
 import FamilyAcademicView from '../components/FamilyAcademicView';
 import FamilyAssignmentsView from '../components/FamilyAssignmentsView';
+import FamilyFeesView from '../components/FamilyFeesView';
+import FamilyOverview from '../components/FamilyOverview';
 
 export default function ParentDashboard() {
   const {
@@ -51,15 +52,15 @@ export default function ParentDashboard() {
           id: 'student-1',
           name: 'Emma Johnson',
           grade: 'Grade 11',
-          studentId: 'STU001',
+          studentId: 'STU001'
         },
         {
           id: 'student-2',
           name: 'Liam Johnson',
           grade: 'Grade 9',
-          studentId: 'STU002',
-        },
-      ],
+          studentId: 'STU002'
+        }
+      ]
     });
 
     setStats({
@@ -68,14 +69,14 @@ export default function ParentDashboard() {
       outstandingDues: 0,
       totalAchievements: 3,
       totalConcerns: 0,
-      lastPaymentDate: '2024-06-10',
+      lastPaymentDate: '2024-06-10'
     });
 
     setLoading(false);
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className='min-h-screen bg-gray-50'>
       {/* Data Management Component - handles all API calls and state */}
       <ParentDataInsights
         onUserUpdate={setUser}
@@ -85,10 +86,7 @@ export default function ParentDashboard() {
       />
 
       {/* Header */}
-      <ParentHeader
-        familyProfile={familyProfile}
-        onLogout={handleLogout}
-      />
+      <ParentHeader familyProfile={familyProfile} onLogout={handleLogout} />
 
       {/* Child Selector */}
       <ParentChildSelector
@@ -98,15 +96,12 @@ export default function ParentDashboard() {
       />
 
       {/* Navigation */}
-      <ParentNavigation
-        activeTab={activeTab}
-        onTabChange={setActiveTab}
-      />
+      <ParentNavigation activeTab={activeTab} onTabChange={setActiveTab} />
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8'>
         {activeTab === 'overview' && (
-          <div className="space-y-8">
+          <div className='space-y-8'>
             {/* Stats Overview */}
             <ParentStatsOverview
               familyProfile={familyProfile}
@@ -115,17 +110,22 @@ export default function ParentDashboard() {
             />
 
             {/* Quick Actions */}
-            <ParentQuickActions
-              stats={stats}
-              onTabChange={setActiveTab}
-            />
+            <ParentQuickActions stats={stats} onTabChange={setActiveTab} />
           </div>
         )}
 
-        {activeTab === 'children' && <ChildrenView selectedChild={selectedChild} />}
-        {activeTab === 'fees' && <FamilyFeesView selectedChild={selectedChild} />}
-        {activeTab === 'assignments' && <FamilyAssignmentsView selectedChild={selectedChild} />}
-        {activeTab === 'academic' && <FamilyAcademicView selectedChild={selectedChild} />}
+        {activeTab === 'children' && (
+          <ChildrenView selectedChild={selectedChild} />
+        )}
+        {activeTab === 'fees' && (
+          <FamilyFeesView selectedChild={selectedChild} />
+        )}
+        {activeTab === 'assignments' && (
+          <FamilyAssignmentsView selectedChild={selectedChild} />
+        )}
+        {activeTab === 'academic' && (
+          <FamilyAcademicView selectedChild={selectedChild} />
+        )}
       </main>
     </div>
   );

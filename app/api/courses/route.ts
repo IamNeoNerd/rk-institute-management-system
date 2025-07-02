@@ -1,47 +1,68 @@
-import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
+import { NextResponse } from 'next/server';
 
 const prisma = new PrismaClient();
 
-// GET - Fetch all courses
-export async function GET() {
+// GET - Fetch all courses with optimized query
+export async function GET(request: Request) {
   try {
+    const { searchParams } = new URL(request.url);
+    const limit = parseInt(searchParams.get('limit') || '20');
+    const offset = parseInt(searchParams.get('offset') || '0');
+    const includeStudents = searchParams.get('include') === 'students';
+
+    // Optimized query with pagination and conditional includes
     const courses = await prisma.course.findMany({
-      include: {
+      take: limit,
+      skip: offset,
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        createdAt: true,
         teacher: {
           select: {
             id: true,
             name: true,
-            email: true,
-          },
+            email: true
+          }
         },
-        feeStructure: true,
-        subscriptions: {
-          include: {
-            student: {
-              select: {
-                id: true,
-                name: true,
-                grade: true,
-                studentId: true,
-                family: {
-                  select: {
-                    name: true,
-                  },
-                },
-              },
+        feeStructure: {
+          select: {
+            id: true,
+            amount: true,
+            billingCycle: true
+          }
+        },
+        ...(includeStudents && {
+          subscriptions: {
+            select: {
+              id: true,
+              startDate: true,
+              endDate: true,
+              student: {
+                select: {
+                  id: true,
+                  name: true,
+                  grade: true,
+                  studentId: true
+                }
+              }
             },
-          },
-        },
+            where: {
+              endDate: null // Active subscriptions only
+            }
+          }
+        }),
         _count: {
           select: {
-            subscriptions: true,
-          },
-        },
+            subscriptions: true
+          }
+        }
       },
       orderBy: {
-        createdAt: 'desc',
-      },
+        createdAt: 'desc'
+      }
     });
 
     return NextResponse.json(courses);
@@ -73,7 +94,7 @@ export async function POST(request: Request) {
       name,
       description: description || null,
       grade: grade || null,
-      teacherId: teacherId || null,
+      teacherId: teacherId || null
     };
 
     const course = await prisma.course.create({
@@ -83,10 +104,10 @@ export async function POST(request: Request) {
           select: {
             id: true,
             name: true,
-            email: true,
-          },
-        },
-      },
+            email: true
+          }
+        }
+      }
     });
 
     // Create fee structure if provided
@@ -95,8 +116,8 @@ export async function POST(request: Request) {
         data: {
           amount: parseFloat(feeStructure.amount),
           billingCycle: feeStructure.billingCycle || 'MONTHLY',
-          courseId: course.id,
-        },
+          courseId: course.id
+        }
       });
     }
 
@@ -108,16 +129,16 @@ export async function POST(request: Request) {
           select: {
             id: true,
             name: true,
-            email: true,
-          },
+            email: true
+          }
         },
         feeStructure: true,
         _count: {
           select: {
-            subscriptions: true,
-          },
-        },
-      },
+            subscriptions: true
+          }
+        }
+      }
     });
 
     return NextResponse.json(completeCourse, { status: 201 });

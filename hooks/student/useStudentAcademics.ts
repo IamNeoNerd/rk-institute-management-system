@@ -1,9 +1,9 @@
 /**
  * Student Academics Hook
- * 
+ *
  * Specialized hook for managing student academic data including courses,
  * assignments, academic logs, and progress tracking.
- * 
+ *
  * Features:
  * - Course enrollment and materials
  * - Assignment and homework management
@@ -67,12 +67,15 @@ export interface UseStudentAcademicsReturn {
   academicLogs: AcademicLog[];
   loading: boolean;
   error: string | null;
-  
+
   // Actions
   fetchCourses: () => Promise<void>;
   fetchAssignments: () => Promise<void>;
   fetchAcademicLogs: () => Promise<void>;
-  submitAssignment: (assignmentId: string, submission: FormData) => Promise<boolean>;
+  submitAssignment: (
+    assignmentId: string,
+    submission: FormData
+  ) => Promise<boolean>;
   downloadMaterial: (materialId: string) => Promise<void>;
 }
 
@@ -89,10 +92,10 @@ export function useStudentAcademics(): UseStudentAcademicsReturn {
     try {
       setLoading(true);
       setError(null);
-      
+
       const response = await fetch('/api/students/courses');
       const data = await response.json();
-      
+
       if (data.success) {
         setCourses(data.courses);
       } else {
@@ -111,10 +114,10 @@ export function useStudentAcademics(): UseStudentAcademicsReturn {
     try {
       setLoading(true);
       setError(null);
-      
+
       const response = await fetch('/api/students/assignments');
       const data = await response.json();
-      
+
       if (data.success) {
         setAssignments(data.assignments);
       } else {
@@ -133,10 +136,10 @@ export function useStudentAcademics(): UseStudentAcademicsReturn {
     try {
       setLoading(true);
       setError(null);
-      
+
       const response = await fetch('/api/students/academic-logs');
       const data = await response.json();
-      
+
       if (data.success) {
         setAcademicLogs(data.logs);
       } else {
@@ -151,39 +154,53 @@ export function useStudentAcademics(): UseStudentAcademicsReturn {
   }, []);
 
   // Submit assignment
-  const submitAssignment = useCallback(async (assignmentId: string, submission: FormData): Promise<boolean> => {
-    try {
-      const response = await fetch(`/api/students/assignments/${assignmentId}/submit`, {
-        method: 'POST',
-        body: submission,
-      });
+  const submitAssignment = useCallback(
+    async (assignmentId: string, submission: FormData): Promise<boolean> => {
+      try {
+        const response = await fetch(
+          `/api/students/assignments/${assignmentId}/submit`,
+          {
+            method: 'POST',
+            body: submission
+          }
+        );
 
-      const data = await response.json();
-      
-      if (data.success) {
-        // Update assignment status
-        setAssignments(prev => prev.map(assignment => 
-          assignment.id === assignmentId 
-            ? { ...assignment, status: 'submitted', submissionDate: new Date().toISOString() }
-            : assignment
-        ));
-        return true;
-      } else {
-        setError(data.error || 'Failed to submit assignment');
+        const data = await response.json();
+
+        if (data.success) {
+          // Update assignment status
+          setAssignments(prev =>
+            prev.map(assignment =>
+              assignment.id === assignmentId
+                ? {
+                    ...assignment,
+                    status: 'submitted',
+                    submissionDate: new Date().toISOString()
+                  }
+                : assignment
+            )
+          );
+          return true;
+        } else {
+          setError(data.error || 'Failed to submit assignment');
+          return false;
+        }
+      } catch (err) {
+        setError('Network error while submitting assignment');
+        console.error('Error submitting assignment:', err);
         return false;
       }
-    } catch (err) {
-      setError('Network error while submitting assignment');
-      console.error('Error submitting assignment:', err);
-      return false;
-    }
-  }, []);
+    },
+    []
+  );
 
   // Download material
   const downloadMaterial = useCallback(async (materialId: string) => {
     try {
-      const response = await fetch(`/api/students/materials/${materialId}/download`);
-      
+      const response = await fetch(
+        `/api/students/materials/${materialId}/download`
+      );
+
       if (response.ok) {
         const blob = await response.blob();
         const url = window.URL.createObjectURL(blob);
@@ -210,12 +227,12 @@ export function useStudentAcademics(): UseStudentAcademicsReturn {
     academicLogs,
     loading,
     error,
-    
+
     // Actions
     fetchCourses,
     fetchAssignments,
     fetchAcademicLogs,
     submitAssignment,
-    downloadMaterial,
+    downloadMaterial
   };
 }

@@ -1,9 +1,9 @@
 /**
  * Report Generator Component
- * 
+ *
  * Dynamic form generator for report parameters with validation and preview.
  * Leverages existing Form, Input, and Button components for consistency.
- * 
+ *
  * Features:
  * - Dynamic form generation based on template parameters
  * - Real-time validation and error handling
@@ -15,12 +15,10 @@
 'use client';
 
 import React, { useState, useCallback } from 'react';
+
+import { Card, Button, LoadingState } from '@/components/ui';
+
 import { ReportGeneratorProps, ReportParameter } from './types';
-import {
-  Card,
-  Button,
-  LoadingState
-} from '@/components/ui';
 
 export default function ReportGenerator({
   template,
@@ -28,7 +26,6 @@ export default function ReportGenerator({
   onCancel,
   generating = false
 }: ReportGeneratorProps) {
-
   const [parameters, setParameters] = useState<Record<string, any>>({});
   const [selectedFormat, setSelectedFormat] = useState<string>('pdf');
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -48,21 +45,24 @@ export default function ReportGenerator({
   }, [template]);
 
   // Handle parameter value changes
-  const handleParameterChange = useCallback((paramId: string, value: any) => {
-    setParameters(prev => ({
-      ...prev,
-      [paramId]: value
-    }));
-    
-    // Clear error for this parameter
-    if (errors[paramId]) {
-      setErrors(prev => {
-        const newErrors = { ...prev };
-        delete newErrors[paramId];
-        return newErrors;
-      });
-    }
-  }, [errors]);
+  const handleParameterChange = useCallback(
+    (paramId: string, value: any) => {
+      setParameters(prev => ({
+        ...prev,
+        [paramId]: value
+      }));
+
+      // Clear error for this parameter
+      if (errors[paramId]) {
+        setErrors(prev => {
+          const newErrors = { ...prev };
+          delete newErrors[paramId];
+          return newErrors;
+        });
+      }
+    },
+    [errors]
+  );
 
   // Validate parameters
   const validateParameters = useCallback(() => {
@@ -74,7 +74,10 @@ export default function ReportGenerator({
       const value = parameters[param.id];
 
       // Required field validation
-      if (param.required && (value === undefined || value === null || value === '')) {
+      if (
+        param.required &&
+        (value === undefined || value === null || value === '')
+      ) {
         newErrors[param.id] = `${param.label} is required`;
         return;
       }
@@ -127,88 +130,92 @@ export default function ReportGenerator({
     switch (param.type) {
       case 'text':
         return (
-          <div key={param.id} className="space-y-1">
-            <label className="block text-sm font-medium text-gray-700">
-              {param.label} {param.required && <span className="text-red-500">*</span>}
+          <div key={param.id} className='space-y-1'>
+            <label className='block text-sm font-medium text-gray-700'>
+              {param.label}{' '}
+              {param.required && <span className='text-red-500'>*</span>}
             </label>
             <input
-              type="text"
+              type='text'
               value={value || ''}
-              onChange={(e) => handleParameterChange(param.id, e.target.value)}
+              onChange={e => handleParameterChange(param.id, e.target.value)}
               placeholder={`Enter ${param.label.toLowerCase()}`}
               className={inputClassName}
             />
-            {error && <p className="text-sm text-red-600">{error}</p>}
+            {error && <p className='text-sm text-red-600'>{error}</p>}
           </div>
         );
 
       case 'number':
         return (
-          <div key={param.id} className="space-y-1">
-            <label className="block text-sm font-medium text-gray-700">
-              {param.label} {param.required && <span className="text-red-500">*</span>}
+          <div key={param.id} className='space-y-1'>
+            <label className='block text-sm font-medium text-gray-700'>
+              {param.label}{' '}
+              {param.required && <span className='text-red-500'>*</span>}
             </label>
             <input
-              type="number"
+              type='number'
               value={value || ''}
-              onChange={(e) => handleParameterChange(param.id, e.target.value)}
+              onChange={e => handleParameterChange(param.id, e.target.value)}
               placeholder={`Enter ${param.label.toLowerCase()}`}
               min={param.validation?.min}
               max={param.validation?.max}
               className={inputClassName}
             />
-            {error && <p className="text-sm text-red-600">{error}</p>}
+            {error && <p className='text-sm text-red-600'>{error}</p>}
           </div>
         );
 
       case 'date':
         return (
-          <div key={param.id} className="space-y-1">
-            <label className="block text-sm font-medium text-gray-700">
-              {param.label} {param.required && <span className="text-red-500">*</span>}
+          <div key={param.id} className='space-y-1'>
+            <label className='block text-sm font-medium text-gray-700'>
+              {param.label}{' '}
+              {param.required && <span className='text-red-500'>*</span>}
             </label>
             <input
-              type="date"
+              type='date'
               value={value || ''}
-              onChange={(e) => handleParameterChange(param.id, e.target.value)}
+              onChange={e => handleParameterChange(param.id, e.target.value)}
               className={inputClassName}
             />
-            {error && <p className="text-sm text-red-600">{error}</p>}
+            {error && <p className='text-sm text-red-600'>{error}</p>}
           </div>
         );
 
       case 'select':
         return (
-          <div key={param.id} className="space-y-1">
-            <label className="block text-sm font-medium text-gray-700">
-              {param.label} {param.required && <span className="text-red-500">*</span>}
+          <div key={param.id} className='space-y-1'>
+            <label className='block text-sm font-medium text-gray-700'>
+              {param.label}{' '}
+              {param.required && <span className='text-red-500'>*</span>}
             </label>
             <select
               value={value || ''}
-              onChange={(e) => handleParameterChange(param.id, e.target.value)}
+              onChange={e => handleParameterChange(param.id, e.target.value)}
               className={inputClassName}
             >
-              <option value="">Select {param.label.toLowerCase()}</option>
+              <option value=''>Select {param.label.toLowerCase()}</option>
               {param.options?.map(option => (
                 <option key={option.value} value={option.value}>
                   {option.label}
                 </option>
               ))}
             </select>
-            {error && <p className="text-sm text-red-600">{error}</p>}
+            {error && <p className='text-sm text-red-600'>{error}</p>}
           </div>
         );
 
       case 'boolean':
         return (
-          <div key={param.id} className="flex items-center space-x-2">
+          <div key={param.id} className='flex items-center space-x-2'>
             <input
-              type="checkbox"
+              type='checkbox'
               checked={value || false}
-              onChange={(e) => handleParameterChange(param.id, e.target.checked)}
-              className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+              onChange={e => handleParameterChange(param.id, e.target.checked)}
+              className='rounded border-gray-300 text-blue-600 focus:ring-blue-500'
             />
-            <label className="text-sm font-medium text-gray-700">
+            <label className='text-sm font-medium text-gray-700'>
               {param.label}
             </label>
           </div>
@@ -221,52 +228,53 @@ export default function ReportGenerator({
 
   if (!template) {
     return (
-      <div className="text-center py-12">
-        <div className="text-6xl mb-4">📊</div>
-        <h3 className="text-lg font-medium text-gray-900 mb-2">No Template Selected</h3>
-        <p className="text-gray-600 mb-4">Please select a report template to continue.</p>
-        <Button onClick={onCancel}>
-          Back to Templates
-        </Button>
+      <div className='text-center py-12'>
+        <div className='text-6xl mb-4'>📊</div>
+        <h3 className='text-lg font-medium text-gray-900 mb-2'>
+          No Template Selected
+        </h3>
+        <p className='text-gray-600 mb-4'>
+          Please select a report template to continue.
+        </p>
+        <Button onClick={onCancel}>Back to Templates</Button>
       </div>
     );
   }
 
   if (generating) {
-    return (
-      <LoadingState message="Generating your report..." />
-    );
+    return <LoadingState message='Generating your report...' />;
   }
 
   return (
-    <div className="space-y-6">
+    <div className='space-y-6'>
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className='flex items-center justify-between'>
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">{template.name}</h2>
-          <p className="text-gray-600 mt-1">{template.description}</p>
+          <h2 className='text-2xl font-bold text-gray-900'>{template.name}</h2>
+          <p className='text-gray-600 mt-1'>{template.description}</p>
         </div>
-        <Button
-          variant="outline"
-          onClick={onCancel}
-        >
+        <Button variant='outline' onClick={onCancel}>
           ← Back to Templates
         </Button>
       </div>
 
       <Card>
-        <div className="p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Report Parameters</h3>
-          
+        <div className='p-6'>
+          <h3 className='text-lg font-semibold text-gray-900 mb-4'>
+            Report Parameters
+          </h3>
+
           {/* Parameters Form */}
-          <div className="space-y-4">
+          <div className='space-y-4'>
             {template.parameters.map(renderParameterInput)}
           </div>
 
           {/* Format Selection */}
-          <div className="mt-6 pt-6 border-t border-gray-200">
-            <h4 className="text-md font-medium text-gray-900 mb-3">Output Format</h4>
-            <div className="flex gap-3">
+          <div className='mt-6 pt-6 border-t border-gray-200'>
+            <h4 className='text-md font-medium text-gray-900 mb-3'>
+              Output Format
+            </h4>
+            <div className='flex gap-3'>
               {template.outputFormats.map(format => (
                 <button
                   key={format}
@@ -284,9 +292,9 @@ export default function ReportGenerator({
           </div>
 
           {/* Generation Info */}
-          <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-            <div className="flex items-center text-sm text-blue-800">
-              <span className="mr-2">ℹ️</span>
+          <div className='mt-6 p-4 bg-blue-50 rounded-lg'>
+            <div className='flex items-center text-sm text-blue-800'>
+              <span className='mr-2'>ℹ️</span>
               <span>
                 Estimated generation time: ~{template.estimatedTime} seconds
               </span>
@@ -294,19 +302,15 @@ export default function ReportGenerator({
           </div>
 
           {/* Action Buttons */}
-          <div className="mt-6 flex gap-3">
+          <div className='mt-6 flex gap-3'>
             <Button
               onClick={handleGenerate}
               disabled={generating}
-              className="bg-blue-600 text-white hover:bg-blue-700"
+              className='bg-blue-600 text-white hover:bg-blue-700'
             >
               {generating ? 'Generating...' : 'Generate Report'}
             </Button>
-            <Button
-              variant="outline"
-              onClick={onCancel}
-              disabled={generating}
-            >
+            <Button variant='outline' onClick={onCancel} disabled={generating}>
               Cancel
             </Button>
           </div>

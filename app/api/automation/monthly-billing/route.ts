@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+
 import AutomationEngineService from '@/lib/services/automation-engine.service';
 
 // POST - Manually trigger monthly billing job
@@ -22,14 +23,19 @@ export async function POST(request: Request) {
       );
     }
 
-    console.log(`[API] Manual monthly billing trigger requested for ${month || 'current'}/${year || 'current'}`);
+    console.log(
+      `[API] Manual monthly billing trigger requested for ${month || 'current'}/${year || 'current'}`
+    );
 
     // Execute the monthly billing job
-    const result = await AutomationEngineService.executeMonthlyBillingJob(month, year);
+    const result = await AutomationEngineService.executeMonthlyBillingJob(
+      month,
+      year
+    );
 
     return NextResponse.json({
       success: result.success,
-      message: result.success 
+      message: result.success
         ? `Monthly billing completed successfully. Generated ${result.successfulBills} bills out of ${result.totalStudents} students.`
         : `Monthly billing completed with errors. ${result.failedBills} bills failed out of ${result.totalStudents} students.`,
       data: {
@@ -41,11 +47,10 @@ export async function POST(request: Request) {
         errors: result.errors
       }
     });
-
   } catch (error) {
     console.error('[API] Monthly billing error:', error);
     return NextResponse.json(
-      { 
+      {
         success: false,
         error: 'Failed to execute monthly billing job',
         details: error instanceof Error ? error.message : 'Unknown error'
@@ -64,7 +69,9 @@ export async function GET(request: Request) {
 
     // Get running jobs
     const runningJobs = AutomationEngineService.getRunningJobs();
-    const monthlyBillingJobs = runningJobs.filter(job => job.jobType === 'MONTHLY_BILLING');
+    const monthlyBillingJobs = runningJobs.filter(
+      job => job.jobType === 'MONTHLY_BILLING'
+    );
 
     // If specific month/year requested, we could fetch allocation data
     // For now, just return job status
@@ -76,11 +83,10 @@ export async function GET(request: Request) {
         lastUpdate: new Date().toISOString()
       }
     });
-
   } catch (error) {
     console.error('[API] Get monthly billing status error:', error);
     return NextResponse.json(
-      { 
+      {
         success: false,
         error: 'Failed to get monthly billing status',
         details: error instanceof Error ? error.message : 'Unknown error'

@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+
 const glob = require('glob');
 
 class DynamicImportFixer {
@@ -17,21 +18,21 @@ class DynamicImportFixer {
       // require('@/lib/config/FeatureFlags') -> await vi.importActual('@/lib/config/FeatureFlags')
       content = content.replace(
         /const\s+{\s*([^}]+)\s*}\s*=\s*require\(['"](@\/[^'"]+)['"]\);?/g,
-        'const { $1 } = await vi.importActual(\'$2\');'
+        "const { $1 } = await vi.importActual('$2');"
       );
 
       // Pattern 2: Simple variable assignment
       // const module = require('@/lib/...') -> const module = await vi.importActual('@/lib/...')
       content = content.replace(
         /const\s+(\w+)\s*=\s*require\(['"](@\/[^'"]+)['"]\);?/g,
-        'const $1 = await vi.importActual(\'$2\');'
+        "const $1 = await vi.importActual('$2');"
       );
 
       // Pattern 3: Direct require calls in expect statements
       // expect(() => { require('@/lib/...') }) -> expect(async () => { await import('@/lib/...') })
       content = content.replace(
         /expect\(\(\)\s*=>\s*{\s*require\(['"](@\/[^'"]+)['"]\);?\s*}\)/g,
-        'expect(async () => { await import(\'$1\'); })'
+        "expect(async () => { await import('$1'); })"
       );
 
       // Pattern 4: Convert test functions to async when they use dynamic imports
@@ -40,10 +41,16 @@ class DynamicImportFixer {
         (match, testType, testName) => {
           // Check if this test block contains await vi.importActual
           const testBlockStart = content.indexOf(match);
-          const testBlockEnd = this.findMatchingBrace(content, testBlockStart + match.length - 1);
+          const testBlockEnd = this.findMatchingBrace(
+            content,
+            testBlockStart + match.length - 1
+          );
           const testBlock = content.substring(testBlockStart, testBlockEnd);
-          
-          if (testBlock.includes('await vi.importActual') || testBlock.includes('await import')) {
+
+          if (
+            testBlock.includes('await vi.importActual') ||
+            testBlock.includes('await import')
+          ) {
             return `${testType}('${testName}', async () => {`;
           }
           return match;
@@ -51,13 +58,18 @@ class DynamicImportFixer {
       );
 
       // Pattern 5: Add vi import if not present and we're using vi.importActual
-      if (content.includes('vi.importActual') && !content.includes('import { vi }') && !content.includes('from \'vitest\'')) {
+      if (
+        content.includes('vi.importActual') &&
+        !content.includes('import { vi }') &&
+        !content.includes("from 'vitest'")
+      ) {
         // Find the first import statement
         const firstImportMatch = content.match(/^import\s+.*$/m);
         if (firstImportMatch) {
           const firstImportIndex = content.indexOf(firstImportMatch[0]);
-          content = content.slice(0, firstImportIndex) + 
-            'import { vi } from \'vitest\';\n' + 
+          content =
+            content.slice(0, firstImportIndex) +
+            "import { vi } from 'vitest';\n" +
             content.slice(firstImportIndex);
         }
       }
@@ -65,7 +77,7 @@ class DynamicImportFixer {
       // Pattern 6: Fix environment variable testing pattern
       content = content.replace(
         /(process\.env\.\w+\s*=\s*['"][^'"]*['"];?\s*vi\.resetModules\(\);?\s*)const\s+{\s*([^}]+)\s*}\s*=\s*await\s+vi\.importActual\(['"](@\/[^'"]+)['"]\);/g,
-        '$1delete require.cache[require.resolve(\'$3\')];\n      const { $2 } = await vi.importActual(\'$3\');'
+        "$1delete require.cache[require.resolve('$3')];\n      const { $2 } = await vi.importActual('$3');"
       );
 
       // Only write if content changed
@@ -77,7 +89,6 @@ class DynamicImportFixer {
         this.fixLog.push(`ℹ️  No dynamic import issues found: ${filePath}`);
         console.log(`ℹ️  No dynamic import issues found: ${filePath}`);
       }
-
     } catch (error) {
       this.errorLog.push(`❌ Error fixing ${filePath}: ${error.message}`);
       console.error(`❌ Error fixing ${filePath}:`, error.message);
@@ -87,7 +98,7 @@ class DynamicImportFixer {
   findMatchingBrace(content, startIndex) {
     let braceCount = 1;
     let index = startIndex + 1;
-    
+
     while (index < content.length && braceCount > 0) {
       if (content[index] === '{') {
         braceCount++;
@@ -96,7 +107,7 @@ class DynamicImportFixer {
       }
       index++;
     }
-    
+
     return index;
   }
 
@@ -105,7 +116,7 @@ class DynamicImportFixer {
 
     // Find all test files that likely have dynamic import issues
     const testFiles = glob.sync('__tests__/**/*.{test,spec}.{js,ts,jsx,tsx}');
-    
+
     console.log(`Found ${testFiles.length} test files to analyze:\n`);
 
     // Fix each file

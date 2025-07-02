@@ -1,8 +1,10 @@
 'use client';
 
 import { useEffect } from 'react';
-import { PeopleDataInsightsProps } from './types';
+
 import { usePeopleHubData } from '@/hooks';
+
+import { PeopleDataInsightsProps } from './types';
 
 /**
  * People Data Insights Component
@@ -23,7 +25,6 @@ export default function PeopleDataInsights({
   onLoadingChange,
   onErrorChange
 }: PeopleDataInsightsProps) {
-
   const { stats, loading, error } = usePeopleHubData();
 
   // Update parent component state when hook state changes

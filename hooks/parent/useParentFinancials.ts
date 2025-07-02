@@ -1,9 +1,9 @@
 /**
  * Parent Financials Hook
- * 
+ *
  * Specialized hook for managing parent financial data including family fees,
  * payments, outstanding dues, and family discounts.
- * 
+ *
  * Features:
  * - Family fee allocation and billing information
  * - Payment history and receipts
@@ -16,7 +16,11 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { FamilyFeeAllocation, FamilyPayment } from '@/components/features/parent-portal/types';
+
+import {
+  FamilyFeeAllocation,
+  FamilyPayment
+} from '@/components/features/parent-portal/types';
 
 export interface FamilyFinancialSummary {
   totalMonthlyFee: number;
@@ -40,7 +44,7 @@ export interface UseParentFinancialsReturn {
   financialSummary: FamilyFinancialSummary | null;
   loading: boolean;
   error: string | null;
-  
+
   // Actions
   fetchFamilyFeeAllocations: (childId?: string) => Promise<void>;
   fetchFamilyPayments: () => Promise<void>;
@@ -54,9 +58,12 @@ export interface UseParentFinancialsReturn {
 
 export function useParentFinancials(): UseParentFinancialsReturn {
   // Data State
-  const [familyFeeAllocations, setFamilyFeeAllocations] = useState<FamilyFeeAllocation[]>([]);
+  const [familyFeeAllocations, setFamilyFeeAllocations] = useState<
+    FamilyFeeAllocation[]
+  >([]);
   const [familyPayments, setFamilyPayments] = useState<FamilyPayment[]>([]);
-  const [financialSummary, setFinancialSummary] = useState<FamilyFinancialSummary | null>(null);
+  const [financialSummary, setFinancialSummary] =
+    useState<FamilyFinancialSummary | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -65,16 +72,16 @@ export function useParentFinancials(): UseParentFinancialsReturn {
     try {
       setLoading(true);
       setError(null);
-      
+
       const token = localStorage.getItem('token');
-      const url = childId 
+      const url = childId
         ? `/api/parents/fee-allocations?childId=${childId}`
         : '/api/parents/fee-allocations';
-      
+
       const response = await fetch(url, {
-        headers: { 'Authorization': `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${token}` }
       });
-      
+
       if (response.ok) {
         const data = await response.json();
         setFamilyFeeAllocations(data.allocations || []);
@@ -94,12 +101,12 @@ export function useParentFinancials(): UseParentFinancialsReturn {
     try {
       setLoading(true);
       setError(null);
-      
+
       const token = localStorage.getItem('token');
       const response = await fetch('/api/parents/payments', {
-        headers: { 'Authorization': `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${token}` }
       });
-      
+
       if (response.ok) {
         const data = await response.json();
         setFamilyPayments(data.payments || []);
@@ -119,12 +126,12 @@ export function useParentFinancials(): UseParentFinancialsReturn {
     try {
       setLoading(true);
       setError(null);
-      
+
       const token = localStorage.getItem('token');
       const response = await fetch('/api/parents/financial-summary', {
-        headers: { 'Authorization': `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${token}` }
       });
-      
+
       if (response.ok) {
         const data = await response.json();
         setFinancialSummary(data.summary);
@@ -143,10 +150,13 @@ export function useParentFinancials(): UseParentFinancialsReturn {
   const downloadFamilyReceipt = useCallback(async (paymentId: string) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`/api/parents/payments/${paymentId}/receipt`, {
-        headers: { 'Authorization': `Bearer ${token}` },
-      });
-      
+      const response = await fetch(
+        `/api/parents/payments/${paymentId}/receipt`,
+        {
+          headers: { Authorization: `Bearer ${token}` }
+        }
+      );
+
       if (response.ok) {
         const blob = await response.blob();
         const url = window.URL.createObjectURL(blob);
@@ -171,9 +181,9 @@ export function useParentFinancials(): UseParentFinancialsReturn {
     try {
       const token = localStorage.getItem('token');
       const response = await fetch('/api/parents/fee-structure', {
-        headers: { 'Authorization': `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${token}` }
       });
-      
+
       if (response.ok) {
         const blob = await response.blob();
         const url = window.URL.createObjectURL(blob);
@@ -194,19 +204,30 @@ export function useParentFinancials(): UseParentFinancialsReturn {
   }, []);
 
   // Get fees by child
-  const getFeesByChild = useCallback((childId: string): FamilyFeeAllocation[] => {
-    return familyFeeAllocations.filter(allocation => allocation.childId === childId);
-  }, [familyFeeAllocations]);
+  const getFeesByChild = useCallback(
+    (childId: string): FamilyFeeAllocation[] => {
+      return familyFeeAllocations.filter(
+        allocation => allocation.childId === childId
+      );
+    },
+    [familyFeeAllocations]
+  );
 
   // Get outstanding by child
-  const getOutstandingByChild = useCallback((childId: string): number => {
-    const childFees = getFeesByChild(childId);
-    return childFees.reduce((total, fee) => total + fee.remainingAmount, 0);
-  }, [getFeesByChild]);
+  const getOutstandingByChild = useCallback(
+    (childId: string): number => {
+      const childFees = getFeesByChild(childId);
+      return childFees.reduce((total, fee) => total + fee.remainingAmount, 0);
+    },
+    [getFeesByChild]
+  );
 
   // Get total family outstanding
   const getTotalFamilyOutstanding = useCallback((): number => {
-    return familyFeeAllocations.reduce((total, fee) => total + fee.remainingAmount, 0);
+    return familyFeeAllocations.reduce(
+      (total, fee) => total + fee.remainingAmount,
+      0
+    );
   }, [familyFeeAllocations]);
 
   return {
@@ -216,7 +237,7 @@ export function useParentFinancials(): UseParentFinancialsReturn {
     financialSummary,
     loading,
     error,
-    
+
     // Actions
     fetchFamilyFeeAllocations,
     fetchFamilyPayments,
@@ -225,6 +246,6 @@ export function useParentFinancials(): UseParentFinancialsReturn {
     downloadFamilyFeeStructure,
     getFeesByChild,
     getOutstandingByChild,
-    getTotalFamilyOutstanding,
+    getTotalFamilyOutstanding
   };
 }

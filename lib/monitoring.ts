@@ -67,7 +67,7 @@ class ProductionMonitoring {
   setUserContext(userId: string, userRole: string) {
     this.userId = userId;
     this.userRole = userRole;
-    
+
     if (this.isProduction && typeof window !== 'undefined') {
       // Set user context for client-side monitoring
       if (window.gtag) {
@@ -97,7 +97,8 @@ class ProductionMonitoring {
       userRole: this.userRole || context.userRole,
       timestamp: new Date().toISOString(),
       url: typeof window !== 'undefined' ? window.location.href : context.url,
-      userAgent: typeof window !== 'undefined' ? navigator.userAgent : context.userAgent,
+      userAgent:
+        typeof window !== 'undefined' ? navigator.userAgent : context.userAgent,
       ...context
     };
 
@@ -168,8 +169,8 @@ class ProductionMonitoring {
       value: duration,
       unit: 'ms',
       timestamp: new Date().toISOString(),
-      context: { 
-        endpoint, 
+      context: {
+        endpoint,
         status,
         success: status >= 200 && status < 300
       }
@@ -213,7 +214,11 @@ class ProductionMonitoring {
   // BUSINESS METRICS
   // =============================================================================
 
-  trackBusinessMetric(metric: string, value: number, context: Record<string, any> = {}) {
+  trackBusinessMetric(
+    metric: string,
+    value: number,
+    context: Record<string, any> = {}
+  ) {
     const metricData = {
       metric,
       value,
@@ -257,7 +262,11 @@ class ProductionMonitoring {
     const allHealthy = Object.values(checks).every(check => check);
     const someHealthy = Object.values(checks).some(check => check);
 
-    const status: 'healthy' | 'degraded' | 'unhealthy' = allHealthy ? 'healthy' : someHealthy ? 'degraded' : 'unhealthy';
+    const status: 'healthy' | 'degraded' | 'unhealthy' = allHealthy
+      ? 'healthy'
+      : someHealthy
+        ? 'degraded'
+        : 'unhealthy';
 
     const healthData = {
       status,
@@ -357,9 +366,9 @@ class ProductionMonitoring {
       await fetch(endpoint, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(data)
       });
     } catch (error) {
       // Fail silently in production to avoid infinite loops
@@ -380,29 +389,31 @@ const monitoring = new ProductionMonitoring();
 // CONVENIENCE FUNCTIONS
 // =============================================================================
 
-export const logError = (error: Error, context?: ErrorContext) => 
+export const logError = (error: Error, context?: ErrorContext) =>
   monitoring.logError(error, context);
 
-export const logWarning = (message: string, context?: ErrorContext) => 
+export const logWarning = (message: string, context?: ErrorContext) =>
   monitoring.logWarning(message, context);
 
-export const trackPerformance = (metric: PerformanceMetric) => 
+export const trackPerformance = (metric: PerformanceMetric) =>
   monitoring.trackPerformance(metric);
 
-export const trackUserAction = (action: string, context?: Record<string, any>) => 
-  monitoring.trackUserAction(action, context);
+export const trackUserAction = (
+  action: string,
+  context?: Record<string, any>
+) => monitoring.trackUserAction(action, context);
 
-export const trackFeatureUsage = (feature: string, context?: Record<string, any>) => 
-  monitoring.trackFeatureUsage(feature, context);
+export const trackFeatureUsage = (
+  feature: string,
+  context?: Record<string, any>
+) => monitoring.trackFeatureUsage(feature, context);
 
-export const setUserContext = (userId: string, userRole: string) => 
+export const setUserContext = (userId: string, userRole: string) =>
   monitoring.setUserContext(userId, userRole);
 
-export const clearUserContext = () => 
-  monitoring.clearUserContext();
+export const clearUserContext = () => monitoring.clearUserContext();
 
-export const performHealthCheck = () => 
-  monitoring.performHealthCheck();
+export const performHealthCheck = () => monitoring.performHealthCheck();
 
 // =============================================================================
 // REACT HOOKS
@@ -450,7 +461,10 @@ export function withErrorMonitoring<P extends object>(
 
       return () => {
         window.removeEventListener('error', handleError);
-        window.removeEventListener('unhandledrejection', handleUnhandledRejection);
+        window.removeEventListener(
+          'unhandledrejection',
+          handleUnhandledRejection
+        );
       };
     }, []);
 

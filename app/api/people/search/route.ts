@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import jwt from 'jsonwebtoken';
+import { NextRequest, NextResponse } from 'next/server';
 
 const prisma = new PrismaClient();
 
@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
 
     const token = authHeader.substring(7);
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as any;
-    
+
     if (!decoded || decoded.role !== 'ADMIN') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -31,7 +31,7 @@ export async function GET(request: NextRequest) {
     if (dateRange !== 'all') {
       const now = new Date();
       let daysBack = 0;
-      
+
       switch (dateRange) {
         case 'week':
           daysBack = 7;
@@ -43,7 +43,7 @@ export async function GET(request: NextRequest) {
           daysBack = 365;
           break;
       }
-      
+
       if (daysBack > 0) {
         dateFilter = {
           createdAt: {
@@ -60,21 +60,28 @@ export async function GET(request: NextRequest) {
       const students = await prisma.student.findMany({
         where: {
           AND: [
-            query ? {
-              OR: [
-                { name: { contains: query, mode: 'insensitive' } },
-                { email: { contains: query, mode: 'insensitive' } },
-                { id: { contains: query, mode: 'insensitive' } }
-              ]
-            } : {},
+            query
+              ? {
+                  OR: [
+                    { name: { contains: query, mode: 'insensitive' } },
+                    { email: { contains: query, mode: 'insensitive' } },
+                    { id: { contains: query, mode: 'insensitive' } }
+                  ]
+                }
+              : {},
             dateFilter,
-            status !== 'all' ? {
-              subscriptions: status === 'active' ? {
-                some: { isActive: true }
-              } : {
-                none: { isActive: true }
-              }
-            } : {}
+            status !== 'all'
+              ? {
+                  subscriptions:
+                    status === 'active'
+                      ? {
+                          some: { isActive: true }
+                        }
+                      : {
+                          none: { isActive: true }
+                        }
+                }
+              : {}
           ]
         },
         include: {
@@ -124,14 +131,16 @@ export async function GET(request: NextRequest) {
       const families = await prisma.family.findMany({
         where: {
           AND: [
-            query ? {
-              OR: [
-                { name: { contains: query, mode: 'insensitive' } },
-                { email: { contains: query, mode: 'insensitive' } },
-                { phone: { contains: query, mode: 'insensitive' } },
-                { id: { contains: query, mode: 'insensitive' } }
-              ]
-            } : {},
+            query
+              ? {
+                  OR: [
+                    { name: { contains: query, mode: 'insensitive' } },
+                    { email: { contains: query, mode: 'insensitive' } },
+                    { phone: { contains: query, mode: 'insensitive' } },
+                    { id: { contains: query, mode: 'insensitive' } }
+                  ]
+                }
+              : {},
             dateFilter
           ]
         },
@@ -143,7 +152,9 @@ export async function GET(request: NextRequest) {
                 where: {
                   AND: [
                     { startDate: { lte: new Date() } },
-                    { OR: [{ endDate: null }, { endDate: { gte: new Date() } }] }
+                    {
+                      OR: [{ endDate: null }, { endDate: { gte: new Date() } }]
+                    }
                   ]
                 }
               }
@@ -176,13 +187,15 @@ export async function GET(request: NextRequest) {
       const users = await prisma.user.findMany({
         where: {
           AND: [
-            query ? {
-              OR: [
-                { name: { contains: query, mode: 'insensitive' } },
-                { email: { contains: query, mode: 'insensitive' } },
-                { id: { contains: query, mode: 'insensitive' } }
-              ]
-            } : {},
+            query
+              ? {
+                  OR: [
+                    { name: { contains: query, mode: 'insensitive' } },
+                    { email: { contains: query, mode: 'insensitive' } },
+                    { id: { contains: query, mode: 'insensitive' } }
+                  ]
+                }
+              : {},
             dateFilter
           ]
         },
@@ -192,7 +205,7 @@ export async function GET(request: NextRequest) {
       users.forEach(user => {
         // Determine if user is active (logged in recently or has recent activity)
         const isActive = true; // For now, consider all users as active
-        
+
         results.push({
           id: user.id,
           type: 'user',
@@ -207,17 +220,22 @@ export async function GET(request: NextRequest) {
 
     // Sort results by relevance (exact matches first, then partial matches)
     results.sort((a, b) => {
-      const aExactMatch = a.name.toLowerCase() === query.toLowerCase() || 
-                         a.email?.toLowerCase() === query.toLowerCase();
-      const bExactMatch = b.name.toLowerCase() === query.toLowerCase() || 
-                         b.email?.toLowerCase() === query.toLowerCase();
-      
+      const aExactMatch =
+        a.name.toLowerCase() === query.toLowerCase() ||
+        a.email?.toLowerCase() === query.toLowerCase();
+      const bExactMatch =
+        b.name.toLowerCase() === query.toLowerCase() ||
+        b.email?.toLowerCase() === query.toLowerCase();
+
       if (aExactMatch && !bExactMatch) return -1;
       if (!aExactMatch && bExactMatch) return 1;
-      
+
       // Then sort by type (students, families, users)
       const typeOrder = { student: 0, family: 1, user: 2 };
-      return typeOrder[a.type as keyof typeof typeOrder] - typeOrder[b.type as keyof typeof typeOrder];
+      return (
+        typeOrder[a.type as keyof typeof typeOrder] -
+        typeOrder[b.type as keyof typeof typeOrder]
+      );
     });
 
     return NextResponse.json({
@@ -226,7 +244,6 @@ export async function GET(request: NextRequest) {
       query,
       filters: { type, status, dateRange }
     });
-
   } catch (error) {
     console.error('Error searching people:', error);
     return NextResponse.json(

@@ -12,10 +12,11 @@ import {
   ActiveTab
 } from '@/components/features/teacher-portal';
 import { useTeacherPortalData } from '@/hooks';
+
 import AcademicLogsManager from '../components/AcademicLogsManager';
-import StudentsView from '../components/StudentsView';
-import CoursesView from '../components/CoursesView';
 import AssignmentsManager from '../components/AssignmentsManager';
+import CoursesView from '../components/CoursesView';
+import StudentsView from '../components/StudentsView';
 
 export default function TeacherDashboard() {
   const {
@@ -55,7 +56,7 @@ export default function TeacherDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className='min-h-screen bg-gray-50'>
       {/* Data Management Component - handles all API calls and state */}
       <TeacherDataInsights
         onUserUpdate={setUser}
@@ -65,33 +66,20 @@ export default function TeacherDashboard() {
       />
 
       {/* Header */}
-      <TeacherHeader
-        user={user}
-        onLogout={handleLogout}
-      />
+      <TeacherHeader user={user} onLogout={handleLogout} />
 
       {/* Navigation */}
-      <TeacherNavigation
-        activeTab={activeTab}
-        onTabChange={setActiveTab}
-      />
+      <TeacherNavigation activeTab={activeTab} onTabChange={setActiveTab} />
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8'>
         {activeTab === 'overview' && (
-          <div className="space-y-8">
+          <div className='space-y-8'>
             {/* Stats Overview */}
-            <TeacherStatsOverview
-              user={user}
-              stats={stats}
-              loading={loading}
-            />
+            <TeacherStatsOverview user={user} stats={stats} loading={loading} />
 
             {/* Quick Actions */}
-            <TeacherQuickActions
-              stats={stats}
-              onTabChange={setActiveTab}
-            />
+            <TeacherQuickActions stats={stats} onTabChange={setActiveTab} />
           </div>
         )}
 

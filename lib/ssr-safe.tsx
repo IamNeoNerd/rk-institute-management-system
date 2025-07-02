@@ -2,14 +2,15 @@
 
 import dynamic from 'next/dynamic';
 import { ComponentType, ReactNode } from 'react';
+
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
 
 /**
  * SSR-Safe Component Wrapper
- * 
+ *
  * This utility provides SSR-safe loading patterns for components that use
  * browser-specific APIs or cause SSR compatibility issues.
- * 
+ *
  * Design Consistency: Maintains the RK Institute design system with
  * consistent loading states and error handling.
  */
@@ -24,11 +25,11 @@ interface SSRSafeWrapperProps {
  * Default loading component that matches RK Institute design system
  */
 const DefaultLoadingFallback = () => (
-  <div className="card animate-fade-in">
-    <div className="flex items-center justify-center py-12">
-      <div className="text-center">
-        <LoadingSpinner size="lg" color="blue" />
-        <p className="mt-4 text-gray-600 font-medium">Loading component...</p>
+  <div className='card animate-fade-in'>
+    <div className='flex items-center justify-center py-12'>
+      <div className='text-center'>
+        <LoadingSpinner size='lg' color='blue' />
+        <p className='mt-4 text-gray-600 font-medium'>Loading component...</p>
       </div>
     </div>
   </div>
@@ -38,17 +39,18 @@ const DefaultLoadingFallback = () => (
  * Default error component that matches RK Institute design system
  */
 const DefaultErrorFallback = () => (
-  <div className="card animate-fade-in">
-    <div className="text-center py-12">
-      <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-        <span className="text-3xl text-red-600">⚠️</span>
+  <div className='card animate-fade-in'>
+    <div className='text-center py-12'>
+      <div className='w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4'>
+        <span className='text-3xl text-red-600'>⚠️</span>
       </div>
-      <h3 className="text-lg font-medium text-gray-900 mb-2">Component Error</h3>
-      <p className="text-gray-600 mb-4">This component failed to load properly.</p>
-      <button
-        onClick={() => window.location.reload()}
-        className="btn-primary"
-      >
+      <h3 className='text-lg font-medium text-gray-900 mb-2'>
+        Component Error
+      </h3>
+      <p className='text-gray-600 mb-4'>
+        This component failed to load properly.
+      </p>
+      <button onClick={() => window.location.reload()} className='btn-primary'>
         Reload Page
       </button>
     </div>
@@ -58,8 +60,8 @@ const DefaultErrorFallback = () => (
 /**
  * SSR-Safe wrapper component for client-side only components
  */
-export function SSRSafeWrapper({ 
-  children, 
+export function SSRSafeWrapper({
+  children,
   fallback = <DefaultLoadingFallback />,
   errorFallback = <DefaultErrorFallback />
 }: SSRSafeWrapperProps) {
@@ -87,7 +89,7 @@ export function withSSRSafe<P extends object>(
   }
 ) {
   const SSRSafeComponent = (props: P) => (
-    <SSRSafeWrapper 
+    <SSRSafeWrapper
       fallback={options?.fallback}
       errorFallback={options?.errorFallback}
     >
@@ -111,7 +113,7 @@ export function createSSRSafeDynamic<P extends object>(
 ) {
   return dynamic(importFn, {
     ssr: false,
-    loading: () => <>{options?.fallback || <DefaultLoadingFallback />}</>,
+    loading: () => <>{options?.fallback || <DefaultLoadingFallback />}</>
   });
 }
 
@@ -120,14 +122,14 @@ export function createSSRSafeDynamic<P extends object>(
  */
 export function useBrowserAPI() {
   const isBrowser = typeof window !== 'undefined';
-  
+
   return {
     isBrowser,
     localStorage: isBrowser ? window.localStorage : null,
     sessionStorage: isBrowser ? window.sessionStorage : null,
     location: isBrowser ? window.location : null,
     navigator: isBrowser ? window.navigator : null,
-    document: isBrowser ? window.document : null,
+    document: isBrowser ? window.document : null
   };
 }
 
@@ -176,7 +178,7 @@ export function safeLocalStorage() {
         console.warn('localStorage.clear failed:', error);
         return false;
       }
-    },
+    }
   };
 }
 
@@ -225,7 +227,7 @@ export function safeSessionStorage() {
         console.warn('sessionStorage.clear failed:', error);
         return false;
       }
-    },
+    }
   };
 }
 

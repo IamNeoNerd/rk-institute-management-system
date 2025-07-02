@@ -1,8 +1,10 @@
 'use client';
 
 import { useEffect } from 'react';
-import { FinancialDataInsightsProps } from './types';
+
 import { useFinancialHubData } from '@/hooks';
+
+import { FinancialDataInsightsProps } from './types';
 
 /**
  * Financial Data Insights Component
@@ -23,7 +25,6 @@ export default function FinancialDataInsights({
   onLoadingChange,
   onErrorChange
 }: FinancialDataInsightsProps) {
-
   const { stats, loading, error } = useFinancialHubData();
 
   // Update parent component state when hook state changes

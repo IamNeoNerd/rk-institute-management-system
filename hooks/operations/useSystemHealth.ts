@@ -1,9 +1,9 @@
 /**
  * System Health Hook
- * 
+ *
  * Specialized hook for monitoring system health and performance metrics.
  * Provides health status analysis and monitoring capabilities.
- * 
+ *
  * Features:
  * - Health status analysis
  * - Performance metrics calculation
@@ -15,6 +15,7 @@
 'use client';
 
 import { useMemo } from 'react';
+
 import { AutomationStatus } from '@/components/features/operations-hub/types';
 
 export interface HealthStatus {
@@ -36,7 +37,7 @@ export interface SystemHealthMetrics {
 export interface UseSystemHealthReturn {
   // Health Metrics
   healthMetrics: SystemHealthMetrics | null;
-  
+
   // Utility Methods
   getHealthStatus: (status: string) => HealthStatus;
   calculatePerformanceScore: (automationStatus: AutomationStatus) => number;
@@ -44,29 +45,30 @@ export interface UseSystemHealthReturn {
   isSystemHealthy: () => boolean;
 }
 
-export function useSystemHealth(automationStatus: AutomationStatus | null): UseSystemHealthReturn {
-  
+export function useSystemHealth(
+  automationStatus: AutomationStatus | null
+): UseSystemHealthReturn {
   // Get health status from string
   const getHealthStatus = (status: string): HealthStatus => {
     const normalizedStatus = status.toLowerCase();
-    
+
     switch (normalizedStatus) {
       case 'running':
       case 'active':
       case 'healthy':
       case 'online':
-        return { 
-          color: 'green', 
-          icon: '✅', 
+        return {
+          color: 'green',
+          icon: '✅',
           label: 'Healthy',
           severity: 'healthy'
         };
       case 'warning':
       case 'degraded':
       case 'slow':
-        return { 
-          color: 'yellow', 
-          icon: '⚠️', 
+        return {
+          color: 'yellow',
+          icon: '⚠️',
           label: 'Warning',
           severity: 'warning'
         };
@@ -75,16 +77,16 @@ export function useSystemHealth(automationStatus: AutomationStatus | null): UseS
       case 'unhealthy':
       case 'offline':
       case 'down':
-        return { 
-          color: 'red', 
-          icon: '❌', 
+        return {
+          color: 'red',
+          icon: '❌',
           label: 'Critical',
           severity: 'critical'
         };
       default:
-        return { 
-          color: 'gray', 
-          icon: '❓', 
+        return {
+          color: 'gray',
+          icon: '❓',
           label: 'Unknown',
           severity: 'unknown'
         };
@@ -94,19 +96,19 @@ export function useSystemHealth(automationStatus: AutomationStatus | null): UseS
   // Calculate performance score (0-100)
   const calculatePerformanceScore = (status: AutomationStatus): number => {
     if (!status) return 0;
-    
+
     let score = 0;
-    
+
     // Engine health (40 points)
     const engineHealth = getHealthStatus(status.systemStatus.automationEngine);
     if (engineHealth.severity === 'healthy') score += 40;
     else if (engineHealth.severity === 'warning') score += 20;
-    
+
     // Scheduler health (40 points)
     const schedulerHealth = getHealthStatus(status.systemStatus.scheduler);
     if (schedulerHealth.severity === 'healthy') score += 40;
     else if (schedulerHealth.severity === 'warning') score += 20;
-    
+
     // Job efficiency (20 points)
     const totalJobs = status.summary.totalScheduledJobs;
     const activeJobs = status.summary.activeScheduledJobs;
@@ -116,7 +118,7 @@ export function useSystemHealth(automationStatus: AutomationStatus | null): UseS
     } else {
       score += 10; // Partial points if no jobs configured
     }
-    
+
     return Math.round(score);
   };
 
@@ -125,11 +127,11 @@ export function useSystemHealth(automationStatus: AutomationStatus | null): UseS
     const now = new Date();
     const lastUpdate = new Date(timestamp);
     const diffMs = now.getTime() - lastUpdate.getTime();
-    
+
     const minutes = Math.floor(diffMs / (1000 * 60));
     const hours = Math.floor(minutes / 60);
     const days = Math.floor(hours / 24);
-    
+
     if (days > 0) return `${days}d ${hours % 24}h`;
     if (hours > 0) return `${hours}h ${minutes % 60}m`;
     return `${minutes}m`;
@@ -138,29 +140,62 @@ export function useSystemHealth(automationStatus: AutomationStatus | null): UseS
   // Calculate health metrics
   const healthMetrics = useMemo((): SystemHealthMetrics | null => {
     if (!automationStatus) return null;
-    
-    const engineHealth = getHealthStatus(automationStatus.systemStatus.automationEngine);
-    const schedulerHealth = getHealthStatus(automationStatus.systemStatus.scheduler);
-    
+
+    const engineHealth = getHealthStatus(
+      automationStatus.systemStatus.automationEngine
+    );
+    const schedulerHealth = getHealthStatus(
+      automationStatus.systemStatus.scheduler
+    );
+
     // Determine overall health
     let overallHealth: HealthStatus;
-    if (engineHealth.severity === 'critical' || schedulerHealth.severity === 'critical') {
-      overallHealth = { color: 'red', icon: '🚨', label: 'System Critical', severity: 'critical' };
-    } else if (engineHealth.severity === 'warning' || schedulerHealth.severity === 'warning') {
-      overallHealth = { color: 'yellow', icon: '⚠️', label: 'System Warning', severity: 'warning' };
-    } else if (engineHealth.severity === 'healthy' && schedulerHealth.severity === 'healthy') {
-      overallHealth = { color: 'green', icon: '✅', label: 'System Healthy', severity: 'healthy' };
+    if (
+      engineHealth.severity === 'critical' ||
+      schedulerHealth.severity === 'critical'
+    ) {
+      overallHealth = {
+        color: 'red',
+        icon: '🚨',
+        label: 'System Critical',
+        severity: 'critical'
+      };
+    } else if (
+      engineHealth.severity === 'warning' ||
+      schedulerHealth.severity === 'warning'
+    ) {
+      overallHealth = {
+        color: 'yellow',
+        icon: '⚠️',
+        label: 'System Warning',
+        severity: 'warning'
+      };
+    } else if (
+      engineHealth.severity === 'healthy' &&
+      schedulerHealth.severity === 'healthy'
+    ) {
+      overallHealth = {
+        color: 'green',
+        icon: '✅',
+        label: 'System Healthy',
+        severity: 'healthy'
+      };
     } else {
-      overallHealth = { color: 'gray', icon: '❓', label: 'System Unknown', severity: 'unknown' };
+      overallHealth = {
+        color: 'gray',
+        icon: '❓',
+        label: 'System Unknown',
+        severity: 'unknown'
+      };
     }
-    
+
     return {
       engineHealth,
       schedulerHealth,
       overallHealth,
       performanceScore: calculatePerformanceScore(automationStatus),
       uptime: formatUptime(automationStatus.systemStatus.timestamp),
-      lastHealthCheck: automationStatus.systemStatus.timestamp,
+      lastHealthCheck: automationStatus.systemStatus.timestamp
     };
   }, [automationStatus]);
 
@@ -173,11 +208,11 @@ export function useSystemHealth(automationStatus: AutomationStatus | null): UseS
   return {
     // Health Metrics
     healthMetrics,
-    
+
     // Utility Methods
     getHealthStatus,
     calculatePerformanceScore,
     formatUptime,
-    isSystemHealthy,
+    isSystemHealthy
   };
 }

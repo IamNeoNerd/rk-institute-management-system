@@ -5,7 +5,15 @@ interface MetricCardProps {
   value: string | number;
   subtitle?: string;
   icon: React.ReactNode;
-  color: 'blue' | 'green' | 'purple' | 'red' | 'yellow' | 'indigo' | 'pink' | 'gray';
+  color:
+    | 'blue'
+    | 'green'
+    | 'purple'
+    | 'red'
+    | 'yellow'
+    | 'indigo'
+    | 'pink'
+    | 'gray';
   trend?: {
     value: number;
     label: string;
@@ -85,13 +93,15 @@ export default function MetricCard({
   const colors = colorClasses[color];
 
   return (
-    <div className={`bg-white p-3 sm:p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow ${className}`}>
-      <div className="flex items-center justify-between">
-        <div className="flex-1 min-w-0">
-          <p className="text-xs sm:text-sm font-medium text-gray-600 mb-1">
+    <div
+      className={`bg-white p-3 sm:p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow ${className}`}
+    >
+      <div className='flex items-center justify-between'>
+        <div className='flex-1 min-w-0'>
+          <p className='text-xs sm:text-sm font-medium text-gray-600 mb-1'>
             {title}
           </p>
-          <p className="text-xl sm:text-3xl font-bold text-gray-900 mb-1 truncate">
+          <p className='text-xl sm:text-3xl font-bold text-gray-900 mb-1 truncate'>
             {value}
           </p>
           {subtitle && (
@@ -100,18 +110,22 @@ export default function MetricCard({
             </p>
           )}
           {trend && (
-            <div className="flex items-center mt-1 sm:mt-2">
-              <span className={`text-xs sm:text-sm font-medium ${trend.isPositive ? colors.trendPositive : colors.trendNegative}`}>
+            <div className='flex items-center mt-1 sm:mt-2'>
+              <span
+                className={`text-xs sm:text-sm font-medium ${trend.isPositive ? colors.trendPositive : colors.trendNegative}`}
+              >
                 {trend.isPositive ? '↗' : '↘'} {Math.abs(trend.value)}%
               </span>
-              <span className="text-xs text-gray-500 ml-1 sm:ml-2 truncate">
+              <span className='text-xs text-gray-500 ml-1 sm:ml-2 truncate'>
                 {trend.label}
               </span>
             </div>
           )}
         </div>
-        <div className={`p-2 sm:p-3 ${colors.iconBg} rounded-lg ml-2 sm:ml-4 flex-shrink-0`}>
-          <span className="text-xl sm:text-2xl">{icon}</span>
+        <div
+          className={`p-2 sm:p-3 ${colors.iconBg} rounded-lg ml-2 sm:ml-4 flex-shrink-0`}
+        >
+          <span className='text-xl sm:text-2xl'>{icon}</span>
         </div>
       </div>
     </div>

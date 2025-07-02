@@ -1,9 +1,9 @@
 /**
  * Teacher Portal Data Hook
- * 
+ *
  * Main custom hook for Teacher Portal data management.
  * Handles user authentication, teacher profile, dashboard stats, and navigation state.
- * 
+ *
  * Features:
  * - User authentication and profile management
  * - Teacher dashboard statistics
@@ -15,7 +15,13 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { User, TeacherProfile, DashboardStats, ActiveTab } from '@/components/features/teacher-portal/types';
+
+import {
+  User,
+  TeacherProfile,
+  DashboardStats,
+  ActiveTab
+} from '@/components/features/teacher-portal/types';
 
 export interface UseTeacherPortalDataReturn {
   // Data State
@@ -23,10 +29,10 @@ export interface UseTeacherPortalDataReturn {
   teacherProfile: TeacherProfile | null;
   stats: DashboardStats;
   loading: boolean;
-  
+
   // UI State
   activeTab: ActiveTab;
-  
+
   // Actions
   setUser: (user: User | null) => void;
   setTeacherProfile: (profile: TeacherProfile | null) => void;
@@ -39,7 +45,9 @@ export interface UseTeacherPortalDataReturn {
 export function useTeacherPortalData(): UseTeacherPortalDataReturn {
   // Data State
   const [user, setUser] = useState<User | null>(null);
-  const [teacherProfile, setTeacherProfile] = useState<TeacherProfile | null>(null);
+  const [teacherProfile, setTeacherProfile] = useState<TeacherProfile | null>(
+    null
+  );
   const [stats, setStats] = useState<DashboardStats>({
     totalStudents: 0,
     totalCourses: 0,
@@ -49,7 +57,7 @@ export function useTeacherPortalData(): UseTeacherPortalDataReturn {
     progressReports: 0
   });
   const [loading, setLoading] = useState(true);
-  
+
   // UI State
   const [activeTab, setActiveTab] = useState<ActiveTab>('overview');
 
@@ -59,8 +67,8 @@ export function useTeacherPortalData(): UseTeacherPortalDataReturn {
       const response = await fetch('/api/auth/logout', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-        },
+          'Content-Type': 'application/json'
+        }
       });
 
       if (response.ok) {
@@ -75,7 +83,7 @@ export function useTeacherPortalData(): UseTeacherPortalDataReturn {
           concerns: 0,
           progressReports: 0
         });
-        
+
         // Redirect to login
         window.location.href = '/login';
       } else {
@@ -96,16 +104,16 @@ export function useTeacherPortalData(): UseTeacherPortalDataReturn {
     teacherProfile,
     stats,
     loading,
-    
+
     // UI State
     activeTab,
-    
+
     // Actions
     setUser,
     setTeacherProfile,
     setStats,
     setLoading,
     setActiveTab,
-    handleLogout,
+    handleLogout
   };
 }

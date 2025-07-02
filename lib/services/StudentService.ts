@@ -1,9 +1,9 @@
 /**
  * Student Service Implementation
- * 
+ *
  * Provides comprehensive student management operations with proper error handling,
  * validation, and business logic encapsulation.
- * 
+ *
  * Features:
  * - Full CRUD operations for students
  * - Family relationship management
@@ -12,7 +12,7 @@
  * - Bulk operations support
  * - Data validation and sanitization
  * - Performance optimized queries
- * 
+ *
  * Business Rules:
  * - Students must belong to a valid family
  * - Student IDs must be unique when provided
@@ -21,7 +21,13 @@
  */
 
 import { Student, Prisma } from '@prisma/client';
-import { BaseService, ServiceResult, PaginatedResult, PaginationOptions } from './BaseService';
+
+import {
+  BaseService,
+  ServiceResult,
+  PaginatedResult,
+  PaginationOptions
+} from './BaseService';
 
 /**
  * Data structure for creating new students
@@ -114,11 +120,15 @@ export interface StudentSearchOptions extends PaginationOptions {
 
 /**
  * Student Service Class
- * 
+ *
  * Handles all student-related operations with proper business logic,
  * validation, and error handling.
  */
-export class StudentService extends BaseService<StudentWithRelations, CreateStudentData, UpdateStudentData> {
+export class StudentService extends BaseService<
+  StudentWithRelations,
+  CreateStudentData,
+  UpdateStudentData
+> {
   constructor() {
     super('Student');
   }
@@ -127,19 +137,27 @@ export class StudentService extends BaseService<StudentWithRelations, CreateStud
    * Create a new student
    * Validates family existence and handles student ID generation
    */
-  async create(data: CreateStudentData): Promise<ServiceResult<StudentWithRelations>> {
+  async create(
+    data: CreateStudentData
+  ): Promise<ServiceResult<StudentWithRelations>> {
     try {
       await this.init();
 
       if (!this.prisma) {
-        return this.handleError(new Error('Database connection not available'), 'create');
+        return this.handleError(
+          new Error('Database connection not available'),
+          'create'
+        );
       }
 
       // Sanitize input data
       const sanitizedData = this.sanitizeInput(data);
 
       // Validate required fields
-      const missingFields = this.validateRequiredFields(sanitizedData, ['name', 'familyId']);
+      const missingFields = this.validateRequiredFields(sanitizedData, [
+        'name',
+        'familyId'
+      ]);
       if (missingFields.length > 0) {
         return {
           success: false,
@@ -147,15 +165,15 @@ export class StudentService extends BaseService<StudentWithRelations, CreateStud
           code: 'VALIDATION_ERROR',
           metadata: {
             timestamp: Date.now(),
-            missingFields,
-          },
+            missingFields
+          }
         };
       }
 
       // Validate family exists
       const family = await this.prisma.family.findUnique({
         where: { id: sanitizedData.familyId },
-        select: { id: true, name: true, discountAmount: true },
+        select: { id: true, name: true, discountAmount: true }
       });
 
       if (!family) {
@@ -165,15 +183,15 @@ export class StudentService extends BaseService<StudentWithRelations, CreateStud
           code: 'FAMILY_NOT_FOUND',
           metadata: {
             timestamp: Date.now(),
-            familyId: sanitizedData.familyId,
-          },
+            familyId: sanitizedData.familyId
+          }
         };
       }
 
       // Check for duplicate student ID if provided
       if (sanitizedData.studentId) {
         const existingStudent = await this.prisma.student.findFirst({
-          where: { studentId: sanitizedData.studentId },
+          where: { studentId: sanitizedData.studentId }
         });
 
         if (existingStudent) {
@@ -183,8 +201,8 @@ export class StudentService extends BaseService<StudentWithRelations, CreateStud
             code: 'DUPLICATE_STUDENT_ID',
             metadata: {
               timestamp: Date.now(),
-              studentId: sanitizedData.studentId,
-            },
+              studentId: sanitizedData.studentId
+            }
           };
         }
       }
@@ -198,15 +216,15 @@ export class StudentService extends BaseService<StudentWithRelations, CreateStud
           enrollmentDate: sanitizedData.enrollmentDate || new Date(),
           familyId: sanitizedData.familyId,
           studentId: sanitizedData.studentId,
-          isActive: true,
+          isActive: true
         },
         include: {
           family: {
             select: {
               id: true,
               name: true,
-              discountAmount: true,
-            },
+              discountAmount: true
+            }
           },
           subscriptions: {
             include: {
@@ -214,32 +232,32 @@ export class StudentService extends BaseService<StudentWithRelations, CreateStud
                 select: {
                   id: true,
                   name: true,
-                  feeStructure: true,
-                },
+                  feeStructure: true
+                }
               },
               service: {
                 select: {
                   id: true,
                   name: true,
-                  feeStructure: true,
-                },
-              },
+                  feeStructure: true
+                }
+              }
             },
             where: {
-              endDate: null, // Only active subscriptions
-            },
+              endDate: null // Only active subscriptions
+            }
           },
           _count: {
             select: {
-              subscriptions: true,
-            },
-          },
-        },
+              subscriptions: true
+            }
+          }
+        }
       });
 
       return this.success(student as StudentWithRelations, {
         operation: 'create',
-        familyName: family.name,
+        familyName: family.name
       });
     } catch (error) {
       return this.handleError(error, 'create', { data });
@@ -254,7 +272,10 @@ export class StudentService extends BaseService<StudentWithRelations, CreateStud
       await this.init();
 
       if (!this.prisma) {
-        return this.handleError(new Error('Database connection not available'), 'findById');
+        return this.handleError(
+          new Error('Database connection not available'),
+          'findById'
+        );
       }
 
       if (!id || typeof id !== 'string') {
@@ -264,8 +285,8 @@ export class StudentService extends BaseService<StudentWithRelations, CreateStud
           code: 'INVALID_ID',
           metadata: {
             timestamp: Date.now(),
-            providedId: id,
-          },
+            providedId: id
+          }
         };
       }
 
@@ -276,8 +297,8 @@ export class StudentService extends BaseService<StudentWithRelations, CreateStud
             select: {
               id: true,
               name: true,
-              discountAmount: true,
-            },
+              discountAmount: true
+            }
           },
           subscriptions: {
             include: {
@@ -285,30 +306,30 @@ export class StudentService extends BaseService<StudentWithRelations, CreateStud
                 select: {
                   id: true,
                   name: true,
-                  feeStructure: true,
-                },
+                  feeStructure: true
+                }
               },
               service: {
                 select: {
                   id: true,
                   name: true,
-                  feeStructure: true,
-                },
-              },
+                  feeStructure: true
+                }
+              }
             },
             where: {
-              endDate: null, // Only active subscriptions
+              endDate: null // Only active subscriptions
             },
             orderBy: {
-              startDate: 'desc',
-            },
+              startDate: 'desc'
+            }
           },
           _count: {
             select: {
-              subscriptions: true,
-            },
-          },
-        },
+              subscriptions: true
+            }
+          }
+        }
       });
 
       if (!student) {
@@ -318,14 +339,14 @@ export class StudentService extends BaseService<StudentWithRelations, CreateStud
           code: 'STUDENT_NOT_FOUND',
           metadata: {
             timestamp: Date.now(),
-            studentId: id,
-          },
+            studentId: id
+          }
         };
       }
 
       return this.success(student as StudentWithRelations, {
         operation: 'findById',
-        includeRelations: true,
+        includeRelations: true
       });
     } catch (error) {
       return this.handleError(error, 'findById', { id });
@@ -335,12 +356,18 @@ export class StudentService extends BaseService<StudentWithRelations, CreateStud
   /**
    * Update an existing student
    */
-  async update(id: string, data: UpdateStudentData): Promise<ServiceResult<StudentWithRelations>> {
+  async update(
+    id: string,
+    data: UpdateStudentData
+  ): Promise<ServiceResult<StudentWithRelations>> {
     try {
       await this.init();
 
       if (!this.prisma) {
-        return this.handleError(new Error('Database connection not available'), 'update');
+        return this.handleError(
+          new Error('Database connection not available'),
+          'update'
+        );
       }
 
       // Validate ID
@@ -351,8 +378,8 @@ export class StudentService extends BaseService<StudentWithRelations, CreateStud
           code: 'INVALID_ID',
           metadata: {
             timestamp: Date.now(),
-            providedId: id,
-          },
+            providedId: id
+          }
         };
       }
 
@@ -362,7 +389,7 @@ export class StudentService extends BaseService<StudentWithRelations, CreateStud
       // Check if student exists
       const existingStudent = await this.prisma.student.findUnique({
         where: { id },
-        select: { id: true, studentId: true },
+        select: { id: true, studentId: true }
       });
 
       if (!existingStudent) {
@@ -372,18 +399,21 @@ export class StudentService extends BaseService<StudentWithRelations, CreateStud
           code: 'STUDENT_NOT_FOUND',
           metadata: {
             timestamp: Date.now(),
-            studentId: id,
-          },
+            studentId: id
+          }
         };
       }
 
       // Check for duplicate student ID if being updated
-      if (sanitizedData.studentId && sanitizedData.studentId !== existingStudent.studentId) {
+      if (
+        sanitizedData.studentId &&
+        sanitizedData.studentId !== existingStudent.studentId
+      ) {
         const duplicateStudent = await this.prisma.student.findFirst({
           where: {
             studentId: sanitizedData.studentId,
-            id: { not: id },
-          },
+            id: { not: id }
+          }
         });
 
         if (duplicateStudent) {
@@ -393,8 +423,8 @@ export class StudentService extends BaseService<StudentWithRelations, CreateStud
             code: 'DUPLICATE_STUDENT_ID',
             metadata: {
               timestamp: Date.now(),
-              studentId: sanitizedData.studentId,
-            },
+              studentId: sanitizedData.studentId
+            }
           };
         }
       }
@@ -408,8 +438,8 @@ export class StudentService extends BaseService<StudentWithRelations, CreateStud
             select: {
               id: true,
               name: true,
-              discountAmount: true,
-            },
+              discountAmount: true
+            }
           },
           subscriptions: {
             include: {
@@ -417,35 +447,35 @@ export class StudentService extends BaseService<StudentWithRelations, CreateStud
                 select: {
                   id: true,
                   name: true,
-                  feeStructure: true,
-                },
+                  feeStructure: true
+                }
               },
               service: {
                 select: {
                   id: true,
                   name: true,
-                  feeStructure: true,
-                },
-              },
+                  feeStructure: true
+                }
+              }
             },
             where: {
-              endDate: null,
+              endDate: null
             },
             orderBy: {
-              startDate: 'desc',
-            },
+              startDate: 'desc'
+            }
           },
           _count: {
             select: {
-              subscriptions: true,
-            },
-          },
-        },
+              subscriptions: true
+            }
+          }
+        }
       });
 
       return this.success(updatedStudent as StudentWithRelations, {
         operation: 'update',
-        updatedFields: Object.keys(sanitizedData),
+        updatedFields: Object.keys(sanitizedData)
       });
     } catch (error) {
       return this.handleError(error, 'update', { id, data });
@@ -460,7 +490,10 @@ export class StudentService extends BaseService<StudentWithRelations, CreateStud
       await this.init();
 
       if (!this.prisma) {
-        return this.handleError(new Error('Database connection not available'), 'delete');
+        return this.handleError(
+          new Error('Database connection not available'),
+          'delete'
+        );
       }
 
       if (!id || typeof id !== 'string') {
@@ -470,15 +503,15 @@ export class StudentService extends BaseService<StudentWithRelations, CreateStud
           code: 'INVALID_ID',
           metadata: {
             timestamp: Date.now(),
-            providedId: id,
-          },
+            providedId: id
+          }
         };
       }
 
       // Check if student exists
       const existingStudent = await this.prisma.student.findUnique({
         where: { id },
-        select: { id: true, name: true, isActive: true },
+        select: { id: true, name: true, isActive: true }
       });
 
       if (!existingStudent) {
@@ -488,8 +521,8 @@ export class StudentService extends BaseService<StudentWithRelations, CreateStud
           code: 'STUDENT_NOT_FOUND',
           metadata: {
             timestamp: Date.now(),
-            studentId: id,
-          },
+            studentId: id
+          }
         };
       }
 
@@ -500,21 +533,21 @@ export class StudentService extends BaseService<StudentWithRelations, CreateStud
           code: 'ALREADY_INACTIVE',
           metadata: {
             timestamp: Date.now(),
-            studentId: id,
-          },
+            studentId: id
+          }
         };
       }
 
       // Soft delete by setting isActive to false
       await this.prisma.student.update({
         where: { id },
-        data: { isActive: false },
+        data: { isActive: false }
       });
 
       return this.success(true, {
         operation: 'delete',
         studentName: existingStudent.name,
-        deletionType: 'soft',
+        deletionType: 'soft'
       });
     } catch (error) {
       return this.handleError(error, 'delete', { id });
@@ -524,12 +557,17 @@ export class StudentService extends BaseService<StudentWithRelations, CreateStud
   /**
    * Find multiple students with advanced search and pagination
    */
-  async findMany(options?: StudentSearchOptions): Promise<ServiceResult<PaginatedResult<StudentWithRelations>>> {
+  async findMany(
+    options?: StudentSearchOptions
+  ): Promise<ServiceResult<PaginatedResult<StudentWithRelations>>> {
     try {
       await this.init();
 
       if (!this.prisma) {
-        return this.handleError(new Error('Database connection not available'), 'findMany');
+        return this.handleError(
+          new Error('Database connection not available'),
+          'findMany'
+        );
       }
 
       const validatedOptions = this.validatePaginationOptions(options);
@@ -537,14 +575,14 @@ export class StudentService extends BaseService<StudentWithRelations, CreateStud
 
       // Build where clause
       const where: Prisma.StudentWhereInput = {
-        isActive: searchOptions?.includeInactive ? undefined : true,
+        isActive: searchOptions?.includeInactive ? undefined : true
       };
 
       // Add search filters
       if (searchOptions?.nameSearch) {
         where.name = {
           contains: searchOptions.nameSearch,
-          mode: 'insensitive',
+          mode: 'insensitive'
         };
       }
 
@@ -560,7 +598,10 @@ export class StudentService extends BaseService<StudentWithRelations, CreateStud
         where.isActive = searchOptions.isActive;
       }
 
-      if (searchOptions?.enrollmentDateFrom || searchOptions?.enrollmentDateTo) {
+      if (
+        searchOptions?.enrollmentDateFrom ||
+        searchOptions?.enrollmentDateTo
+      ) {
         where.enrollmentDate = {};
         if (searchOptions.enrollmentDateFrom) {
           where.enrollmentDate.gte = searchOptions.enrollmentDateFrom;
@@ -579,15 +620,16 @@ export class StudentService extends BaseService<StudentWithRelations, CreateStud
           take: validatedOptions.limit,
           where,
           orderBy: {
-            [validatedOptions.sortBy || 'createdAt']: validatedOptions.sortOrder || 'desc',
+            [validatedOptions.sortBy || 'createdAt']:
+              validatedOptions.sortOrder || 'desc'
           },
           include: {
             family: {
               select: {
                 id: true,
                 name: true,
-                discountAmount: true,
-              },
+                discountAmount: true
+              }
             },
             subscriptions: {
               include: {
@@ -595,46 +637,50 @@ export class StudentService extends BaseService<StudentWithRelations, CreateStud
                   select: {
                     id: true,
                     name: true,
-                    feeStructure: true,
-                  },
+                    feeStructure: true
+                  }
                 },
                 service: {
                   select: {
                     id: true,
                     name: true,
-                    feeStructure: true,
-                  },
-                },
+                    feeStructure: true
+                  }
+                }
               },
               where: {
-                endDate: null,
+                endDate: null
               },
               orderBy: {
-                startDate: 'desc',
-              },
+                startDate: 'desc'
+              }
             },
             _count: {
               select: {
-                subscriptions: true,
-              },
-            },
-          },
+                subscriptions: true
+              }
+            }
+          }
         }),
-        this.prisma.student.count({ where }),
+        this.prisma.student.count({ where })
       ]);
 
       const queryTime = Date.now() - queryStartTime;
-      const paginationMetadata = this.buildPaginationMetadata(total, validatedOptions, queryTime);
+      const paginationMetadata = this.buildPaginationMetadata(
+        total,
+        validatedOptions,
+        queryTime
+      );
 
       const result: PaginatedResult<StudentWithRelations> = {
         data: students as StudentWithRelations[],
-        ...paginationMetadata,
+        ...paginationMetadata
       };
 
       return this.success(result, {
         operation: 'findMany',
         appliedFilters: searchOptions,
-        queryTime,
+        queryTime
       });
     } catch (error) {
       return this.handleError(error, 'findMany', { options });
@@ -644,12 +690,17 @@ export class StudentService extends BaseService<StudentWithRelations, CreateStud
   /**
    * Find students by family ID
    */
-  async findByFamilyId(familyId: string): Promise<ServiceResult<StudentWithRelations[]>> {
+  async findByFamilyId(
+    familyId: string
+  ): Promise<ServiceResult<StudentWithRelations[]>> {
     try {
       await this.init();
 
       if (!this.prisma) {
-        return this.handleError(new Error('Database connection not available'), 'findByFamilyId');
+        return this.handleError(
+          new Error('Database connection not available'),
+          'findByFamilyId'
+        );
       }
 
       if (!familyId || typeof familyId !== 'string') {
@@ -659,23 +710,23 @@ export class StudentService extends BaseService<StudentWithRelations, CreateStud
           code: 'INVALID_ID',
           metadata: {
             timestamp: Date.now(),
-            providedId: familyId,
-          },
+            providedId: familyId
+          }
         };
       }
 
       const students = await this.prisma.student.findMany({
-        where: { 
-          familyId, 
-          isActive: true 
+        where: {
+          familyId,
+          isActive: true
         },
         include: {
           family: {
             select: {
               id: true,
               name: true,
-              discountAmount: true,
-            },
+              discountAmount: true
+            }
           },
           subscriptions: {
             include: {
@@ -683,39 +734,39 @@ export class StudentService extends BaseService<StudentWithRelations, CreateStud
                 select: {
                   id: true,
                   name: true,
-                  feeStructure: true,
-                },
+                  feeStructure: true
+                }
               },
               service: {
                 select: {
                   id: true,
                   name: true,
-                  feeStructure: true,
-                },
-              },
+                  feeStructure: true
+                }
+              }
             },
             where: {
-              endDate: null,
+              endDate: null
             },
             orderBy: {
-              startDate: 'desc',
-            },
+              startDate: 'desc'
+            }
           },
           _count: {
             select: {
-              subscriptions: true,
-            },
-          },
+              subscriptions: true
+            }
+          }
         },
         orderBy: {
-          name: 'asc',
-        },
+          name: 'asc'
+        }
       });
 
       return this.success(students as StudentWithRelations[], {
         operation: 'findByFamilyId',
         familyId,
-        count: students.length,
+        count: students.length
       });
     } catch (error) {
       return this.handleError(error, 'findByFamilyId', { familyId });
@@ -725,39 +776,45 @@ export class StudentService extends BaseService<StudentWithRelations, CreateStud
   /**
    * Get student statistics
    */
-  async getStatistics(): Promise<ServiceResult<{
-    total: number;
-    active: number;
-    inactive: number;
-    byGrade: Record<string, number>;
-    recentEnrollments: number;
-  }>> {
+  async getStatistics(): Promise<
+    ServiceResult<{
+      total: number;
+      active: number;
+      inactive: number;
+      byGrade: Record<string, number>;
+      recentEnrollments: number;
+    }>
+  > {
     try {
       await this.init();
 
       if (!this.prisma) {
-        return this.handleError(new Error('Database connection not available'), 'getStatistics');
+        return this.handleError(
+          new Error('Database connection not available'),
+          'getStatistics'
+        );
       }
 
       const thirtyDaysAgo = new Date();
       thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
-      const [total, active, inactive, gradeStats, recentEnrollments] = await Promise.all([
-        this.prisma.student.count(),
-        this.prisma.student.count({ where: { isActive: true } }),
-        this.prisma.student.count({ where: { isActive: false } }),
-        this.prisma.student.groupBy({
-          by: ['grade'],
-          _count: { grade: true },
-          where: { isActive: true },
-        }),
-        this.prisma.student.count({
-          where: {
-            enrollmentDate: { gte: thirtyDaysAgo },
-            isActive: true,
-          },
-        }),
-      ]);
+      const [total, active, inactive, gradeStats, recentEnrollments] =
+        await Promise.all([
+          this.prisma.student.count(),
+          this.prisma.student.count({ where: { isActive: true } }),
+          this.prisma.student.count({ where: { isActive: false } }),
+          this.prisma.student.groupBy({
+            by: ['grade'],
+            _count: { grade: true },
+            where: { isActive: true }
+          }),
+          this.prisma.student.count({
+            where: {
+              enrollmentDate: { gte: thirtyDaysAgo },
+              isActive: true
+            }
+          })
+        ]);
 
       const byGrade: Record<string, number> = {};
       gradeStats.forEach(stat => {
@@ -771,12 +828,12 @@ export class StudentService extends BaseService<StudentWithRelations, CreateStud
         active,
         inactive,
         byGrade,
-        recentEnrollments,
+        recentEnrollments
       };
 
       return this.success(statistics, {
         operation: 'getStatistics',
-        calculatedAt: new Date().toISOString(),
+        calculatedAt: new Date().toISOString()
       });
     } catch (error) {
       return this.handleError(error, 'getStatistics');

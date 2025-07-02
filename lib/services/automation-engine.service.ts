@@ -4,7 +4,9 @@
  */
 
 import { PrismaClient } from '@prisma/client';
+
 import { FeeCalculationService } from '../feeCalculationService';
+
 import NotificationService from './notification.service';
 import { reportStorageService, ReportData } from './report-storage.service';
 
@@ -46,18 +48,23 @@ export class AutomationEngineService {
   /**
    * Execute monthly billing job for all active students
    */
-  async executeMonthlyBillingJob(month?: number, year?: number): Promise<MonthlyBillingJobResult> {
+  async executeMonthlyBillingJob(
+    month?: number,
+    year?: number
+  ): Promise<MonthlyBillingJobResult> {
     const startTime = Date.now();
     const timestamp = new Date();
     const jobId = `monthly-billing-${timestamp.getTime()}`;
-    
+
     // Use current month/year if not provided
     const targetDate = new Date();
     const targetMonth = month || targetDate.getMonth() + 1;
     const targetYear = year || targetDate.getFullYear();
 
-    console.log(`[Automation Engine] Starting monthly billing job for ${targetMonth}/${targetYear}`);
-    
+    console.log(
+      `[Automation Engine] Starting monthly billing job for ${targetMonth}/${targetYear}`
+    );
+
     // Track job execution
     const jobLog: JobExecutionLog = {
       id: jobId,
@@ -101,35 +108,41 @@ export class AutomationEngineService {
       });
 
       result.totalStudents = activeStudents.length;
-      console.log(`[Automation Engine] Found ${activeStudents.length} active students`);
+      console.log(
+        `[Automation Engine] Found ${activeStudents.length} active students`
+      );
 
       // Process each student
       for (const student of activeStudents) {
         try {
           // Check if bill already exists for this month/year
-          const existingAllocation = await prisma.studentFeeAllocation.findUnique({
-            where: {
-              studentId_month_year: {
-                studentId: student.id,
-                month: new Date(targetYear, targetMonth - 1, 1),
-                year: targetYear
+          const existingAllocation =
+            await prisma.studentFeeAllocation.findUnique({
+              where: {
+                studentId_month_year: {
+                  studentId: student.id,
+                  month: new Date(targetYear, targetMonth - 1, 1),
+                  year: targetYear
+                }
               }
-            }
-          });
+            });
 
           if (existingAllocation) {
-            console.log(`[Automation Engine] Bill already exists for ${student.name} (${targetMonth}/${targetYear})`);
+            console.log(
+              `[Automation Engine] Bill already exists for ${student.name} (${targetMonth}/${targetYear})`
+            );
             result.successfulBills++;
             continue;
           }
 
           // Calculate fees for the student
-          const feeCalculation = await FeeCalculationService.calculateStudentMonthlyFee(student.id);
-          
+          const feeCalculation =
+            await FeeCalculationService.calculateStudentMonthlyFee(student.id);
+
           // Create fee allocation
           const monthDate = new Date(targetYear, targetMonth - 1, 1);
           const dueDate = new Date(targetYear, targetMonth - 1, 15); // 15th of the month
-          
+
           await prisma.studentFeeAllocation.create({
             data: {
               studentId: student.id,
@@ -157,8 +170,9 @@ export class AutomationEngineService {
           }
 
           result.successfulBills++;
-          console.log(`[Automation Engine] ✅ Created bill for ${student.name}: ₹${feeCalculation.netMonthlyFee}`);
-
+          console.log(
+            `[Automation Engine] ✅ Created bill for ${student.name}: ₹${feeCalculation.netMonthlyFee}`
+          );
         } catch (error) {
           const errorMessage = `Failed to process ${student.name}: ${error instanceof Error ? error.message : 'Unknown error'}`;
           result.errors.push(errorMessage);
@@ -176,22 +190,24 @@ export class AutomationEngineService {
       jobLog.result = result;
       jobLog.errors = result.errors;
 
-      console.log(`[Automation Engine] Monthly billing job completed:`);
+      console.log('[Automation Engine] Monthly billing job completed:');
       console.log(`  - Total Students: ${result.totalStudents}`);
       console.log(`  - Successful: ${result.successfulBills}`);
       console.log(`  - Failed: ${result.failedBills}`);
       console.log(`  - Execution Time: ${result.executionTime}ms`);
-
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error';
       result.errors.push(errorMessage);
       result.executionTime = Date.now() - startTime;
-      
+
       jobLog.status = 'FAILED';
       jobLog.endTime = new Date();
       jobLog.errors = [errorMessage];
-      
-      console.error(`[Automation Engine] Monthly billing job failed: ${errorMessage}`);
+
+      console.error(
+        `[Automation Engine] Monthly billing job failed: ${errorMessage}`
+      );
     }
 
     return result;
@@ -223,8 +239,12 @@ export class AutomationEngineService {
     }
   }
 
-  async executeFeeReminderJob(reminderType: string): Promise<MonthlyBillingJobResult> {
-    console.log(`[Automation Engine] Fee reminder job (${reminderType}) - placeholder implementation`);
+  async executeFeeReminderJob(
+    reminderType: string
+  ): Promise<MonthlyBillingJobResult> {
+    console.log(
+      `[Automation Engine] Fee reminder job (${reminderType}) - placeholder implementation`
+    );
 
     return {
       success: true,
@@ -240,12 +260,16 @@ export class AutomationEngineService {
   /**
    * Generate automated report
    */
-  async generateAutomatedReport(reportType: 'monthly' | 'weekly' | 'outstanding'): Promise<MonthlyBillingJobResult> {
+  async generateAutomatedReport(
+    reportType: 'monthly' | 'weekly' | 'outstanding'
+  ): Promise<MonthlyBillingJobResult> {
     const startTime = Date.now();
     const timestamp = new Date();
     const jobId = `report-${reportType}-${timestamp.getTime()}`;
 
-    console.log(`[Automation Engine] Starting automated report generation (${reportType})`);
+    console.log(
+      `[Automation Engine] Starting automated report generation (${reportType})`
+    );
 
     // Track job execution
     const jobLog: JobExecutionLog = {
@@ -294,10 +318,19 @@ export class AutomationEngineService {
 
       // Store the generated report
       const executionTime = Date.now() - startTime;
-      await reportStorageService.updateReportData(reportId, reportData, executionTime);
+      await reportStorageService.updateReportData(
+        reportId,
+        reportData,
+        executionTime
+      );
 
-      console.log(`[Automation Engine] ✅ Generated and stored ${reportType} report: ${reportId}`);
-      console.log(`[Automation Engine] Report data:`, JSON.stringify(reportData, null, 2));
+      console.log(
+        `[Automation Engine] ✅ Generated and stored ${reportType} report: ${reportId}`
+      );
+      console.log(
+        '[Automation Engine] Report data:',
+        JSON.stringify(reportData, null, 2)
+      );
 
       result.success = true;
       result.successfulBills = 1; // One report generated
@@ -308,10 +341,12 @@ export class AutomationEngineService {
       jobLog.endTime = new Date();
       jobLog.result = { reportType, reportData };
 
-      console.log(`[Automation Engine] Report generation (${reportType}) completed in ${result.executionTime}ms`);
-
+      console.log(
+        `[Automation Engine] Report generation (${reportType}) completed in ${result.executionTime}ms`
+      );
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error';
       result.errors.push(errorMessage);
       result.executionTime = Date.now() - startTime;
 
@@ -319,7 +354,9 @@ export class AutomationEngineService {
       jobLog.endTime = new Date();
       jobLog.errors = [errorMessage];
 
-      console.error(`[Automation Engine] Report generation (${reportType}) failed: ${errorMessage}`);
+      console.error(
+        `[Automation Engine] Report generation (${reportType}) failed: ${errorMessage}`
+      );
     }
 
     return result;
@@ -383,7 +420,10 @@ export class AutomationEngineService {
       pendingAllocations: totalAllocations - paidAllocations,
       overdueAllocations,
       newStudents,
-      collectionRate: totalAllocations > 0 ? (paidAllocations / totalAllocations * 100).toFixed(2) : 0
+      collectionRate:
+        totalAllocations > 0
+          ? ((paidAllocations / totalAllocations) * 100).toFixed(2)
+          : 0
     };
   }
 
@@ -408,14 +448,20 @@ export class AutomationEngineService {
       })
     ]);
 
-    const totalWeeklyRevenue = weeklyPayments.reduce((sum, payment) => sum + payment.amount, 0);
+    const totalWeeklyRevenue = weeklyPayments.reduce(
+      (sum, payment) => sum + payment.amount,
+      0
+    );
 
     return {
       period: `${startOfWeek.toLocaleDateString()} - ${now.toLocaleDateString()}`,
       totalRevenue: totalWeeklyRevenue,
       paymentCount: weeklyPayments.length,
       newAllocations: weeklyAllocations,
-      averagePayment: weeklyPayments.length > 0 ? (totalWeeklyRevenue / weeklyPayments.length).toFixed(2) : 0
+      averagePayment:
+        weeklyPayments.length > 0
+          ? (totalWeeklyRevenue / weeklyPayments.length).toFixed(2)
+          : 0
     };
   }
 
@@ -442,31 +488,46 @@ export class AutomationEngineService {
       }
     });
 
-    const totalOutstanding = overdueAllocations.reduce((sum, allocation) => sum + allocation.netAmount, 0);
+    const totalOutstanding = overdueAllocations.reduce(
+      (sum, allocation) => sum + allocation.netAmount,
+      0
+    );
 
-    const familyBreakdown = overdueAllocations.reduce((acc, allocation) => {
-      const familyName = allocation.student.family.name;
-      if (!acc[familyName]) {
-        acc[familyName] = { amount: 0, count: 0, oldestDue: allocation.dueDate };
-      }
-      acc[familyName].amount += allocation.netAmount;
-      acc[familyName].count += 1;
-      if (allocation.dueDate! < acc[familyName].oldestDue!) {
-        acc[familyName].oldestDue = allocation.dueDate;
-      }
-      return acc;
-    }, {} as Record<string, { amount: number; count: number; oldestDue: Date | null }>);
+    const familyBreakdown = overdueAllocations.reduce(
+      (acc, allocation) => {
+        const familyName = allocation.student.family.name;
+        if (!acc[familyName]) {
+          acc[familyName] = {
+            amount: 0,
+            count: 0,
+            oldestDue: allocation.dueDate
+          };
+        }
+        acc[familyName].amount += allocation.netAmount;
+        acc[familyName].count += 1;
+        if (allocation.dueDate! < acc[familyName].oldestDue!) {
+          acc[familyName].oldestDue = allocation.dueDate;
+        }
+        return acc;
+      },
+      {} as Record<
+        string,
+        { amount: number; count: number; oldestDue: Date | null }
+      >
+    );
 
     return {
       totalOutstanding,
       overdueCount: overdueAllocations.length,
       affectedFamilies: Object.keys(familyBreakdown).length,
-      familyBreakdown: Object.entries(familyBreakdown).map(([family, data]) => ({
-        family,
-        amount: data.amount,
-        allocationsCount: data.count,
-        oldestDueDate: data.oldestDue
-      })).sort((a, b) => b.amount - a.amount)
+      familyBreakdown: Object.entries(familyBreakdown)
+        .map(([family, data]) => ({
+          family,
+          amount: data.amount,
+          allocationsCount: data.count,
+          oldestDueDate: data.oldestDue
+        }))
+        .sort((a, b) => b.amount - a.amount)
     };
   }
 }

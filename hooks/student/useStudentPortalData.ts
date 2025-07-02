@@ -1,9 +1,9 @@
 /**
  * Student Portal Data Hook
- * 
+ *
  * Main custom hook for Student Portal data management.
  * Handles user authentication, student profile, dashboard stats, and navigation state.
- * 
+ *
  * Features:
  * - User authentication and profile management
  * - Student dashboard statistics
@@ -15,7 +15,13 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { User, StudentProfile, DashboardStats, ActiveTab } from '@/components/features/student-portal/types';
+
+import {
+  User,
+  StudentProfile,
+  DashboardStats,
+  ActiveTab
+} from '@/components/features/student-portal/types';
 
 export interface UseStudentPortalDataReturn {
   // Data State
@@ -23,10 +29,10 @@ export interface UseStudentPortalDataReturn {
   studentProfile: StudentProfile | null;
   stats: DashboardStats;
   loading: boolean;
-  
+
   // UI State
   activeTab: ActiveTab;
-  
+
   // Actions
   setUser: (user: User | null) => void;
   setStudentProfile: (profile: StudentProfile | null) => void;
@@ -39,7 +45,9 @@ export interface UseStudentPortalDataReturn {
 export function useStudentPortalData(): UseStudentPortalDataReturn {
   // Data State
   const [user, setUser] = useState<User | null>(null);
-  const [studentProfile, setStudentProfile] = useState<StudentProfile | null>(null);
+  const [studentProfile, setStudentProfile] = useState<StudentProfile | null>(
+    null
+  );
   const [stats, setStats] = useState<DashboardStats>({
     totalCourses: 0,
     totalServices: 0,
@@ -49,7 +57,7 @@ export function useStudentPortalData(): UseStudentPortalDataReturn {
     achievements: 0
   });
   const [loading, setLoading] = useState(true);
-  
+
   // UI State
   const [activeTab, setActiveTab] = useState<ActiveTab>('overview');
 
@@ -59,8 +67,8 @@ export function useStudentPortalData(): UseStudentPortalDataReturn {
       const response = await fetch('/api/auth/logout', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-        },
+          'Content-Type': 'application/json'
+        }
       });
 
       if (response.ok) {
@@ -75,7 +83,7 @@ export function useStudentPortalData(): UseStudentPortalDataReturn {
           academicLogs: 0,
           achievements: 0
         });
-        
+
         // Redirect to login
         window.location.href = '/login';
       } else {
@@ -96,16 +104,16 @@ export function useStudentPortalData(): UseStudentPortalDataReturn {
     studentProfile,
     stats,
     loading,
-    
+
     // UI State
     activeTab,
-    
+
     // Actions
     setUser,
     setStudentProfile,
     setStats,
     setLoading,
     setActiveTab,
-    handleLogout,
+    handleLogout
   };
 }

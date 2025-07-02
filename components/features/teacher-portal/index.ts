@@ -1,9 +1,9 @@
 /**
  * Teacher Portal Feature Components - Export Index
- * 
+ *
  * Centralized exports for all Teacher Portal feature components following
  * the three-principle methodology for component breakdown.
- * 
+ *
  * Components:
  * - TeacherHeader: Header with branding, welcome message, and logout
  * - TeacherNavigation: Tab-based navigation for portal sections

@@ -1,9 +1,9 @@
 /**
  * Operations Hub Feature Components - Type Definitions
- * 
+ *
  * Defines TypeScript interfaces for the Operations Hub feature components
  * following the three-principle methodology for component breakdown.
- * 
+ *
  * Design Consistency: Maintains RK Institute professional standards
  */
 
@@ -44,7 +44,10 @@ export interface ScheduledJob {
 export type ActiveTab = 'overview' | 'reminders' | 'reports';
 export type ReminderType = 'early' | 'due' | 'overdue';
 export type ReportType = 'weekly' | 'monthly' | 'outstanding';
-export type JobType = 'monthly-billing' | `fee-reminder-${ReminderType}` | `report-${ReportType}`;
+export type JobType =
+  | 'monthly-billing'
+  | `fee-reminder-${ReminderType}`
+  | `report-${ReportType}`;
 
 // Component Props Interfaces
 export interface OperationsHubProps {

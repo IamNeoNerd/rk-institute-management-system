@@ -1,9 +1,17 @@
 'use client';
 
 import Link from 'next/link';
-import { PeopleStatsOverviewProps } from './types';
-import { PageHeader, Grid, StatsCard, ErrorState, StatsCardSkeleton } from '@/components/ui';
+
+import {
+  PageHeader,
+  Grid,
+  StatsCard,
+  ErrorState,
+  StatsCardSkeleton
+} from '@/components/ui';
 import { ProfessionalIcon } from '@/components/ui/icons/ProfessionalIconSystem';
+
+import { PeopleStatsOverviewProps } from './types';
 
 /**
  * People Stats Overview Component
@@ -24,25 +32,25 @@ export default function PeopleStatsOverview({
   error
 }: PeopleStatsOverviewProps) {
   return (
-    <div className="space-y-6">
+    <div className='space-y-6'>
       {/* Header */}
       <PageHeader
-        title="People Management"
-        subtitle="Unified hub for managing students, families, and users"
+        title='People Management'
+        subtitle='Unified hub for managing students, families, and users'
         actions={
           <>
             <Link
-              href="/admin/people/search"
-              className="bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 shadow-lg hover:shadow-xl flex items-center gap-2"
+              href='/admin/people/search'
+              className='bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 shadow-lg hover:shadow-xl flex items-center gap-2'
             >
-              <ProfessionalIcon name="search" size={16} />
+              <ProfessionalIcon name='search' size={16} />
               Advanced Search
             </Link>
             <Link
-              href="/admin/people/reports"
-              className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 shadow-lg hover:shadow-xl flex items-center gap-2"
+              href='/admin/people/reports'
+              className='bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 shadow-lg hover:shadow-xl flex items-center gap-2'
             >
-              <ProfessionalIcon name="analytics" size={16} />
+              <ProfessionalIcon name='analytics' size={16} />
               People Reports
             </Link>
           </>
@@ -71,42 +79,46 @@ export default function PeopleStatsOverview({
 
       {/* Quick Stats Summary */}
       {stats && !loading && (
-        <Grid cols={6} responsive={{ sm: 2, md: 3, lg: 6 }} className="animate-fade-in">
+        <Grid
+          cols={6}
+          responsive={{ sm: 2, md: 3, lg: 6 }}
+          className='animate-fade-in'
+        >
           <StatsCard
-            title="Total Students"
+            title='Total Students'
             value={stats.totalStudents}
-            color="blue"
-            icon="👥"
+            color='blue'
+            icon='👥'
           />
           <StatsCard
-            title="Total Families"
+            title='Total Families'
             value={stats.totalFamilies}
-            color="green"
-            icon="👨‍👩‍👧‍👦"
+            color='green'
+            icon='👨‍👩‍👧‍👦'
           />
           <StatsCard
-            title="Total Users"
+            title='Total Users'
             value={stats.totalUsers}
-            color="purple"
-            icon="👤"
+            color='purple'
+            icon='👤'
           />
           <StatsCard
-            title="Active Students"
+            title='Active Students'
             value={stats.activeStudents}
-            color="orange"
-            icon="🎓"
+            color='orange'
+            icon='🎓'
           />
           <StatsCard
-            title="Recent Enrollments"
+            title='Recent Enrollments'
             value={stats.recentEnrollments}
-            color="teal"
-            icon="📝"
+            color='teal'
+            icon='📝'
           />
           <StatsCard
-            title="Pending Users"
+            title='Pending Users'
             value={stats.pendingUsers}
-            color="red"
-            icon="⏳"
+            color='red'
+            icon='⏳'
           />
         </Grid>
       )}

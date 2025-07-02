@@ -1,6 +1,5 @@
 'use client';
 
-import AdminLayout from '@/components/layout/AdminLayout';
 import {
   OperationsStatsOverview,
   OperationsAutomationControl,
@@ -12,6 +11,7 @@ import {
   ReminderType,
   ReportType
 } from '@/components/features/operations-hub';
+import AdminLayout from '@/components/layout/AdminLayout';
 import { useOperationsHubData } from '@/hooks';
 
 export default function OperationsPage() {
@@ -31,12 +31,12 @@ export default function OperationsPage() {
     <AdminLayout>
       {/* Data Management Component - handles all API calls and state */}
       <OperationsDataInsights
-        onAutomationStatusUpdate={(status) => {}}
+        onAutomationStatusUpdate={status => {}}
         onLoadingChange={() => {}}
         onErrorChange={() => {}}
       />
 
-      <div className="space-y-8">
+      <div className='space-y-8'>
         {/* Header, Navigation, and System Status */}
         <OperationsStatsOverview
           automationStatus={automationStatus}

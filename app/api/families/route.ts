@@ -1,5 +1,5 @@
-import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
+import { NextResponse } from 'next/server';
 
 const prisma = new PrismaClient();
 
@@ -12,27 +12,27 @@ export async function GET() {
           select: {
             id: true,
             name: true,
-            grade: true,
-          },
+            grade: true
+          }
         },
         users: {
           select: {
             id: true,
             name: true,
             email: true,
-            role: true,
-          },
+            role: true
+          }
         },
         _count: {
           select: {
             students: true,
-            users: true,
-          },
-        },
+            users: true
+          }
+        }
       },
       orderBy: {
-        createdAt: 'desc',
-      },
+        createdAt: 'desc'
+      }
     });
 
     return NextResponse.json(families);
@@ -66,31 +66,31 @@ export async function POST(request: Request) {
         address: address || null,
         phone: phone || null,
         email: email || null,
-        discountAmount: discountAmount ? parseFloat(discountAmount) : 0,
+        discountAmount: discountAmount ? parseFloat(discountAmount) : 0
       },
       include: {
         students: {
           select: {
             id: true,
             name: true,
-            grade: true,
-          },
+            grade: true
+          }
         },
         users: {
           select: {
             id: true,
             name: true,
             email: true,
-            role: true,
-          },
+            role: true
+          }
         },
         _count: {
           select: {
             students: true,
-            users: true,
-          },
-        },
-      },
+            users: true
+          }
+        }
+      }
     });
 
     return NextResponse.json(family, { status: 201 });

@@ -1,9 +1,9 @@
 /**
  * Base Service Class
- * 
+ *
  * Abstract base class providing standardized CRUD operations, error handling,
  * and validation patterns for all service layer implementations.
- * 
+ *
  * Design Principles:
  * - Consistent error handling across all services
  * - Type-safe operations with proper TypeScript support
@@ -11,7 +11,7 @@
  * - Pagination support for large datasets
  * - Comprehensive logging and monitoring integration
  * - Database connection management and optimization
- * 
+ *
  * Features:
  * - Generic CRUD operations (Create, Read, Update, Delete)
  * - Pagination with configurable options
@@ -20,14 +20,14 @@
  * - Performance monitoring and logging
  * - Input validation and sanitization
  * - Transaction support for complex operations
- * 
+ *
  * Usage:
  * ```typescript
  * class StudentService extends BaseService<Student, CreateStudentData, UpdateStudentData> {
  *   constructor() {
  *     super('Student');
  *   }
- *   
+ *
  *   async create(data: CreateStudentData): Promise<ServiceResult<Student>> {
  *     // Implementation
  *   }
@@ -120,12 +120,16 @@ export interface TransactionOptions {
   /** Transaction timeout in milliseconds */
   timeout?: number;
   /** Isolation level for the transaction */
-  isolationLevel?: 'ReadUncommitted' | 'ReadCommitted' | 'RepeatableRead' | 'Serializable';
+  isolationLevel?:
+    | 'ReadUncommitted'
+    | 'ReadCommitted'
+    | 'RepeatableRead'
+    | 'Serializable';
 }
 
 /**
  * Abstract base service class providing standardized CRUD operations
- * 
+ *
  * @template T - The entity type (e.g., Student, Course)
  * @template CreateData - The data structure for creating new entities
  * @template UpdateData - The data structure for updating existing entities
@@ -155,8 +159,13 @@ export abstract class BaseService<T, CreateData, UpdateData> {
         this.prisma = await getPrismaClient();
         this.startTime = Date.now();
       } catch (error) {
-        console.error(`Failed to initialize Prisma client for ${this.modelName}:`, error);
-        throw new Error(`Database connection failed for ${this.modelName} service`);
+        console.error(
+          `Failed to initialize Prisma client for ${this.modelName}:`,
+          error
+        );
+        throw new Error(
+          `Database connection failed for ${this.modelName} service`
+        );
       }
     }
   }
@@ -189,18 +198,30 @@ export abstract class BaseService<T, CreateData, UpdateData> {
    * Abstract method: Find multiple entities with pagination
    * Must be implemented by concrete service classes
    */
-  abstract findMany(options?: PaginationOptions): Promise<ServiceResult<PaginatedResult<T>>>;
+  abstract findMany(
+    options?: PaginationOptions
+  ): Promise<ServiceResult<PaginatedResult<T>>>;
 
   /**
    * Execute a database operation within a transaction
    * Provides automatic rollback on errors
    */
   protected async withTransaction<R>(
-    operation: (prisma: Omit<PrismaClient, '$connect' | '$disconnect' | '$on' | '$transaction' | '$use' | '$extends'>) => Promise<R>,
+    operation: (
+      prisma: Omit<
+        PrismaClient,
+        | '$connect'
+        | '$disconnect'
+        | '$on'
+        | '$transaction'
+        | '$use'
+        | '$extends'
+      >
+    ) => Promise<R>,
     options?: TransactionOptions
   ): Promise<R> {
     await this.init();
-    
+
     if (!this.prisma) {
       throw new Error('Database connection not available');
     }
@@ -208,7 +229,7 @@ export abstract class BaseService<T, CreateData, UpdateData> {
     try {
       return await this.prisma.$transaction(operation, {
         timeout: options?.timeout || 30000, // 30 seconds default
-        isolationLevel: options?.isolationLevel,
+        isolationLevel: options?.isolationLevel
       });
     } catch (error) {
       console.error(`Transaction failed for ${this.modelName}:`, error);
@@ -220,16 +241,20 @@ export abstract class BaseService<T, CreateData, UpdateData> {
    * Standardized error handling for service operations
    * Provides consistent error format and logging
    */
-  protected handleError(error: any, operation: string, context?: Record<string, any>): ServiceResult<any> {
+  protected handleError(
+    error: any,
+    operation: string,
+    context?: Record<string, any>
+  ): ServiceResult<any> {
     const duration = Date.now() - this.startTime;
-    
+
     // Log the error with context
     console.error(`${this.modelName} ${operation} error:`, {
       error: error.message || error,
       code: error.code,
       context,
       duration,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
 
     // Determine error code and message based on error type
@@ -259,8 +284,8 @@ export abstract class BaseService<T, CreateData, UpdateData> {
       metadata: {
         timestamp: Date.now(),
         duration,
-        context,
-      },
+        context
+      }
     };
   }
 
@@ -268,29 +293,34 @@ export abstract class BaseService<T, CreateData, UpdateData> {
    * Create a successful service result
    * Provides consistent success format
    */
-  protected success<U>(data: U, metadata?: Record<string, any>): ServiceResult<U> {
+  protected success<U>(
+    data: U,
+    metadata?: Record<string, any>
+  ): ServiceResult<U> {
     const duration = Date.now() - this.startTime;
-    
+
     return {
       success: true,
       data,
       metadata: {
         timestamp: Date.now(),
         duration,
-        context: metadata,
-      },
+        context: metadata
+      }
     };
   }
 
   /**
    * Validate pagination options and apply defaults
    */
-  protected validatePaginationOptions(options?: PaginationOptions): PaginationOptions {
+  protected validatePaginationOptions(
+    options?: PaginationOptions
+  ): PaginationOptions {
     const defaults: PaginationOptions = {
       page: 1,
       limit: 10,
       sortBy: 'createdAt',
-      sortOrder: 'desc',
+      sortOrder: 'desc'
     };
 
     if (!options) return defaults;
@@ -301,7 +331,7 @@ export abstract class BaseService<T, CreateData, UpdateData> {
       sortBy: options.sortBy || defaults.sortBy,
       sortOrder: options.sortOrder || defaults.sortOrder,
       search: options.search,
-      filters: options.filters,
+      filters: options.filters
     };
   }
 
@@ -314,7 +344,7 @@ export abstract class BaseService<T, CreateData, UpdateData> {
     queryTime?: number
   ): Omit<PaginatedResult<any>, 'data'> {
     const totalPages = Math.ceil(total / options.limit);
-    
+
     return {
       total,
       page: options.page,
@@ -327,9 +357,9 @@ export abstract class BaseService<T, CreateData, UpdateData> {
         appliedFilters: options.filters,
         sortConfig: {
           field: options.sortBy || 'createdAt',
-          order: options.sortOrder || 'desc',
-        },
-      },
+          order: options.sortOrder || 'desc'
+        }
+      }
     };
   }
 
@@ -340,11 +370,11 @@ export abstract class BaseService<T, CreateData, UpdateData> {
     if (typeof input === 'string') {
       return input.trim().substring(0, 1000); // Limit string length
     }
-    
+
     if (Array.isArray(input)) {
       return input.map(item => this.sanitizeInput(item));
     }
-    
+
     if (input && typeof input === 'object') {
       const sanitized: any = {};
       for (const [key, value] of Object.entries(input)) {
@@ -355,49 +385,61 @@ export abstract class BaseService<T, CreateData, UpdateData> {
       }
       return sanitized;
     }
-    
+
     return input;
   }
 
   /**
    * Validate required fields in input data
    */
-  protected validateRequiredFields(data: any, requiredFields: string[]): string[] {
+  protected validateRequiredFields(
+    data: any,
+    requiredFields: string[]
+  ): string[] {
     const missingFields: string[] = [];
-    
+
     for (const field of requiredFields) {
-      if (data[field] === undefined || data[field] === null || data[field] === '') {
+      if (
+        data[field] === undefined ||
+        data[field] === null ||
+        data[field] === ''
+      ) {
         missingFields.push(field);
       }
     }
-    
+
     return missingFields;
   }
 
   /**
    * Get service health status
    */
-  public async getHealthStatus(): Promise<ServiceResult<{
-    status: 'healthy' | 'unhealthy';
-    details: Record<string, any>;
-  }>> {
+  public async getHealthStatus(): Promise<
+    ServiceResult<{
+      status: 'healthy' | 'unhealthy';
+      details: Record<string, any>;
+    }>
+  > {
     try {
       await this.init();
-      
+
       if (!this.prisma) {
-        return this.handleError(new Error('Database connection not available'), 'health check');
+        return this.handleError(
+          new Error('Database connection not available'),
+          'health check'
+        );
       }
 
       // Test database connection
       await this.prisma.$queryRaw`SELECT 1`;
-      
+
       return this.success({
         status: 'healthy' as const,
         details: {
           modelName: this.modelName,
           connectionStatus: 'connected',
-          timestamp: new Date().toISOString(),
-        },
+          timestamp: new Date().toISOString()
+        }
       });
     } catch (error) {
       return this.handleError(error, 'health check');

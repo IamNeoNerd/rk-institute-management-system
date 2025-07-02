@@ -13,21 +13,20 @@
  */
 
 import { vi } from 'vitest';
+
 import {
   isFeatureEnabled,
   getAllFeatureFlags,
   getFeatureFlagAnalytics,
   validateFeatureFlags,
 } from '@/lib/config/FeatureFlags';
-
-import { BaseService, ServiceResult } from '@/lib/services/BaseService';
-import { StudentService } from '@/lib/services/StudentService';
-
 import {
   moduleRegistry,
   registerModules,
   getModuleStatus,
 } from '@/lib/modules';
+import { BaseService, ServiceResult } from '@/lib/services/BaseService';
+import { StudentService } from '@/lib/services/StudentService';
 
 // Mock Prisma for testing
 vi.mock('@/lib/database', () => ({
@@ -119,8 +118,38 @@ describe('Phase 1 Implementation Integration Tests', () => {
   describe('Service Layer Implementation', () => {
     let studentService: StudentService;
 
-    beforeEach(() => {
+    beforeEach(async () => {
       studentService = new StudentService();
+
+      // Setup Prisma mocks for StudentService operations
+      const { getPrismaClient } = await import('@/lib/database');
+      const mockPrisma = {
+        student: {
+          findMany: vi.fn().mockResolvedValue([
+            {
+              id: 'student-1',
+              name: 'Test Student',
+              studentId: 'STU-001',
+              grade: 'Grade 10',
+              isActive: true,
+              family: { id: 'family-1', name: 'Test Family' },
+              subscriptions: [],
+              _count: { subscriptions: 0 },
+            },
+          ]),
+          count: vi.fn().mockResolvedValue(1),
+          findUnique: vi.fn().mockResolvedValue(null),
+          create: vi.fn().mockRejectedValue(new Error('Validation error')),
+        },
+        family: {
+          findUnique: vi.fn().mockResolvedValue(null),
+        },
+        $connect: vi.fn().mockResolvedValue(undefined),
+        $disconnect: vi.fn().mockResolvedValue(undefined),
+        $queryRaw: vi.fn().mockResolvedValue([{ result: 1 }]),
+      };
+
+      vi.mocked(getPrismaClient).mockResolvedValue(mockPrisma as any);
     });
 
     test('should create StudentService instance', () => {

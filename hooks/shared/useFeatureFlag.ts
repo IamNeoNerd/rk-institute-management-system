@@ -1,9 +1,9 @@
 /**
  * Feature Flag React Hooks
- * 
+ *
  * Provides React integration for the feature flag system with SSR-safe implementation.
  * Enables conditional rendering and feature gating at the component level.
- * 
+ *
  * Design Features:
  * - SSR-safe implementation with proper hydration
  * - Type-safe feature flag access
@@ -11,7 +11,7 @@
  * - Development tools integration
  * - Conditional rendering helpers
  * - Feature flag analytics tracking
- * 
+ *
  * Usage Examples:
  * - Basic: const isEnabled = useFeatureFlag('realTimeCollaboration');
  * - Multiple: const flags = useFeatureFlags(['caching', 'darkMode']);
@@ -22,14 +22,15 @@
 'use client';
 
 import React, { useCallback, useMemo, useEffect, useState } from 'react';
-import { 
-  isFeatureEnabled, 
-  getAllFeatureFlags, 
+
+import {
+  isFeatureEnabled,
+  getAllFeatureFlags,
   getEnabledFeatures,
   getFeatureFlagAnalytics,
   validateFeatureFlags,
   FeatureFlags,
-  FeatureFlagAnalytics 
+  FeatureFlagAnalytics
 } from '@/lib/config/FeatureFlags';
 
 /**
@@ -38,12 +39,12 @@ import {
  */
 export function useFeatureFlag(feature: keyof FeatureFlags): boolean {
   const [isClient, setIsClient] = useState(false);
-  
+
   // Ensure we're on the client side for hydration safety
   useEffect(() => {
     setIsClient(true);
   }, []);
-  
+
   const isEnabled = useMemo(() => {
     if (!isClient) {
       // Return false during SSR to prevent hydration mismatches
@@ -51,14 +52,16 @@ export function useFeatureFlag(feature: keyof FeatureFlags): boolean {
     }
     return isFeatureEnabled(feature);
   }, [feature, isClient]);
-  
+
   // Development mode logging
   useEffect(() => {
     if (process.env.NODE_ENV === 'development' && isClient) {
-      console.debug(`🚩 Feature flag '${feature}': ${isEnabled ? 'enabled' : 'disabled'}`);
+      console.debug(
+        `🚩 Feature flag '${feature}': ${isEnabled ? 'enabled' : 'disabled'}`
+      );
     }
   }, [feature, isEnabled, isClient]);
-  
+
   return isEnabled;
 }
 
@@ -66,28 +69,36 @@ export function useFeatureFlag(feature: keyof FeatureFlags): boolean {
  * Hook to check multiple feature flags at once
  * Returns an object with feature names as keys and boolean values
  */
-export function useFeatureFlags(features: (keyof FeatureFlags)[]): Record<string, boolean> {
+export function useFeatureFlags(
+  features: (keyof FeatureFlags)[]
+): Record<string, boolean> {
   const [isClient, setIsClient] = useState(false);
-  
+
   useEffect(() => {
     setIsClient(true);
   }, []);
-  
+
   const flags = useMemo(() => {
     if (!isClient) {
       // Return all false during SSR
-      return features.reduce((acc, feature) => {
-        acc[feature] = false;
-        return acc;
-      }, {} as Record<string, boolean>);
+      return features.reduce(
+        (acc, feature) => {
+          acc[feature] = false;
+          return acc;
+        },
+        {} as Record<string, boolean>
+      );
     }
-    
-    return features.reduce((acc, feature) => {
-      acc[feature] = isFeatureEnabled(feature);
-      return acc;
-    }, {} as Record<string, boolean>);
+
+    return features.reduce(
+      (acc, feature) => {
+        acc[feature] = isFeatureEnabled(feature);
+        return acc;
+      },
+      {} as Record<string, boolean>
+    );
   }, [features, isClient]);
-  
+
   return flags;
 }
 
@@ -98,14 +109,14 @@ export function useFeatureFlags(features: (keyof FeatureFlags)[]): Record<string
 export function useAllFeatureFlags(): FeatureFlags | null {
   const [isClient, setIsClient] = useState(false);
   const [flags, setFlags] = useState<FeatureFlags | null>(null);
-  
+
   useEffect(() => {
     setIsClient(true);
     if (typeof window !== 'undefined') {
       setFlags(getAllFeatureFlags());
     }
   }, []);
-  
+
   return isClient ? flags : null;
 }
 
@@ -115,15 +126,17 @@ export function useAllFeatureFlags(): FeatureFlags | null {
  */
 export function useEnabledFeatures(): Partial<FeatureFlags> {
   const [isClient, setIsClient] = useState(false);
-  const [enabledFeatures, setEnabledFeatures] = useState<Partial<FeatureFlags>>({});
-  
+  const [enabledFeatures, setEnabledFeatures] = useState<Partial<FeatureFlags>>(
+    {}
+  );
+
   useEffect(() => {
     setIsClient(true);
     if (typeof window !== 'undefined') {
       setEnabledFeatures(getEnabledFeatures());
     }
   }, []);
-  
+
   return isClient ? enabledFeatures : {};
 }
 
@@ -134,14 +147,14 @@ export function useEnabledFeatures(): Partial<FeatureFlags> {
 export function useFeatureFlagAnalytics(): FeatureFlagAnalytics | null {
   const [isClient, setIsClient] = useState(false);
   const [analytics, setAnalytics] = useState<FeatureFlagAnalytics | null>(null);
-  
+
   useEffect(() => {
     setIsClient(true);
     if (typeof window !== 'undefined') {
       setAnalytics(getFeatureFlagAnalytics());
     }
   }, []);
-  
+
   return isClient ? analytics : null;
 }
 
@@ -149,17 +162,23 @@ export function useFeatureFlagAnalytics(): FeatureFlagAnalytics | null {
  * Hook for feature flag validation
  * Checks for configuration errors and warnings
  */
-export function useFeatureFlagValidation(): { valid: boolean; errors: string[] } | null {
+export function useFeatureFlagValidation(): {
+  valid: boolean;
+  errors: string[];
+} | null {
   const [isClient, setIsClient] = useState(false);
-  const [validation, setValidation] = useState<{ valid: boolean; errors: string[] } | null>(null);
-  
+  const [validation, setValidation] = useState<{
+    valid: boolean;
+    errors: string[];
+  } | null>(null);
+
   useEffect(() => {
     setIsClient(true);
     if (typeof window !== 'undefined') {
       setValidation(validateFeatureFlags());
     }
   }, []);
-  
+
   return isClient ? validation : null;
 }
 
@@ -184,10 +203,10 @@ export function withFeatureFlag<T extends object>(
 
     return React.createElement(WrappedComponent, props);
   };
-  
+
   // Set display name for debugging
   FeatureGatedComponent.displayName = `withFeatureFlag(${feature})(${WrappedComponent.displayName || WrappedComponent.name || 'Component'})`;
-  
+
   return FeatureGatedComponent;
 }
 
@@ -201,13 +220,17 @@ interface FeatureGateProps {
   fallback?: React.ReactNode;
 }
 
-export function FeatureGate({ feature, children, fallback = null }: FeatureGateProps): React.ReactElement | null {
+export function FeatureGate({
+  feature,
+  children,
+  fallback = null
+}: FeatureGateProps): React.ReactElement | null {
   const isEnabled = useFeatureFlag(feature);
-  
+
   if (!isEnabled) {
     return fallback as React.ReactElement | null;
   }
-  
+
   return children as React.ReactElement;
 }
 
@@ -220,13 +243,16 @@ interface FeatureDisabledProps {
   children: React.ReactNode;
 }
 
-export function FeatureDisabled({ feature, children }: FeatureDisabledProps): React.ReactElement | null {
+export function FeatureDisabled({
+  feature,
+  children
+}: FeatureDisabledProps): React.ReactElement | null {
   const isEnabled = useFeatureFlag(feature);
-  
+
   if (isEnabled) {
     return null;
   }
-  
+
   return children as React.ReactElement;
 }
 
@@ -244,7 +270,7 @@ export function useFeatureFlagDebug(): {
   const enabledFeatures = useEnabledFeatures();
   const analytics = useFeatureFlagAnalytics();
   const validation = useFeatureFlagValidation();
-  
+
   const logAllFlags = useCallback(() => {
     if (process.env.NODE_ENV === 'development' && allFlags) {
       console.group('🚩 All Feature Flags');
@@ -254,7 +280,7 @@ export function useFeatureFlagDebug(): {
       console.groupEnd();
     }
   }, [allFlags]);
-  
+
   const logEnabledFlags = useCallback(() => {
     if (process.env.NODE_ENV === 'development') {
       console.group('🚀 Enabled Features');
@@ -264,18 +290,20 @@ export function useFeatureFlagDebug(): {
       console.groupEnd();
     }
   }, [enabledFeatures]);
-  
+
   const logAnalytics = useCallback(() => {
     if (process.env.NODE_ENV === 'development' && analytics) {
       console.group('📊 Feature Flag Analytics');
       console.log(`Total flags: ${analytics.totalFlags}`);
-      console.log(`Enabled: ${analytics.enabledFlags} (${analytics.enabledPercentage}%)`);
+      console.log(
+        `Enabled: ${analytics.enabledFlags} (${analytics.enabledPercentage}%)`
+      );
       console.log(`Disabled: ${analytics.disabledFlags}`);
       console.log('By category:', analytics.flagsByCategory);
       console.groupEnd();
     }
   }, [analytics]);
-  
+
   const logValidation = useCallback(() => {
     if (process.env.NODE_ENV === 'development' && validation) {
       if (validation.valid) {
@@ -287,7 +315,7 @@ export function useFeatureFlagDebug(): {
       }
     }
   }, [validation]);
-  
+
   return {
     logAllFlags,
     logEnabledFlags,
@@ -305,25 +333,28 @@ export function useFeatureFlagPerformance(): {
   getUsageStats: () => Record<string, number>;
 } {
   const [usageStats, setUsageStats] = useState<Record<string, number>>({});
-  
+
   const trackFeatureUsage = useCallback((feature: keyof FeatureFlags) => {
     setUsageStats(prev => ({
       ...prev,
       [feature]: (prev[feature] || 0) + 1
     }));
   }, []);
-  
+
   const getUsageStats = useCallback(() => {
     return { ...usageStats };
   }, [usageStats]);
-  
+
   // Log usage stats in development
   useEffect(() => {
-    if (process.env.NODE_ENV === 'development' && Object.keys(usageStats).length > 0) {
+    if (
+      process.env.NODE_ENV === 'development' &&
+      Object.keys(usageStats).length > 0
+    ) {
       console.debug('📈 Feature flag usage stats:', usageStats);
     }
   }, [usageStats]);
-  
+
   return {
     trackFeatureUsage,
     getUsageStats
@@ -334,7 +365,9 @@ export function useFeatureFlagPerformance(): {
  * Type guard for feature flag keys
  * Ensures type safety when working with dynamic feature names
  */
-export function isValidFeatureFlag(feature: string): feature is keyof FeatureFlags {
+export function isValidFeatureFlag(
+  feature: string
+): feature is keyof FeatureFlags {
   const allFlags = getAllFeatureFlags();
   return feature in allFlags;
 }
@@ -361,6 +394,8 @@ if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
     validate: validateFeatureFlags,
     isEnabled: isFeatureEnabled
   };
-  
-  console.log('🚩 Feature flag debugging tools available at window.__featureFlags');
+
+  console.log(
+    '🚩 Feature flag debugging tools available at window.__featureFlags'
+  );
 }

@@ -39,7 +39,12 @@ export interface DashboardStats {
   achievements: number;
 }
 
-export type ActiveTab = 'overview' | 'my-courses' | 'my-fees' | 'assignments' | 'academic-logs';
+export type ActiveTab =
+  | 'overview'
+  | 'my-courses'
+  | 'my-fees'
+  | 'assignments'
+  | 'academic-logs';
 
 // Component Props Interfaces
 export interface StudentPortalProps {
@@ -88,7 +93,7 @@ export interface StudentDataInsightsProps {
 export interface NavigationTab {
   id: ActiveTab;
   name: string;
-  icon: string;
+  icon: string | React.ReactNode;
 }
 
 // Quick Action Interface

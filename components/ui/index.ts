@@ -1,10 +1,10 @@
 /**
  * UI Component Library - Export Index
- * 
+ *
  * Centralized exports for all UI components following the three-principle
  * methodology for component extraction. Provides consistent design system
  * components across the entire application.
- * 
+ *
  * Architecture:
  * - Base components (Card, Button, Input, Layout)
  * - State components (Loading, Empty, Error, Success)
@@ -17,11 +17,7 @@ export { Card, StatsCard, QuickActionCard } from './Card';
 export type { CardProps, StatsCardProps, QuickActionCardProps } from './Card';
 
 // Mobile-Optimized Components
-export {
-  CompactStatsCard,
-  CondensedMetricCard,
-  ListCard
-} from './MobileCards';
+export { CompactStatsCard, CondensedMetricCard, ListCard } from './MobileCards';
 export type {
   CompactStatsCardProps,
   CondensedMetricCardProps,
@@ -58,35 +54,39 @@ export type {
 } from './Layout';
 
 // State Components
-export { 
-  LoadingState, 
-  EmptyState, 
-  ErrorState, 
+export {
+  LoadingState,
+  EmptyState,
+  ErrorState,
   SuccessState,
   Skeleton,
   SkeletonGroup,
   DataListSkeleton,
   StatsCardSkeleton
 } from './States';
-export type { 
-  LoadingStateProps, 
-  EmptyStateProps, 
-  ErrorStateProps, 
+export type {
+  LoadingStateProps,
+  EmptyStateProps,
+  ErrorStateProps,
   SuccessStateProps,
   SkeletonProps,
   SkeletonGroupProps
 } from './States';
 
+// Modal Components
+export { Modal, ConfirmationModal } from './Modal';
+export type { ModalProps, ConfirmationModalProps } from './Modal';
+
+// Table Components
+export { Table } from './Table';
+export type { TableProps, TableColumn } from './Table';
+
 // Performance Optimized Components (Phase F)
 export { default as OptimizedStatsCard } from './OptimizedStatsCard';
 export { default as OptimizedHeader } from './OptimizedHeader';
 export { default as OptimizedNavigation } from './OptimizedNavigation';
-export type {
-  OptimizedStatsCardProps
-} from './OptimizedStatsCard';
-export type {
-  OptimizedHeaderProps
-} from './OptimizedHeader';
+export type { OptimizedStatsCardProps } from './OptimizedStatsCard';
+export type { OptimizedHeaderProps } from './OptimizedHeader';
 export type {
   OptimizedNavigationProps,
   NavigationTab

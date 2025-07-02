@@ -1,5 +1,5 @@
-import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
+import { NextResponse } from 'next/server';
 
 const prisma = new PrismaClient();
 
@@ -14,27 +14,27 @@ export async function GET(request: Request) {
     const status = searchParams.get('status');
 
     const whereClause: any = {};
-    
+
     if (studentId) {
       whereClause.studentId = studentId;
     }
-    
+
     if (familyId) {
       whereClause.student = {
         familyId: familyId
       };
     }
-    
+
     if (month) {
       const yearValue = year ? parseInt(year) : new Date().getFullYear();
       const monthDate = new Date(yearValue, parseInt(month) - 1, 1);
       whereClause.month = monthDate;
     }
-    
+
     if (year) {
       whereClause.year = parseInt(year);
     }
-    
+
     if (status) {
       whereClause.status = status;
     }
@@ -47,10 +47,10 @@ export async function GET(request: Request) {
             family: {
               select: {
                 id: true,
-                name: true,
-              },
-            },
-          },
+                name: true
+              }
+            }
+          }
         },
         payment: {
           select: {
@@ -58,15 +58,11 @@ export async function GET(request: Request) {
             amount: true,
             paymentDate: true,
             paymentMethod: true,
-            reference: true,
-          },
-        },
+            reference: true
+          }
+        }
       },
-      orderBy: [
-        { year: 'desc' },
-        { month: 'desc' },
-        { dueDate: 'asc' },
-      ],
+      orderBy: [{ year: 'desc' }, { month: 'desc' }, { dueDate: 'asc' }]
     });
 
     return NextResponse.json(allocations);
@@ -109,8 +105,8 @@ export async function POST(request: Request) {
             service: { include: { feeStructure: true } }
           }
         },
-        family: true,
-      },
+        family: true
+      }
     });
 
     const allocations = [];
@@ -118,9 +114,12 @@ export async function POST(request: Request) {
     for (const student of students) {
       if (student.subscriptions.length > 0) {
         // Calculate fees for this student
-        const { FeeCalculationService } = await import('@/lib/feeCalculationService');
-        const calculation = await FeeCalculationService.calculateStudentMonthlyFee(student.id);
-        
+        const { FeeCalculationService } = await import(
+          '@/lib/feeCalculationService'
+        );
+        const calculation =
+          await FeeCalculationService.calculateStudentMonthlyFee(student.id);
+
         // Create or update fee allocation
         const monthDate = new Date(parseInt(year), parseInt(month) - 1, 1);
 
@@ -129,14 +128,14 @@ export async function POST(request: Request) {
             studentId_month_year: {
               studentId: student.id,
               month: monthDate,
-              year: parseInt(year),
-            },
+              year: parseInt(year)
+            }
           },
           update: {
             grossAmount: calculation.grossMonthlyFee,
             discountAmount: calculation.totalDiscount,
             netAmount: calculation.netMonthlyFee,
-            dueDate: new Date(parseInt(year), parseInt(month) - 1, 15), // 15th of the month
+            dueDate: new Date(parseInt(year), parseInt(month) - 1, 15) // 15th of the month
           },
           create: {
             studentId: student.id,
@@ -146,7 +145,7 @@ export async function POST(request: Request) {
             discountAmount: calculation.totalDiscount,
             netAmount: calculation.netMonthlyFee,
             dueDate: new Date(parseInt(year), parseInt(month) - 1, 15),
-            status: 'PENDING',
+            status: 'PENDING'
           },
           include: {
             student: {
@@ -154,12 +153,12 @@ export async function POST(request: Request) {
                 family: {
                   select: {
                     id: true,
-                    name: true,
-                  },
-                },
-              },
-            },
-          },
+                    name: true
+                  }
+                }
+              }
+            }
+          }
         });
 
         allocations.push(allocation);

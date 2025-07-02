@@ -1,9 +1,9 @@
 /**
  * Student Financials Hook
- * 
+ *
  * Specialized hook for managing student financial data including fees,
  * payments, outstanding dues, and payment history.
- * 
+ *
  * Features:
  * - Fee allocation and billing information
  * - Payment history and receipts
@@ -57,7 +57,7 @@ export interface UseStudentFinancialsReturn {
   paymentSummary: PaymentSummary | null;
   loading: boolean;
   error: string | null;
-  
+
   // Actions
   fetchFeeAllocations: () => Promise<void>;
   fetchPayments: () => Promise<void>;
@@ -70,7 +70,9 @@ export function useStudentFinancials(): UseStudentFinancialsReturn {
   // Data State
   const [feeAllocations, setFeeAllocations] = useState<FeeAllocation[]>([]);
   const [payments, setPayments] = useState<Payment[]>([]);
-  const [paymentSummary, setPaymentSummary] = useState<PaymentSummary | null>(null);
+  const [paymentSummary, setPaymentSummary] = useState<PaymentSummary | null>(
+    null
+  );
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -79,10 +81,10 @@ export function useStudentFinancials(): UseStudentFinancialsReturn {
     try {
       setLoading(true);
       setError(null);
-      
+
       const response = await fetch('/api/students/fee-allocations');
       const data = await response.json();
-      
+
       if (data.success) {
         setFeeAllocations(data.allocations);
       } else {
@@ -101,10 +103,10 @@ export function useStudentFinancials(): UseStudentFinancialsReturn {
     try {
       setLoading(true);
       setError(null);
-      
+
       const response = await fetch('/api/students/payments');
       const data = await response.json();
-      
+
       if (data.success) {
         setPayments(data.payments);
       } else {
@@ -123,10 +125,10 @@ export function useStudentFinancials(): UseStudentFinancialsReturn {
     try {
       setLoading(true);
       setError(null);
-      
+
       const response = await fetch('/api/students/payment-summary');
       const data = await response.json();
-      
+
       if (data.success) {
         setPaymentSummary(data.summary);
       } else {
@@ -143,8 +145,10 @@ export function useStudentFinancials(): UseStudentFinancialsReturn {
   // Download receipt
   const downloadReceipt = useCallback(async (paymentId: string) => {
     try {
-      const response = await fetch(`/api/students/payments/${paymentId}/receipt`);
-      
+      const response = await fetch(
+        `/api/students/payments/${paymentId}/receipt`
+      );
+
       if (response.ok) {
         const blob = await response.blob();
         const url = window.URL.createObjectURL(blob);
@@ -168,7 +172,7 @@ export function useStudentFinancials(): UseStudentFinancialsReturn {
   const downloadFeeStructure = useCallback(async () => {
     try {
       const response = await fetch('/api/students/fee-structure');
-      
+
       if (response.ok) {
         const blob = await response.blob();
         const url = window.URL.createObjectURL(blob);
@@ -195,12 +199,12 @@ export function useStudentFinancials(): UseStudentFinancialsReturn {
     paymentSummary,
     loading,
     error,
-    
+
     // Actions
     fetchFeeAllocations,
     fetchPayments,
     fetchPaymentSummary,
     downloadReceipt,
-    downloadFeeStructure,
+    downloadFeeStructure
   };
 }

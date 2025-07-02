@@ -1,9 +1,9 @@
 /**
  * Student Portal Feature Components - Export Index
- * 
+ *
  * Centralized exports for all Student Portal feature components following
  * the three-principle methodology for component breakdown.
- * 
+ *
  * Components:
  * - StudentHeader: Header with branding, welcome message, and logout
  * - StudentNavigation: Tab-based navigation for portal sections

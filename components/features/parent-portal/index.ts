@@ -1,9 +1,9 @@
 /**
  * Parent Portal Feature Components - Export Index
- * 
+ *
  * Centralized exports for all Parent Portal feature components following
  * the three-principle methodology for component breakdown.
- * 
+ *
  * Components:
  * - ParentHeader: Header with branding, welcome message, and logout
  * - ParentChildSelector: Child selection dropdown for multi-child families

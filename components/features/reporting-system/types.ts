@@ -1,9 +1,9 @@
 /**
  * Advanced Reporting System - Type Definitions
- * 
+ *
  * Comprehensive reporting system for RK Institute Management System.
  * Leverages existing architecture and components for rapid development.
- * 
+ *
  * Features:
  * - Academic progress reports
  * - Financial summary reports
@@ -33,7 +33,7 @@ export interface ReportParameter {
   type: 'text' | 'number' | 'date' | 'select' | 'multiselect' | 'boolean';
   required: boolean;
   defaultValue?: any;
-  options?: { value: string; label: string; }[];
+  options?: { value: string; label: string }[];
   validation?: {
     min?: number;
     max?: number;
@@ -88,7 +88,11 @@ export interface ReportTemplateListProps {
 
 export interface ReportGeneratorProps {
   template: ReportTemplate | null;
-  onGenerate: (templateId: string, parameters: Record<string, any>, format: string) => void;
+  onGenerate: (
+    templateId: string,
+    parameters: Record<string, any>,
+    format: string
+  ) => void;
   onCancel: () => void;
   generating?: boolean;
 }
@@ -214,8 +218,8 @@ export interface PerformanceReportData {
   gradeDistribution: {
     [grade: string]: {
       excellent: number; // 90-100
-      good: number;      // 80-89
-      average: number;   // 70-79
+      good: number; // 80-89
+      average: number; // 70-79
       needsWork: number; // <70
     };
   };

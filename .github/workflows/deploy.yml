@@ -8,11 +8,11 @@ name: 🚀 Deployment Pipeline
 
 on:
   push:
-    branches: 
-      - main        # Production deployment
-      - develop     # Staging deployment
+    branches:
+      - main # Production deployment
+      - develop # Staging deployment
   workflow_run:
-    workflows: ["🔄 Continuous Integration"]
+    workflows: ['🔄 Continuous Integration']
     types: [completed]
     branches: [main, develop]
 
@@ -29,15 +29,15 @@ jobs:
     name: 🔍 Pre-deployment Checks
     runs-on: ubuntu-latest
     if: github.event.workflow_run.conclusion == 'success' || github.event_name == 'push'
-    
+
     outputs:
       environment: ${{ steps.determine-env.outputs.environment }}
       deploy-url: ${{ steps.determine-env.outputs.deploy-url }}
-      
+
     steps:
       - name: 📥 Checkout code
         uses: actions/checkout@v4
-        
+
       - name: 🎯 Determine deployment environment
         id: determine-env
         run: |
@@ -48,7 +48,7 @@ jobs:
             echo "environment=staging" >> $GITHUB_OUTPUT
             echo "deploy-url=https://rk-institute-management-system-staging.vercel.app" >> $GITHUB_OUTPUT
           fi
-          
+
       - name: 📊 Display deployment info
         run: |
           echo "🎯 Target Environment: ${{ steps.determine-env.outputs.environment }}"
@@ -64,29 +64,29 @@ jobs:
     runs-on: ubuntu-latest
     needs: pre-deployment
     if: needs.pre-deployment.outputs.environment == 'production'
-    environment: 
+    environment:
       name: production
       url: ${{ needs.pre-deployment.outputs.deploy-url }}
-      
+
     steps:
       - name: 📥 Checkout code
         uses: actions/checkout@v4
-        
+
       - name: 📦 Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
           cache: 'npm'
-          
+
       - name: 📥 Install dependencies
         run: npm ci
-        
+
       - name: 🔧 Generate Prisma client
         run: npx prisma generate
-        
+
       - name: 🏗️ Build application
         run: npm run build
-        
+
       - name: 🚀 Deploy to Vercel (Production)
         uses: amondnet/vercel-action@v25
         with:
@@ -95,12 +95,45 @@ jobs:
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
           vercel-args: '--prod'
           working-directory: ./
-          
+
+      - name: 🔍 Post-deployment health check
+        run: |
+          echo "🔍 Running post-deployment health checks..."
+          sleep 30  # Wait for deployment to stabilize
+
+          # Health check with retry logic
+          for i in {1..5}; do
+            if curl -f -s "${{ needs.pre-deployment.outputs.deploy-url }}/api/health" > /dev/null; then
+              echo "✅ Health check passed on attempt $i"
+              break
+            else
+              echo "⚠️ Health check failed on attempt $i, retrying..."
+              sleep 10
+            fi
+
+            if [ $i -eq 5 ]; then
+              echo "❌ Health check failed after 5 attempts"
+              exit 1
+            fi
+          done
+
+      - name: 🧪 Production smoke tests
+        run: |
+          echo "🧪 Running production smoke tests..."
+
+          # Test critical endpoints
+          curl -f -s "${{ needs.pre-deployment.outputs.deploy-url }}/api/health" || exit 1
+          curl -f -s "${{ needs.pre-deployment.outputs.deploy-url }}/api/health/database" || exit 1
+
+          echo "✅ All smoke tests passed"
+
       - name: 📊 Deployment success notification
         run: |
           echo "🎉 Production deployment successful!"
           echo "🌐 Live URL: ${{ needs.pre-deployment.outputs.deploy-url }}"
           echo "📝 Commit: ${{ github.sha }}"
+          echo "🔍 Health Status: Verified"
+          echo "🧪 Smoke Tests: Passed"
 
   # =============================================================================
   # Staging Deployment
@@ -110,29 +143,29 @@ jobs:
     runs-on: ubuntu-latest
     needs: pre-deployment
     if: needs.pre-deployment.outputs.environment == 'staging'
-    environment: 
+    environment:
       name: staging
       url: ${{ needs.pre-deployment.outputs.deploy-url }}
-      
+
     steps:
       - name: 📥 Checkout code
         uses: actions/checkout@v4
-        
+
       - name: 📦 Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
           cache: 'npm'
-          
+
       - name: 📥 Install dependencies
         run: npm ci
-        
+
       - name: 🔧 Generate Prisma client
         run: npx prisma generate
-        
+
       - name: 🏗️ Build application
         run: npm run build
-        
+
       - name: 🧪 Deploy to Vercel (Staging)
         uses: amondnet/vercel-action@v25
         with:
@@ -140,12 +173,57 @@ jobs:
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
           working-directory: ./
-          
+
+      - name: 🔍 Comprehensive staging validation
+        id: staging-validation
+        run: |
+          echo "🔍 Starting comprehensive staging validation..."
+          sleep 30  # Wait for staging deployment to stabilize
+
+          STAGING_URL="${{ needs.pre-deployment.outputs.deploy-url }}"
+          echo "📍 Staging URL: $STAGING_URL"
+
+          # Run comprehensive staging validation
+          if node scripts/staging-validation.js "$STAGING_URL"; then
+            echo "✅ Staging validation passed"
+            echo "validation_status=success" >> $GITHUB_OUTPUT
+          else
+            echo "❌ Staging validation failed"
+            echo "validation_status=failed" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+
+      - name: 🧪 Run staging test suite
+        if: steps.staging-validation.outputs.validation_status == 'success'
+        run: |
+          echo "🧪 Running staging-specific tests..."
+          export STAGING_URL="${{ needs.pre-deployment.outputs.deploy-url }}"
+          npm run test:run
+
+      - name: 📊 Generate staging report
+        if: always()
+        run: |
+          echo "📊 Generating comprehensive staging report..."
+          node scripts/generate-staging-report.js \
+            --url="${{ needs.pre-deployment.outputs.deploy-url }}" \
+            --commit="${{ github.sha }}" \
+            --branch="${{ github.ref_name }}"
+
+      - name: 📤 Upload staging report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: staging-report-${{ github.sha }}
+          path: reports/staging/
+          retention-days: 30
+
       - name: 📊 Staging deployment notification
         run: |
-          echo "🧪 Staging deployment successful!"
+          echo "🧪 Staging deployment completed!"
           echo "🌐 Preview URL: ${{ needs.pre-deployment.outputs.deploy-url }}"
           echo "📝 Commit: ${{ github.sha }}"
+          echo "🔍 Validation Status: ${{ steps.staging-validation.outputs.validation_status }}"
+          echo "📊 Report: Available in artifacts"
 
   # =============================================================================
   # Post-deployment Health Checks
@@ -155,16 +233,16 @@ jobs:
     runs-on: ubuntu-latest
     needs: [pre-deployment, deploy-production, deploy-staging]
     if: always() && (needs.deploy-production.result == 'success' || needs.deploy-staging.result == 'success')
-    
+
     steps:
       - name: 🏥 Wait for deployment to be ready
         run: sleep 30
-        
+
       - name: 🔍 Health check endpoint
         run: |
           URL="${{ needs.pre-deployment.outputs.deploy-url }}"
           echo "🔍 Checking health of: $URL"
-          
+
           # Basic connectivity check
           if curl -f -s "$URL" > /dev/null; then
             echo "✅ Application is responding"
@@ -172,7 +250,7 @@ jobs:
             echo "❌ Application health check failed"
             exit 1
           fi
-          
+
       - name: 📊 Deployment summary
         run: |
           echo "🎯 Environment: ${{ needs.pre-deployment.outputs.environment }}"

@@ -1,10 +1,10 @@
 /**
  * Module Registration
- * 
+ *
  * Central registration point for all application modules.
  * Registers core system modules and feature modules with proper
  * dependency management and feature flag integration.
- * 
+ *
  * Module Categories:
  * - Core: Essential system functionality
  * - Feature: Business logic modules
@@ -12,8 +12,9 @@
  * - Experimental: Beta/testing features
  */
 
-import { moduleRegistry } from './ModuleRegistry';
 import { isFeatureEnabled } from '@/lib/config/FeatureFlags';
+
+import { moduleRegistry } from './ModuleRegistry';
 
 /**
  * Register all application modules
@@ -23,30 +24,36 @@ export function registerModules(): void {
   console.log('🚀 Registering application modules...');
 
   try {
+    // Check if modules are already registered (for test isolation)
+    const currentStats = moduleRegistry.getStatistics();
+    if (currentStats.total > 0) {
+      console.log('📋 Modules already registered, skipping registration');
+      return;
+    }
+
     // Register core modules first (no dependencies)
     registerCoreModules();
-    
+
     // Register feature modules (depend on core)
     registerFeatureModules();
-    
+
     // Register integration modules
     registerIntegrationModules();
-    
+
     // Register experimental modules
     registerExperimentalModules();
 
     console.log('✅ All modules registered successfully');
-    
+
     // Log module statistics
     const stats = moduleRegistry.getStatistics();
-    console.log(`📊 Module Statistics:`, {
+    console.log('📊 Module Statistics:', {
       total: stats.total,
       enabled: stats.enabled,
       disabled: stats.disabled,
       errors: stats.errors,
-      categories: stats.byCategory,
+      categories: stats.byCategory
     });
-
   } catch (error) {
     console.error('❌ Failed to register modules:', error);
     throw error;
@@ -62,13 +69,14 @@ function registerCoreModules(): void {
   moduleRegistry.register({
     name: 'core',
     version: '1.0.0',
-    description: 'Core system functionality including authentication, database, and utilities',
+    description:
+      'Core system functionality including authentication, database, and utilities',
     dependencies: [],
     routes: [
       '/api/health',
       '/api/auth/login',
       '/api/auth/logout',
-      '/api/auth/verify',
+      '/api/auth/verify'
     ],
     components: [
       'Layout',
@@ -76,13 +84,13 @@ function registerCoreModules(): void {
       'Header',
       'Footer',
       'LoadingSpinner',
-      'ErrorBoundary',
+      'ErrorBoundary'
     ],
     services: [
       'AuthService',
       'DatabaseService',
       'LoggingService',
-      'ConfigService',
+      'ConfigService'
     ],
     enabled: true,
     category: 'core',
@@ -92,37 +100,28 @@ function registerCoreModules(): void {
     requirements: {
       nodeVersion: '>=18.0.0',
       memoryMB: 64,
-      features: ['database', 'authentication'],
-    },
+      features: ['database', 'authentication']
+    }
   });
 
   // Security module
   moduleRegistry.register({
     name: 'security',
     version: '1.0.0',
-    description: 'Security features including input validation, rate limiting, and audit logging',
+    description:
+      'Security features including input validation, rate limiting, and audit logging',
     dependencies: ['core'],
-    routes: [
-      '/api/security/audit',
-      '/api/security/rate-limit',
-    ],
-    components: [
-      'SecurityProvider',
-      'ProtectedRoute',
-      'AuditLog',
-    ],
-    services: [
-      'SecurityService',
-      'AuditService',
-      'ValidationService',
-    ],
-    enabled: isFeatureEnabled('auditLogging') || isFeatureEnabled('rateLimiting'),
+    routes: ['/api/security/audit', '/api/security/rate-limit'],
+    components: ['SecurityProvider', 'ProtectedRoute', 'AuditLog'],
+    services: ['SecurityService', 'AuditService', 'ValidationService'],
+    enabled:
+      isFeatureEnabled('auditLogging') || isFeatureEnabled('rateLimiting'),
     requiredFeatures: [],
     optionalFeatures: ['auditLogging', 'rateLimiting', 'inputValidation'],
     category: 'core',
     priority: 90,
     author: 'RK Institute',
-    license: 'PROPRIETARY',
+    license: 'PROPRIETARY'
   });
 
   // UI/UX module
@@ -140,18 +139,19 @@ function registerCoreModules(): void {
       'Card',
       'Form',
       'ThemeProvider',
-      'ResponsiveContainer',
+      'ResponsiveContainer'
     ],
-    services: [
-      'ThemeService',
-      'ResponsiveService',
-    ],
+    services: ['ThemeService', 'ResponsiveService'],
     enabled: true,
-    optionalFeatures: ['darkMode', 'accessibilityEnhancements', 'mobileOptimization'],
+    optionalFeatures: [
+      'darkMode',
+      'accessibilityEnhancements',
+      'mobileOptimization'
+    ],
     category: 'core',
     priority: 80,
     author: 'RK Institute',
-    license: 'PROPRIETARY',
+    license: 'PROPRIETARY'
   });
 }
 
@@ -164,7 +164,8 @@ function registerFeatureModules(): void {
   moduleRegistry.register({
     name: 'student-management',
     version: '1.0.0',
-    description: 'Complete student lifecycle management including enrollment, profiles, and family relationships',
+    description:
+      'Complete student lifecycle management including enrollment, profiles, and family relationships',
     dependencies: ['core', 'ui-framework'],
     routes: [
       '/api/students',
@@ -172,7 +173,7 @@ function registerFeatureModules(): void {
       '/api/families',
       '/api/families/[id]',
       '/api/students/search',
-      '/api/students/bulk',
+      '/api/students/bulk'
     ],
     components: [
       'StudentList',
@@ -181,13 +182,9 @@ function registerFeatureModules(): void {
       'FamilyForm',
       'FamilyProfile',
       'StudentSearch',
-      'BulkStudentActions',
+      'BulkStudentActions'
     ],
-    services: [
-      'StudentService',
-      'FamilyService',
-      'EnrollmentService',
-    ],
+    services: ['StudentService', 'FamilyService', 'EnrollmentService'],
     enabled: true,
     category: 'feature',
     priority: 70,
@@ -195,8 +192,8 @@ function registerFeatureModules(): void {
     license: 'PROPRIETARY',
     requirements: {
       memoryMB: 32,
-      features: ['database'],
-    },
+      features: ['database']
+    }
   });
 
   // Fee Management module
@@ -211,7 +208,7 @@ function registerFeatureModules(): void {
       '/api/payments',
       '/api/payments/[id]',
       '/api/fee-structures',
-      '/api/discounts',
+      '/api/discounts'
     ],
     components: [
       'FeeList',
@@ -220,19 +217,19 @@ function registerFeatureModules(): void {
       'PaymentHistory',
       'FeeStructureManager',
       'DiscountManager',
-      'InvoiceGenerator',
+      'InvoiceGenerator'
     ],
     services: [
       'FeeService',
       'PaymentService',
       'InvoiceService',
-      'DiscountService',
+      'DiscountService'
     ],
     enabled: true,
     category: 'feature',
     priority: 60,
     author: 'RK Institute',
-    license: 'PROPRIETARY',
+    license: 'PROPRIETARY'
   });
 
   // Course Management module
@@ -245,25 +242,21 @@ function registerFeatureModules(): void {
       '/api/courses',
       '/api/courses/[id]',
       '/api/schedules',
-      '/api/enrollments',
+      '/api/enrollments'
     ],
     components: [
       'CourseList',
       'CourseForm',
       'ScheduleManager',
       'EnrollmentManager',
-      'CourseCalendar',
+      'CourseCalendar'
     ],
-    services: [
-      'CourseService',
-      'ScheduleService',
-      'EnrollmentService',
-    ],
+    services: ['CourseService', 'ScheduleService', 'EnrollmentService'],
     enabled: true,
     category: 'feature',
     priority: 50,
     author: 'RK Institute',
-    license: 'PROPRIETARY',
+    license: 'PROPRIETARY'
   });
 
   // Reporting module
@@ -276,26 +269,22 @@ function registerFeatureModules(): void {
       '/api/reports',
       '/api/reports/generate',
       '/api/reports/templates',
-      '/api/analytics',
+      '/api/analytics'
     ],
     components: [
       'ReportGenerator',
       'ReportViewer',
       'ReportHistory',
       'AnalyticsDashboard',
-      'ChartComponents',
+      'ChartComponents'
     ],
-    services: [
-      'ReportService',
-      'AnalyticsService',
-      'ExportService',
-    ],
+    services: ['ReportService', 'AnalyticsService', 'ExportService'],
     enabled: isFeatureEnabled('advancedReporting'),
     requiredFeatures: ['advancedReporting'],
     category: 'feature',
     priority: 40,
     author: 'RK Institute',
-    license: 'PROPRIETARY',
+    license: 'PROPRIETARY'
   });
 }
 
@@ -310,31 +299,32 @@ function registerIntegrationModules(): void {
     version: '1.0.0',
     description: 'Email, SMS, and notification management',
     dependencies: ['core', 'student-management'],
-    routes: [
-      '/api/notifications',
-      '/api/email',
-      '/api/sms',
-      '/api/templates',
-    ],
+    routes: ['/api/notifications', '/api/email', '/api/sms', '/api/templates'],
     components: [
       'NotificationCenter',
       'EmailComposer',
       'SMSComposer',
       'TemplateManager',
-      'CommunicationHistory',
+      'CommunicationHistory'
     ],
     services: [
       'EmailService',
       'SMSService',
       'NotificationService',
-      'TemplateService',
+      'TemplateService'
     ],
-    enabled: isFeatureEnabled('emailNotifications') || isFeatureEnabled('smsNotifications'),
-    optionalFeatures: ['emailNotifications', 'smsNotifications', 'pushNotifications'],
+    enabled:
+      isFeatureEnabled('emailNotifications') ||
+      isFeatureEnabled('smsNotifications'),
+    optionalFeatures: [
+      'emailNotifications',
+      'smsNotifications',
+      'pushNotifications'
+    ],
     category: 'integration',
     priority: 30,
     author: 'RK Institute',
-    license: 'PROPRIETARY',
+    license: 'PROPRIETARY'
   });
 
   // Third-party integrations
@@ -343,28 +333,22 @@ function registerIntegrationModules(): void {
     version: '1.0.0',
     description: 'External API integrations and webhook support',
     dependencies: ['core'],
-    routes: [
-      '/api/webhooks',
-      '/api/integrations',
-      '/api/sync',
-    ],
+    routes: ['/api/webhooks', '/api/integrations', '/api/sync'],
     components: [
       'IntegrationManager',
       'WebhookManager',
       'SyncStatus',
-      'APIKeyManager',
+      'APIKeyManager'
     ],
-    services: [
-      'WebhookService',
-      'IntegrationService',
-      'SyncService',
-    ],
-    enabled: isFeatureEnabled('thirdPartyIntegrations') || isFeatureEnabled('webhookSupport'),
+    services: ['WebhookService', 'IntegrationService', 'SyncService'],
+    enabled:
+      isFeatureEnabled('thirdPartyIntegrations') ||
+      isFeatureEnabled('webhookSupport'),
     optionalFeatures: ['thirdPartyIntegrations', 'webhookSupport'],
     category: 'integration',
     priority: 20,
     author: 'RK Institute',
-    license: 'PROPRIETARY',
+    license: 'PROPRIETARY'
   });
 }
 
@@ -377,31 +361,24 @@ function registerExperimentalModules(): void {
   moduleRegistry.register({
     name: 'realtime-collaboration',
     version: '0.9.0',
-    description: 'Real-time collaboration features including chat, presence, and collaborative editing',
+    description:
+      'Real-time collaboration features including chat, presence, and collaborative editing',
     dependencies: ['core', 'student-management'],
-    routes: [
-      '/api/collaboration',
-      '/api/presence',
-      '/api/chat',
-    ],
+    routes: ['/api/collaboration', '/api/presence', '/api/chat'],
     components: [
       'CollaborationPanel',
       'PresenceIndicator',
       'ChatInterface',
-      'CollaborativeEditor',
+      'CollaborativeEditor'
     ],
-    services: [
-      'CollaborationService',
-      'PresenceService',
-      'ChatService',
-    ],
+    services: ['CollaborationService', 'PresenceService', 'ChatService'],
     enabled: isFeatureEnabled('realTimeCollaboration'),
     requiredFeatures: ['realTimeCollaboration'],
     optionalFeatures: ['caching'],
     category: 'experimental',
     priority: 10,
     author: 'RK Institute',
-    license: 'PROPRIETARY',
+    license: 'PROPRIETARY'
   });
 
   // AI Personalization
@@ -413,25 +390,21 @@ function registerExperimentalModules(): void {
     routes: [
       '/api/ai/recommendations',
       '/api/ai/insights',
-      '/api/ai/personalization',
+      '/api/ai/personalization'
     ],
     components: [
       'RecommendationEngine',
       'PersonalizationPanel',
       'AIInsights',
-      'SmartSuggestions',
+      'SmartSuggestions'
     ],
-    services: [
-      'AIService',
-      'RecommendationService',
-      'PersonalizationService',
-    ],
+    services: ['AIService', 'RecommendationService', 'PersonalizationService'],
     enabled: isFeatureEnabled('aiPersonalization'),
     requiredFeatures: ['aiPersonalization'],
     category: 'experimental',
     priority: 5,
     author: 'RK Institute',
-    license: 'PROPRIETARY',
+    license: 'PROPRIETARY'
   });
 }
 
@@ -447,15 +420,15 @@ export function getModuleStatus(): {
 } {
   const stats = moduleRegistry.getStatistics();
   const allModules = moduleRegistry.getAllModules();
-  
+
   const enabledModules = allModules
     .filter(m => m.config.enabled && m.status === 'loaded')
     .map(m => m.config.name);
-    
+
   const disabledModules = allModules
     .filter(m => !m.config.enabled || m.status === 'disabled')
     .map(m => m.config.name);
-    
+
   const errorModules = allModules
     .filter(m => m.status === 'error')
     .map(m => m.config.name);
@@ -465,7 +438,7 @@ export function getModuleStatus(): {
     statistics: stats,
     enabledModules,
     disabledModules,
-    errorModules,
+    errorModules
   };
 }
 

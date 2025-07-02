@@ -1,9 +1,9 @@
 /**
  * Report History Component
- * 
+ *
  * Displays user's generated reports with download and management capabilities.
  * Leverages existing Table, Button, and Badge components for consistency.
- * 
+ *
  * Features:
  * - Chronological report listing
  * - Status indicators and progress tracking
@@ -15,11 +15,10 @@
 'use client';
 
 import React, { useState } from 'react';
+
+import { Button, LoadingState } from '@/components/ui';
+
 import { ReportHistoryProps, GeneratedReport } from './types';
-import {
-  Button,
-  LoadingState
-} from '@/components/ui';
 
 export default function ReportHistory({
   reports,
@@ -27,7 +26,6 @@ export default function ReportHistory({
   onDelete,
   loading = false
 }: ReportHistoryProps) {
-
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
 
   // Format file size
@@ -66,21 +64,30 @@ export default function ReportHistory({
 
   // Handle delete confirmation
   const handleDelete = (reportId: string) => {
-    if (window.confirm('Are you sure you want to delete this report? This action cannot be undone.')) {
+    if (
+      window.confirm(
+        'Are you sure you want to delete this report? This action cannot be undone.'
+      )
+    ) {
       onDelete(reportId);
     }
   };
 
   if (loading) {
-    return <LoadingState message="Loading report history..." />;
+    return <LoadingState message='Loading report history...' />;
   }
 
   if (reports.length === 0) {
     return (
-      <div className="text-center py-12">
-        <div className="text-6xl mb-4">📊</div>
-        <h3 className="text-lg font-medium text-gray-900 mb-2">No Reports Generated</h3>
-        <p className="text-gray-600">You haven&apos;t generated any reports yet. Start by selecting a template above.</p>
+      <div className='text-center py-12'>
+        <div className='text-6xl mb-4'>📊</div>
+        <h3 className='text-lg font-medium text-gray-900 mb-2'>
+          No Reports Generated
+        </h3>
+        <p className='text-gray-600'>
+          You haven&apos;t generated any reports yet. Start by selecting a
+          template above.
+        </p>
       </div>
     );
   }
@@ -97,36 +104,46 @@ export default function ReportHistory({
   };
 
   return (
-    <div className="space-y-6">
+    <div className='space-y-6'>
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className='flex items-center justify-between'>
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">Report History</h2>
-          <p className="text-gray-600 mt-1">
+          <h2 className='text-2xl font-bold text-gray-900'>Report History</h2>
+          <p className='text-gray-600 mt-1'>
             Manage and download your generated reports
           </p>
         </div>
-        <div className="text-sm text-gray-500">
+        <div className='text-sm text-gray-500'>
           {reports.length} report{reports.length !== 1 ? 's' : ''}
         </div>
       </div>
 
       {/* Reports List */}
-      <div className="space-y-4">
-        {reports.map((report) => {
+      <div className='space-y-4'>
+        {reports.map(report => {
           const badge = getStatusBadge(report.status);
           return (
-            <div key={report.id} className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-              <div className="flex items-center justify-between">
-                <div className="flex-1">
-                  <div className="flex items-center gap-3 mb-2">
-                    <h3 className="font-medium text-gray-900">{report.templateName}</h3>
-                    <span className={`inline-block px-2 py-1 text-xs font-medium rounded-full ${getStatusBadgeClass(report.status)}`}>
+            <div
+              key={report.id}
+              className='bg-white rounded-lg shadow-sm border border-gray-200 p-6'
+            >
+              <div className='flex items-center justify-between'>
+                <div className='flex-1'>
+                  <div className='flex items-center gap-3 mb-2'>
+                    <h3 className='font-medium text-gray-900'>
+                      {report.templateName}
+                    </h3>
+                    <span
+                      className={`inline-block px-2 py-1 text-xs font-medium rounded-full ${getStatusBadgeClass(report.status)}`}
+                    >
                       {badge.text}
                     </span>
                   </div>
-                  <div className="text-sm text-gray-500 space-y-1">
-                    <div>{report.format.toUpperCase()} • {formatFileSize(report.fileSize)}</div>
+                  <div className='text-sm text-gray-500 space-y-1'>
+                    <div>
+                      {report.format.toUpperCase()} •{' '}
+                      {formatFileSize(report.fileSize)}
+                    </div>
                     <div>Generated: {formatDate(report.generatedAt)}</div>
                     <div className={isExpired(report) ? 'text-red-600' : ''}>
                       Expires: {formatDate(report.expiresAt)}
@@ -134,30 +151,30 @@ export default function ReportHistory({
                     <div>Downloads: {report.downloadCount}</div>
                   </div>
                 </div>
-                <div className="flex gap-2">
+                <div className='flex gap-2'>
                   {report.status === 'completed' && !isExpired(report) && (
                     <Button
                       onClick={() => onDownload(report.id)}
-                      className="bg-blue-600 text-white hover:bg-blue-700"
+                      className='bg-blue-600 text-white hover:bg-blue-700'
                     >
                       Download
                     </Button>
                   )}
                   {report.status === 'generating' && (
-                    <div className="flex items-center text-sm text-gray-500">
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600 mr-2"></div>
+                    <div className='flex items-center text-sm text-gray-500'>
+                      <div className='animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600 mr-2'></div>
                       Processing...
                     </div>
                   )}
                   {report.status === 'failed' && (
-                    <div className="text-sm text-red-600" title={report.error}>
+                    <div className='text-sm text-red-600' title={report.error}>
                       Generation failed
                     </div>
                   )}
                   <Button
-                    variant="outline"
+                    variant='outline'
                     onClick={() => handleDelete(report.id)}
-                    className="text-red-600 border-red-300 hover:bg-red-50"
+                    className='text-red-600 border-red-300 hover:bg-red-50'
                   >
                     Delete
                   </Button>
@@ -169,36 +186,34 @@ export default function ReportHistory({
       </div>
 
       {/* Summary Stats */}
-      <div className="bg-gray-50 rounded-lg p-4">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-center">
+      <div className='bg-gray-50 rounded-lg p-4'>
+        <div className='grid grid-cols-1 md:grid-cols-4 gap-4 text-center'>
           <div>
-            <div className="text-2xl font-bold text-blue-600">
+            <div className='text-2xl font-bold text-blue-600'>
               {reports.filter(r => r.status === 'completed').length}
             </div>
-            <div className="text-sm text-gray-600">Completed</div>
+            <div className='text-sm text-gray-600'>Completed</div>
           </div>
           <div>
-            <div className="text-2xl font-bold text-yellow-600">
+            <div className='text-2xl font-bold text-yellow-600'>
               {reports.filter(r => r.status === 'generating').length}
             </div>
-            <div className="text-sm text-gray-600">Generating</div>
+            <div className='text-sm text-gray-600'>Generating</div>
           </div>
           <div>
-            <div className="text-2xl font-bold text-red-600">
+            <div className='text-2xl font-bold text-red-600'>
               {reports.filter(r => r.status === 'failed').length}
             </div>
-            <div className="text-sm text-gray-600">Failed</div>
+            <div className='text-sm text-gray-600'>Failed</div>
           </div>
           <div>
-            <div className="text-2xl font-bold text-gray-600">
+            <div className='text-2xl font-bold text-gray-600'>
               {reports.reduce((sum, r) => sum + r.downloadCount, 0)}
             </div>
-            <div className="text-sm text-gray-600">Total Downloads</div>
+            <div className='text-sm text-gray-600'>Total Downloads</div>
           </div>
         </div>
       </div>
-
-
     </div>
   );
 }

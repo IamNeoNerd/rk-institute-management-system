@@ -1,9 +1,9 @@
 /**
  * Layout Components - UI Library
- * 
+ *
  * Reusable layout components extracted from common patterns across all hubs.
  * Provides consistent spacing, grids, and container structures.
- * 
+ *
  * Design Features:
  * - Responsive grid systems
  * - Consistent spacing patterns
@@ -13,6 +13,7 @@
  */
 
 import React from 'react';
+
 import { cn } from '@/lib/utils';
 
 // Container Component
@@ -30,9 +31,19 @@ const containerSizes = {
   full: 'max-w-full'
 };
 
-export function Container({ children, size = 'xl', className }: ContainerProps) {
+export function Container({
+  children,
+  size = 'xl',
+  className
+}: ContainerProps) {
   return (
-    <div className={cn('mx-auto px-4 sm:px-6 lg:px-8', containerSizes[size], className)}>
+    <div
+      className={cn(
+        'mx-auto px-4 sm:px-6 lg:px-8',
+        containerSizes[size],
+        className
+      )}
+    >
       {children}
     </div>
   );
@@ -68,26 +79,38 @@ const gridGaps = {
   xl: 'gap-6 sm:gap-8'
 };
 
-export function Grid({ 
-  children, 
-  cols = 1, 
-  gap = 'lg', 
+export function Grid({
+  children,
+  cols = 1,
+  gap = 'lg',
   responsive,
-  className 
+  className
 }: GridProps) {
   const baseClasses = 'grid';
   const colClasses = gridCols[cols];
   const gapClasses = gridGaps[gap];
-  
-  const responsiveClasses = responsive ? [
-    responsive.sm && `sm:${gridCols[responsive.sm]}`,
-    responsive.md && `md:${gridCols[responsive.md]}`,
-    responsive.lg && `lg:${gridCols[responsive.lg]}`,
-    responsive.xl && `xl:${gridCols[responsive.xl]}`
-  ].filter(Boolean).join(' ') : '';
+
+  const responsiveClasses = responsive
+    ? [
+        responsive.sm && `sm:${gridCols[responsive.sm]}`,
+        responsive.md && `md:${gridCols[responsive.md]}`,
+        responsive.lg && `lg:${gridCols[responsive.lg]}`,
+        responsive.xl && `xl:${gridCols[responsive.xl]}`
+      ]
+        .filter(Boolean)
+        .join(' ')
+    : '';
 
   return (
-    <div className={cn(baseClasses, colClasses, gapClasses, responsiveClasses, className)}>
+    <div
+      className={cn(
+        baseClasses,
+        colClasses,
+        gapClasses,
+        responsiveClasses,
+        className
+      )}
+    >
       {children}
     </div>
   );
@@ -100,42 +123,53 @@ export interface CardGridProps {
   density?: 'comfortable' | 'compact' | 'condensed';
 }
 
-export function CardGrid({ children, className, density = 'comfortable' }: CardGridProps) {
+export function CardGrid({
+  children,
+  className,
+  density = 'comfortable'
+}: CardGridProps) {
   const densityClasses = {
-    comfortable: 'grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3 lg:gap-6 xl:grid-cols-4',
-    compact: 'grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-3 lg:grid-cols-3 lg:gap-4 xl:grid-cols-4',
-    condensed: 'grid grid-cols-1 gap-1.5 sm:grid-cols-2 sm:gap-2 lg:grid-cols-4 lg:gap-3 xl:grid-cols-5'
+    comfortable:
+      'grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3 lg:gap-6 xl:grid-cols-4',
+    compact:
+      'grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-3 lg:grid-cols-3 lg:gap-4 xl:grid-cols-4',
+    condensed:
+      'grid grid-cols-1 gap-1.5 sm:grid-cols-2 sm:gap-2 lg:grid-cols-4 lg:gap-3 xl:grid-cols-5'
   };
 
   return (
-    <div className={cn(densityClasses[density], className)}>
-      {children}
-    </div>
+    <div className={cn(densityClasses[density], className)}>{children}</div>
   );
 }
 
 // Mobile-Optimized Stats Grid Component
-export function StatsGrid({ children, className, density = 'compact' }: CardGridProps) {
+export function StatsGrid({
+  children,
+  className,
+  density = 'compact'
+}: CardGridProps) {
   const densityClasses = {
-    comfortable: 'grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4',
+    comfortable:
+      'grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4',
     compact: 'grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-3 lg:grid-cols-4',
-    condensed: 'grid grid-cols-2 gap-1.5 sm:grid-cols-3 sm:gap-2 lg:grid-cols-4 lg:gap-3 xl:grid-cols-6'
+    condensed:
+      'grid grid-cols-2 gap-1.5 sm:grid-cols-3 sm:gap-2 lg:grid-cols-4 lg:gap-3 xl:grid-cols-6'
   };
 
   return (
-    <div className={cn(densityClasses[density], className)}>
-      {children}
-    </div>
+    <div className={cn(densityClasses[density], className)}>{children}</div>
   );
 }
 
 // Ultra-Compact Grid for Maximum Mobile Density
 export function CompactGrid({ children, className }: CardGridProps) {
   return (
-    <div className={cn(
-      'grid grid-cols-2 gap-1.5 sm:grid-cols-3 sm:gap-2 md:grid-cols-4 md:gap-3 lg:grid-cols-5 lg:gap-4 xl:grid-cols-6',
-      className
-    )}>
+    <div
+      className={cn(
+        'grid grid-cols-2 gap-1.5 sm:grid-cols-3 sm:gap-2 md:grid-cols-4 md:gap-3 lg:grid-cols-5 lg:gap-4 xl:grid-cols-6',
+        className
+      )}
+    >
       {children}
     </div>
   );
@@ -144,9 +178,7 @@ export function CompactGrid({ children, className }: CardGridProps) {
 // Horizontal List Layout for Mobile
 export function HorizontalList({ children, className }: CardGridProps) {
   return (
-    <div className={cn('space-y-1.5 sm:space-y-2', className)}>
-      {children}
-    </div>
+    <div className={cn('space-y-1.5 sm:space-y-2', className)}>{children}</div>
   );
 }
 
@@ -172,14 +204,21 @@ const stackAlign = {
   stretch: 'items-stretch'
 };
 
-export function Stack({ 
-  children, 
-  spacing = 'md', 
+export function Stack({
+  children,
+  spacing = 'md',
   align = 'stretch',
-  className 
+  className
 }: StackProps) {
   return (
-    <div className={cn('flex flex-col', stackSpacing[spacing], stackAlign[align], className)}>
+    <div
+      className={cn(
+        'flex flex-col',
+        stackSpacing[spacing],
+        stackAlign[align],
+        className
+      )}
+    >
       {children}
     </div>
   );
@@ -224,25 +263,27 @@ const flexGaps = {
   xl: 'gap-8'
 };
 
-export function Flex({ 
-  children, 
+export function Flex({
+  children,
   direction = 'row',
   align = 'center',
   justify = 'start',
   wrap = false,
   gap = 'md',
-  className 
+  className
 }: FlexProps) {
   return (
-    <div className={cn(
-      'flex',
-      flexDirection[direction],
-      flexAlign[align],
-      flexJustify[justify],
-      wrap && 'flex-wrap',
-      flexGaps[gap],
-      className
-    )}>
+    <div
+      className={cn(
+        'flex',
+        flexDirection[direction],
+        flexAlign[align],
+        flexJustify[justify],
+        wrap && 'flex-wrap',
+        flexGaps[gap],
+        className
+      )}
+    >
       {children}
     </div>
   );
@@ -258,31 +299,25 @@ export interface SectionProps {
   className?: string;
 }
 
-export function Section({ 
-  children, 
-  title, 
-  subtitle, 
+export function Section({
+  children,
+  title,
+  subtitle,
   action,
   spacing = 'lg',
-  className 
+  className
 }: SectionProps) {
   return (
     <section className={cn(stackSpacing[spacing], className)}>
       {(title || subtitle || action) && (
-        <div className="flex justify-between items-start">
+        <div className='flex justify-between items-start'>
           <div>
             {title && (
-              <h2 className="text-2xl font-bold text-gray-900">{title}</h2>
+              <h2 className='text-2xl font-bold text-gray-900'>{title}</h2>
             )}
-            {subtitle && (
-              <p className="mt-1 text-gray-600">{subtitle}</p>
-            )}
+            {subtitle && <p className='mt-1 text-gray-600'>{subtitle}</p>}
           </div>
-          {action && (
-            <div className="flex-shrink-0 ml-4">
-              {action}
-            </div>
-          )}
+          {action && <div className='flex-shrink-0 ml-4'>{action}</div>}
         </div>
       )}
       {children}
@@ -299,48 +334,42 @@ export interface PageHeaderProps {
   className?: string;
 }
 
-export function PageHeader({ 
-  title, 
-  subtitle, 
+export function PageHeader({
+  title,
+  subtitle,
   actions,
   breadcrumbs,
-  className 
+  className
 }: PageHeaderProps) {
   return (
     <div className={cn('space-y-4', className)}>
       {breadcrumbs && (
-        <nav className="flex" aria-label="Breadcrumb">
-          <ol className="flex items-center space-x-2 text-sm text-gray-500">
+        <nav className='flex' aria-label='Breadcrumb'>
+          <ol className='flex items-center space-x-2 text-sm text-gray-500'>
             {breadcrumbs.map((crumb, index) => (
-              <li key={index} className="flex items-center">
-                {index > 0 && <span className="mx-2">/</span>}
+              <li key={index} className='flex items-center'>
+                {index > 0 && <span className='mx-2'>/</span>}
                 {crumb.href ? (
-                  <a href={crumb.href} className="hover:text-gray-700">
+                  <a href={crumb.href} className='hover:text-gray-700'>
                     {crumb.label}
                   </a>
                 ) : (
-                  <span className="text-gray-900">{crumb.label}</span>
+                  <span className='text-gray-900'>{crumb.label}</span>
                 )}
               </li>
             ))}
           </ol>
         </nav>
       )}
-      
-      <div className="flex justify-between items-center animate-fade-in">
+
+      <div className='flex justify-between items-center animate-fade-in'>
         <div>
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
+          <h1 className='text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent'>
             {title}
           </h1>
-          {subtitle && (
-            <p className="mt-2 text-lg text-gray-600">{subtitle}</p>
-          )}
+          {subtitle && <p className='mt-2 text-lg text-gray-600'>{subtitle}</p>}
         </div>
-        {actions && (
-          <div className="flex space-x-4">
-            {actions}
-          </div>
-        )}
+        {actions && <div className='flex space-x-4'>{actions}</div>}
       </div>
     </div>
   );

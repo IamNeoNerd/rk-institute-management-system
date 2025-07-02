@@ -1,9 +1,9 @@
 /**
  * Shared Hook Types
- * 
+ *
  * Common TypeScript interfaces and types used across all custom hooks
  * following the three-principle methodology for logic extraction.
- * 
+ *
  * Design Consistency: Maintains RK Institute professional standards
  */
 

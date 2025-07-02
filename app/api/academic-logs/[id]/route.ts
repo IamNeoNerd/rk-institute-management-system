@@ -1,5 +1,5 @@
-import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
+import { NextResponse } from 'next/server';
 
 const prisma = new PrismaClient();
 
@@ -24,19 +24,19 @@ export async function GET(
             family: {
               select: {
                 id: true,
-                name: true,
-              },
-            },
-          },
+                name: true
+              }
+            }
+          }
         },
         teacher: {
           select: {
             id: true,
             name: true,
-            email: true,
-          },
-        },
-      },
+            email: true
+          }
+        }
+      }
     });
 
     if (!log) {
@@ -68,7 +68,7 @@ export async function PUT(
 
     // Check if log exists
     const existingLog = await prisma.academicLog.findUnique({
-      where: { id },
+      where: { id }
     });
 
     if (!existingLog) {
@@ -86,24 +86,24 @@ export async function PUT(
         content: content || existingLog.content,
         logType: logType || existingLog.logType,
         subject: subject !== undefined ? subject : existingLog.subject,
-        isPrivate: isPrivate !== undefined ? isPrivate : existingLog.isPrivate,
+        isPrivate: isPrivate !== undefined ? isPrivate : existingLog.isPrivate
       },
       include: {
         student: {
           select: {
             id: true,
             name: true,
-            grade: true,
-          },
+            grade: true
+          }
         },
         teacher: {
           select: {
             id: true,
             name: true,
-            email: true,
-          },
-        },
-      },
+            email: true
+          }
+        }
+      }
     });
 
     return NextResponse.json(updatedLog);
@@ -126,7 +126,7 @@ export async function DELETE(
 
     // Check if log exists
     const existingLog = await prisma.academicLog.findUnique({
-      where: { id },
+      where: { id }
     });
 
     if (!existingLog) {
@@ -138,7 +138,7 @@ export async function DELETE(
 
     // Delete academic log
     await prisma.academicLog.delete({
-      where: { id },
+      where: { id }
     });
 
     return NextResponse.json({ message: 'Academic log deleted successfully' });

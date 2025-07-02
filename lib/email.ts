@@ -11,7 +11,7 @@ export async function sendEmail({ to, subject, text, html }: EmailParams) {
   console.log('Sending email to:', to);
   console.log('Subject:', subject);
   console.log('Body:', text);
-  
+
   // In production, replace with actual email sending code
   // Example with nodemailer:
   // const transporter = nodemailer.createTransport({...});
@@ -22,6 +22,6 @@ export async function sendEmail({ to, subject, text, html }: EmailParams) {
   //   text,
   //   html: html || text,
   // });
-  
+
   return true;
 }

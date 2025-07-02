@@ -1,10 +1,10 @@
 /**
  * Student Data Insights Component
- * 
+ *
  * Handles all data fetching, state management, and real-time updates
  * for the Student Portal. Provides clean separation of business logic
  * from presentation components.
- * 
+ *
  * Design Features:
  * - Real-time data fetching with authentication
  * - Comprehensive error handling
@@ -16,7 +16,13 @@
 'use client';
 
 import { useEffect } from 'react';
-import { StudentDataInsightsProps, User, StudentProfile, DashboardStats } from './types';
+
+import {
+  StudentDataInsightsProps,
+  User,
+  StudentProfile,
+  DashboardStats
+} from './types';
 
 export default function StudentDataInsights({
   onUserUpdate,
@@ -24,7 +30,6 @@ export default function StudentDataInsights({
   onStatsUpdate,
   onLoadingChange
 }: StudentDataInsightsProps) {
-
   useEffect(() => {
     // Initial data fetch
     fetchStudentData();

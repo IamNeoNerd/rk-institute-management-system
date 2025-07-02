@@ -1,9 +1,9 @@
 /**
  * Teacher Navigation Component
- * 
+ *
  * Provides tab-based navigation for the Teacher Portal with active state
  * indicators and smooth transitions between different sections.
- * 
+ *
  * Design Features:
  * - Tab-based navigation with icons
  * - Active state indicators with teal accent
@@ -14,26 +14,47 @@
 
 'use client';
 
+import { ProfessionalIcon } from '@/components/ui/icons/ProfessionalIconSystem';
+
 import { TeacherNavigationProps, NavigationTab } from './types';
 
 export default function TeacherNavigation({
   activeTab,
   onTabChange
 }: TeacherNavigationProps) {
-
   const navigationTabs: NavigationTab[] = [
-    { id: 'overview', name: 'Dashboard Overview', icon: '📊' },
-    { id: 'assignments', name: 'Assignments & Notes', icon: '📋' },
-    { id: 'academic-logs', name: 'Academic Logs', icon: '📝' },
-    { id: 'my-students', name: 'My Students', icon: '👨‍🎓' },
-    { id: 'my-courses', name: 'My Courses', icon: '📚' },
+    {
+      id: 'overview',
+      name: 'Dashboard Overview',
+      icon: <ProfessionalIcon name='analytics' size={20} />
+    },
+    {
+      id: 'assignments',
+      name: 'Assignments & Notes',
+      icon: <ProfessionalIcon name='list' size={20} />
+    },
+    {
+      id: 'academic-logs',
+      name: 'Academic Logs',
+      icon: <ProfessionalIcon name='report' size={20} />
+    },
+    {
+      id: 'my-students',
+      name: 'My Students',
+      icon: <ProfessionalIcon name='students' size={20} />
+    },
+    {
+      id: 'my-courses',
+      name: 'My Courses',
+      icon: <ProfessionalIcon name='courses' size={20} />
+    }
   ];
 
   return (
-    <div className="bg-white border-b border-gray-200">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <nav className="flex space-x-8">
-          {navigationTabs.map((tab) => (
+    <div className='bg-white border-b border-gray-200'>
+      <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
+        <nav className='flex space-x-8'>
+          {navigationTabs.map(tab => (
             <button
               key={tab.id}
               onClick={() => onTabChange(tab.id)}
@@ -43,7 +64,7 @@ export default function TeacherNavigation({
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }`}
             >
-              <span className="mr-2">{tab.icon}</span>
+              <span className='mr-2'>{tab.icon}</span>
               {tab.name}
             </button>
           ))}

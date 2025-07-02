@@ -1,9 +1,9 @@
 /**
  * People Hub Feature Components - Export Index
- * 
+ *
  * Centralized exports for all People Hub feature components following
  * the three-principle methodology for component breakdown.
- * 
+ *
  * Components:
  * - PeopleStatsOverview: Header and key metrics display
  * - PeopleQuickActions: Quick action cards for common operations

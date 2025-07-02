@@ -1,9 +1,9 @@
 /**
  * Module Registry System
- * 
+ *
  * Provides centralized module management with dependency resolution,
  * feature flag integration, and runtime module control.
- * 
+ *
  * Design Principles:
  * - Dependency-aware module loading
  * - Feature flag integration for conditional modules
@@ -11,7 +11,7 @@
  * - Comprehensive module metadata tracking
  * - Circular dependency detection and prevention
  * - Performance monitoring and health checks
- * 
+ *
  * Features:
  * - Module registration with dependency validation
  * - Automatic dependency resolution
@@ -20,18 +20,18 @@
  * - Runtime configuration changes
  * - Module lifecycle management
  * - Performance metrics tracking
- * 
+ *
  * Usage:
  * ```typescript
  * const registry = new ModuleRegistry();
- * 
+ *
  * registry.register({
  *   name: 'student-management',
  *   version: '1.0.0',
  *   dependencies: ['core'],
  *   enabled: true
  * });
- * 
+ *
  * const isEnabled = registry.isEnabled('student-management');
  * ```
  */
@@ -125,7 +125,7 @@ interface DependencyNode {
 /**
  * Module Registry Events
  */
-export type ModuleRegistryEvent = 
+export type ModuleRegistryEvent =
   | 'module:registered'
   | 'module:enabled'
   | 'module:disabled'
@@ -145,7 +145,7 @@ export type ModuleEventListener = (event: {
 
 /**
  * Module Registry Class
- * 
+ *
  * Central registry for managing application modules with dependency resolution,
  * feature flag integration, and runtime control capabilities.
  */
@@ -153,7 +153,10 @@ export class ModuleRegistry {
   private modules = new Map<string, ModuleMetadata>();
   private dependencies = new Map<string, string[]>();
   private dependents = new Map<string, string[]>();
-  private eventListeners = new Map<ModuleRegistryEvent, ModuleEventListener[]>();
+  private eventListeners = new Map<
+    ModuleRegistryEvent,
+    ModuleEventListener[]
+  >();
   private isReady = false;
 
   constructor() {
@@ -165,15 +168,15 @@ export class ModuleRegistry {
    */
   private initializeRegistry(): void {
     // Set up core event listeners
-    this.addEventListener('module:error', (event) => {
+    this.addEventListener('module:error', event => {
       console.error(`Module error in ${event.moduleName}:`, event.data);
     });
 
-    this.addEventListener('module:enabled', (event) => {
+    this.addEventListener('module:enabled', event => {
       console.log(`Module enabled: ${event.moduleName}`);
     });
 
-    this.addEventListener('module:disabled', (event) => {
+    this.addEventListener('module:disabled', event => {
       console.log(`Module disabled: ${event.moduleName}`);
     });
 
@@ -199,7 +202,9 @@ export class ModuleRegistry {
       // Validate dependencies exist
       for (const dep of config.dependencies) {
         if (!this.modules.has(dep)) {
-          throw new Error(`Dependency ${dep} not found for module ${config.name}`);
+          throw new Error(
+            `Dependency ${dep} not found for module ${config.name}`
+          );
         }
       }
 
@@ -211,7 +216,9 @@ export class ModuleRegistry {
         for (const feature of config.requiredFeatures) {
           if (!isFeatureEnabled(feature)) {
             config.enabled = false;
-            console.warn(`Module ${config.name} disabled: required feature ${feature} is not enabled`);
+            console.warn(
+              `Module ${config.name} disabled: required feature ${feature} is not enabled`
+            );
             break;
           }
         }
@@ -226,16 +233,16 @@ export class ModuleRegistry {
           loadTime: Date.now() - startTime,
           memoryUsage: this.estimateMemoryUsage(config),
           accessCount: 0,
-          lastAccessed: new Date(),
+          lastAccessed: new Date()
         },
         health: {
           status: 'healthy',
           lastCheck: new Date(),
           details: {
             dependenciesResolved: true,
-            featuresAvailable: this.checkOptionalFeatures(config),
-          },
-        },
+            featuresAvailable: this.checkOptionalFeatures(config)
+          }
+        }
       };
 
       // Register the module
@@ -254,13 +261,15 @@ export class ModuleRegistry {
       this.emitEvent('module:registered', config.name, {
         version: config.version,
         dependencies: config.dependencies,
-        enabled: config.enabled,
+        enabled: config.enabled
       });
 
-      console.log(`Module registered: ${config.name} v${config.version} (${metadata.metrics?.loadTime}ms)`);
+      console.log(
+        `Module registered: ${config.name} v${config.version} (${metadata.metrics?.loadTime}ms)`
+      );
     } catch (error) {
       console.error(`Failed to register module ${config.name}:`, error);
-      
+
       // Create error metadata
       const errorMetadata: ModuleMetadata = {
         config,
@@ -268,13 +277,15 @@ export class ModuleRegistry {
         status: 'error',
         error: error instanceof Error ? error.message : String(error),
         metrics: {
-          loadTime: Date.now() - startTime,
-        },
+          loadTime: Date.now() - startTime
+        }
       };
 
       this.modules.set(config.name, errorMetadata);
-      this.emitEvent('module:error', config.name, { error: error instanceof Error ? error.message : String(error) });
-      
+      this.emitEvent('module:error', config.name, {
+        error: error instanceof Error ? error.message : String(error)
+      });
+
       throw error;
     }
   }
@@ -283,16 +294,19 @@ export class ModuleRegistry {
    * Check if a module is enabled
    */
   isEnabled(moduleName: string): boolean {
-    const module = this.modules.get(moduleName);
-    if (!module) return false;
+    const registeredModule = this.modules.get(moduleName);
+    if (!registeredModule) return false;
 
     // Update access metrics
-    if (module.metrics) {
-      module.metrics.accessCount = (module.metrics.accessCount || 0) + 1;
-      module.metrics.lastAccessed = new Date();
+    if (registeredModule.metrics) {
+      registeredModule.metrics.accessCount =
+        (registeredModule.metrics.accessCount || 0) + 1;
+      registeredModule.metrics.lastAccessed = new Date();
     }
 
-    return module.config.enabled && module.status === 'loaded';
+    return (
+      registeredModule.config.enabled && registeredModule.status === 'loaded'
+    );
   }
 
   /**
@@ -313,7 +327,9 @@ export class ModuleRegistry {
    * Get enabled modules only
    */
   getEnabledModules(): ModuleMetadata[] {
-    return this.getAllModules().filter(m => m.config.enabled && m.status === 'loaded');
+    return this.getAllModules().filter(
+      m => m.config.enabled && m.status === 'loaded'
+    );
   }
 
   /**
@@ -342,14 +358,14 @@ export class ModuleRegistry {
    */
   canDisable(moduleName: string): boolean {
     const dependents = this.getDependents(moduleName);
-    
+
     // Check if any enabled modules depend on this one
     for (const dependent of dependents) {
       if (this.isEnabled(dependent)) {
         return false;
       }
     }
-    
+
     return true;
   }
 
@@ -357,50 +373,57 @@ export class ModuleRegistry {
    * Enable a module
    */
   enable(moduleName: string): boolean {
-    const module = this.modules.get(moduleName);
-    if (!module) {
+    const registeredModule = this.modules.get(moduleName);
+    if (!registeredModule) {
       console.error(`Module ${moduleName} not found`);
       return false;
     }
 
     // Check if already enabled
-    if (module.config.enabled && module.status === 'loaded') {
+    if (
+      registeredModule.config.enabled &&
+      registeredModule.status === 'loaded'
+    ) {
       return true;
     }
 
     // Check dependencies are enabled
-    for (const dep of module.config.dependencies) {
+    for (const dep of registeredModule.config.dependencies) {
       if (!this.isEnabled(dep)) {
-        console.error(`Cannot enable ${moduleName}: dependency ${dep} is not enabled`);
+        console.error(
+          `Cannot enable ${moduleName}: dependency ${dep} is not enabled`
+        );
         return false;
       }
     }
 
     // Check required features
-    if (module.config.requiredFeatures) {
-      for (const feature of module.config.requiredFeatures) {
+    if (registeredModule.config.requiredFeatures) {
+      for (const feature of registeredModule.config.requiredFeatures) {
         if (!isFeatureEnabled(feature)) {
-          console.error(`Cannot enable ${moduleName}: required feature ${feature} is not enabled`);
+          console.error(
+            `Cannot enable ${moduleName}: required feature ${feature} is not enabled`
+          );
           return false;
         }
       }
     }
 
     // Enable the module
-    module.config.enabled = true;
-    module.status = 'loaded';
-    module.health = {
+    registeredModule.config.enabled = true;
+    registeredModule.status = 'loaded';
+    registeredModule.health = {
       status: 'healthy',
       lastCheck: new Date(),
       details: {
         dependenciesResolved: true,
-        featuresAvailable: this.checkOptionalFeatures(module.config),
-      },
+        featuresAvailable: this.checkOptionalFeatures(registeredModule.config)
+      }
     };
 
     this.emitEvent('module:enabled', moduleName, {
-      version: module.config.version,
-      dependencies: module.config.dependencies,
+      version: registeredModule.config.version,
+      dependencies: registeredModule.config.dependencies
     });
 
     return true;
@@ -415,18 +438,18 @@ export class ModuleRegistry {
       return false;
     }
 
-    const module = this.modules.get(moduleName);
-    if (!module) {
+    const registeredModule = this.modules.get(moduleName);
+    if (!registeredModule) {
       console.error(`Module ${moduleName} not found`);
       return false;
     }
 
-    module.config.enabled = false;
-    module.status = 'disabled';
+    registeredModule.config.enabled = false;
+    registeredModule.status = 'disabled';
 
     this.emitEvent('module:disabled', moduleName, {
-      version: module.config.version,
-      reason: 'manual',
+      version: registeredModule.config.version,
+      reason: 'manual'
     });
 
     return true;
@@ -451,9 +474,11 @@ export class ModuleRegistry {
         const errorHealth = {
           status: 'unhealthy' as const,
           lastCheck: new Date(),
-          details: { error: error instanceof Error ? error.message : String(error) },
+          details: {
+            error: error instanceof Error ? error.message : String(error)
+          }
         };
-        
+
         module.health = errorHealth;
         results.set(name, errorHealth);
       }
@@ -476,8 +501,12 @@ export class ModuleRegistry {
     averageLoadTime: number;
   } {
     const modules = this.getAllModules();
-    const enabled = modules.filter(m => m.config.enabled && m.status === 'loaded').length;
-    const disabled = modules.filter(m => !m.config.enabled || m.status === 'disabled').length;
+    const enabled = modules.filter(
+      m => m.config.enabled && m.status === 'loaded'
+    ).length;
+    const disabled = modules.filter(
+      m => !m.config.enabled || m.status === 'disabled'
+    ).length;
     const errors = modules.filter(m => m.status === 'error').length;
 
     const byCategory: Record<string, number> = {};
@@ -512,14 +541,17 @@ export class ModuleRegistry {
       byCategory,
       byStatus,
       totalMemoryUsage,
-      averageLoadTime: loadTimeCount > 0 ? totalLoadTime / loadTimeCount : 0,
+      averageLoadTime: loadTimeCount > 0 ? totalLoadTime / loadTimeCount : 0
     };
   }
 
   /**
    * Add event listener
    */
-  addEventListener(event: ModuleRegistryEvent, listener: ModuleEventListener): void {
+  addEventListener(
+    event: ModuleRegistryEvent,
+    listener: ModuleEventListener
+  ): void {
     if (!this.eventListeners.has(event)) {
       this.eventListeners.set(event, []);
     }
@@ -529,7 +561,10 @@ export class ModuleRegistry {
   /**
    * Remove event listener
    */
-  removeEventListener(event: ModuleRegistryEvent, listener: ModuleEventListener): void {
+  removeEventListener(
+    event: ModuleRegistryEvent,
+    listener: ModuleEventListener
+  ): void {
     const listeners = this.eventListeners.get(event);
     if (listeners) {
       const index = listeners.indexOf(listener);
@@ -542,14 +577,18 @@ export class ModuleRegistry {
   /**
    * Emit an event
    */
-  private emitEvent(type: ModuleRegistryEvent, moduleName?: string, data?: any): void {
+  private emitEvent(
+    type: ModuleRegistryEvent,
+    moduleName?: string,
+    data?: any
+  ): void {
     const listeners = this.eventListeners.get(type);
     if (listeners) {
       const event = {
         type,
         moduleName,
         data,
-        timestamp: new Date(),
+        timestamp: new Date()
       };
 
       listeners.forEach(listener => {
@@ -598,7 +637,10 @@ export class ModuleRegistry {
   /**
    * Check for circular dependencies
    */
-  private checkCircularDependencies(moduleName: string, dependencies: string[]): void {
+  private checkCircularDependencies(
+    moduleName: string,
+    dependencies: string[]
+  ): void {
     const visited = new Set<string>();
     const recursionStack = new Set<string>();
 
@@ -614,7 +656,8 @@ export class ModuleRegistry {
       visited.add(name);
       recursionStack.add(name);
 
-      const deps = name === moduleName ? dependencies : this.dependencies.get(name) || [];
+      const deps =
+        name === moduleName ? dependencies : this.dependencies.get(name) || [];
       for (const dep of deps) {
         if (hasCycle(dep)) {
           return true;
@@ -635,7 +678,7 @@ export class ModuleRegistry {
    */
   private checkOptionalFeatures(config: ModuleConfig): Record<string, boolean> {
     const features: Record<string, boolean> = {};
-    
+
     if (config.optionalFeatures) {
       for (const feature of config.optionalFeatures) {
         features[feature] = isFeatureEnabled(feature);
@@ -663,9 +706,11 @@ export class ModuleRegistry {
   /**
    * Check individual module health
    */
-  private async checkModuleHealth(module: ModuleMetadata): Promise<ModuleMetadata['health']> {
+  private async checkModuleHealth(
+    module: ModuleMetadata
+  ): Promise<ModuleMetadata['health']> {
     const startTime = Date.now();
-    
+
     try {
       // Check dependencies are still enabled
       for (const dep of module.config.dependencies) {
@@ -675,8 +720,8 @@ export class ModuleRegistry {
             lastCheck: new Date(),
             details: {
               error: `Dependency ${dep} is not enabled`,
-              checkDuration: Date.now() - startTime,
-            },
+              checkDuration: Date.now() - startTime
+            }
           };
         }
       }
@@ -690,8 +735,8 @@ export class ModuleRegistry {
               lastCheck: new Date(),
               details: {
                 warning: `Required feature ${feature} is not enabled`,
-                checkDuration: Date.now() - startTime,
-              },
+                checkDuration: Date.now() - startTime
+              }
             };
           }
         }
@@ -703,8 +748,8 @@ export class ModuleRegistry {
         details: {
           dependenciesResolved: true,
           featuresAvailable: this.checkOptionalFeatures(module.config),
-          checkDuration: Date.now() - startTime,
-        },
+          checkDuration: Date.now() - startTime
+        }
       };
     } catch (error) {
       return {
@@ -712,8 +757,8 @@ export class ModuleRegistry {
         lastCheck: new Date(),
         details: {
           error: error instanceof Error ? error.message : String(error),
-          checkDuration: Date.now() - startTime,
-        },
+          checkDuration: Date.now() - startTime
+        }
       };
     }
   }

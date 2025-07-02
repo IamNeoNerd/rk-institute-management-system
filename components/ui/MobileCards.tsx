@@ -1,9 +1,9 @@
 /**
  * Mobile-Optimized Card Components
- * 
+ *
  * Enhanced card variants specifically designed for mobile devices based on research
  * from leading mobile UI libraries (Ant Design Mobile, TDesign Mobile Vue).
- * 
+ *
  * Key Features:
  * - Ultra-compact padding for maximum content density
  * - Horizontal layouts for better mobile utilization
@@ -13,7 +13,9 @@
  */
 
 import React from 'react';
+
 import { cn } from '@/lib/utils';
+
 import { Card, CardProps } from './Card';
 
 // Compact Stats Card for Mobile
@@ -52,36 +54,48 @@ export function CompactStatsCard({
 }: CompactStatsCardProps) {
   if (layout === 'horizontal') {
     return (
-      <Card 
-        variant="mobile-compact" 
-        padding="sm" 
+      <Card
+        variant='mobile-compact'
+        padding='sm'
         className={cn('min-h-[60px]', className)}
         mobileOptimized
       >
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-2 flex-1 min-w-0">
+        <div className='flex items-center justify-between'>
+          <div className='flex items-center space-x-2 flex-1 min-w-0'>
             {icon && (
-              <div className={cn('text-lg flex-shrink-0', compactColorVariants[color])}>
+              <div
+                className={cn(
+                  'text-lg flex-shrink-0',
+                  compactColorVariants[color]
+                )}
+              >
                 {icon}
               </div>
             )}
-            <div className="min-w-0 flex-1">
-              <div className="flex items-baseline space-x-2">
-                <div className={cn('text-lg sm:text-xl font-bold', compactColorVariants[color])}>
+            <div className='min-w-0 flex-1'>
+              <div className='flex items-baseline space-x-2'>
+                <div
+                  className={cn(
+                    'text-lg sm:text-xl font-bold',
+                    compactColorVariants[color]
+                  )}
+                >
                   {typeof value === 'number' ? value.toLocaleString() : value}
                 </div>
                 {trend && (
-                  <div className={cn(
-                    'text-xs font-medium',
-                    trend.isPositive ? 'text-green-600' : 'text-red-600'
-                  )}>
+                  <div
+                    className={cn(
+                      'text-xs font-medium',
+                      trend.isPositive ? 'text-green-600' : 'text-red-600'
+                    )}
+                  >
                     {trend.isPositive ? '↗' : '↘'} {Math.abs(trend.value)}%
                   </div>
                 )}
               </div>
-              <div className="text-xs text-gray-600 truncate">{title}</div>
+              <div className='text-xs text-gray-600 truncate'>{title}</div>
               {subtitle && (
-                <div className="text-xs text-gray-400 truncate">{subtitle}</div>
+                <div className='text-xs text-gray-400 truncate'>{subtitle}</div>
               )}
             </div>
           </div>
@@ -91,29 +105,41 @@ export function CompactStatsCard({
   }
 
   return (
-    <Card 
-      variant="mobile-compact" 
-      padding="sm" 
+    <Card
+      variant='mobile-compact'
+      padding='sm'
       className={cn('text-center min-h-[80px]', className)}
       mobileOptimized
     >
       {icon && (
-        <div className={cn('text-base sm:text-lg mb-1', compactColorVariants[color])}>
+        <div
+          className={cn(
+            'text-base sm:text-lg mb-1',
+            compactColorVariants[color]
+          )}
+        >
           {icon}
         </div>
       )}
-      <div className={cn('text-lg sm:text-xl font-bold mb-0.5', compactColorVariants[color])}>
+      <div
+        className={cn(
+          'text-lg sm:text-xl font-bold mb-0.5',
+          compactColorVariants[color]
+        )}
+      >
         {typeof value === 'number' ? value.toLocaleString() : value}
       </div>
-      <div className="text-xs font-medium text-gray-600">{title}</div>
+      <div className='text-xs font-medium text-gray-600'>{title}</div>
       {subtitle && (
-        <div className="text-xs text-gray-400 mt-0.5">{subtitle}</div>
+        <div className='text-xs text-gray-400 mt-0.5'>{subtitle}</div>
       )}
       {trend && (
-        <div className={cn(
-          'text-xs font-medium mt-1',
-          trend.isPositive ? 'text-green-600' : 'text-red-600'
-        )}>
+        <div
+          className={cn(
+            'text-xs font-medium mt-1',
+            trend.isPositive ? 'text-green-600' : 'text-red-600'
+          )}
+        >
           {trend.isPositive ? '↗' : '↘'} {Math.abs(trend.value)}%
         </div>
       )}
@@ -127,7 +153,15 @@ export interface CondensedMetricCardProps {
   value: string | number;
   subtitle?: string;
   icon: React.ReactNode;
-  color: 'blue' | 'green' | 'purple' | 'red' | 'yellow' | 'indigo' | 'pink' | 'gray';
+  color:
+    | 'blue'
+    | 'green'
+    | 'purple'
+    | 'red'
+    | 'yellow'
+    | 'indigo'
+    | 'pink'
+    | 'gray';
   trend?: {
     value: number;
     label: string;
@@ -209,19 +243,21 @@ export function CondensedMetricCard({
   const colors = condensedColorClasses[color];
 
   return (
-    <Card 
-      variant="mobile-compact" 
-      padding="sm" 
+    <Card
+      variant='mobile-compact'
+      padding='sm'
       className={cn('min-h-[70px]', className)}
       mobileOptimized
     >
-      <div className="flex items-center space-x-2">
-        <div className={cn('p-1.5 sm:p-2 rounded-lg flex-shrink-0', colors.iconBg)}>
-          <div className="text-sm sm:text-base">{icon}</div>
+      <div className='flex items-center space-x-2'>
+        <div
+          className={cn('p-1.5 sm:p-2 rounded-lg flex-shrink-0', colors.iconBg)}
+        >
+          <div className='text-sm sm:text-base'>{icon}</div>
         </div>
-        <div className="flex-1 min-w-0">
-          <div className="text-xs text-gray-600 mb-0.5 truncate">{title}</div>
-          <div className="text-base sm:text-lg font-bold text-gray-900 mb-0.5 truncate">
+        <div className='flex-1 min-w-0'>
+          <div className='text-xs text-gray-600 mb-0.5 truncate'>{title}</div>
+          <div className='text-base sm:text-lg font-bold text-gray-900 mb-0.5 truncate'>
             {value}
           </div>
           {subtitle && (
@@ -230,15 +266,17 @@ export function CondensedMetricCard({
             </div>
           )}
           {trend && (
-            <div className="flex items-center mt-0.5">
-              <span className={cn(
-                'text-xs font-medium',
-                trend.isPositive ? colors.trendPositive : colors.trendNegative
-              )}>
+            <div className='flex items-center mt-0.5'>
+              <span
+                className={cn(
+                  'text-xs font-medium',
+                  trend.isPositive ? colors.trendPositive : colors.trendNegative
+                )}
+              >
                 {trend.isPositive ? '↗' : '↘'} {Math.abs(trend.value)}%
               </span>
               {showTrendLabel && (
-                <span className="text-xs text-gray-500 ml-1 truncate">
+                <span className='text-xs text-gray-500 ml-1 truncate'>
                   {trend.label}
                 </span>
               )}
@@ -287,50 +325,53 @@ export function ListCard({
   const hasMore = items.length > maxItems;
 
   return (
-    <Card 
-      variant="mobile-compact" 
-      padding="none" 
+    <Card
+      variant='mobile-compact'
+      padding='none'
       className={className}
       mobileOptimized
     >
-      <div className="divide-y divide-gray-100">
+      <div className='divide-y divide-gray-100'>
         {displayItems.map((item, index) => (
           <div
             key={item.id}
             className={cn(
               'p-2.5 sm:p-3 flex items-center justify-between min-h-[44px]',
-              item.onClick && 'cursor-pointer hover:bg-gray-50 transition-colors'
+              item.onClick &&
+                'cursor-pointer hover:bg-gray-50 transition-colors'
             )}
             onClick={item.onClick}
           >
-            <div className="flex items-center space-x-2 flex-1 min-w-0">
+            <div className='flex items-center space-x-2 flex-1 min-w-0'>
               {item.icon && (
-                <div className="text-sm flex-shrink-0 text-gray-600">
+                <div className='text-sm flex-shrink-0 text-gray-600'>
                   {item.icon}
                 </div>
               )}
-              <div className="min-w-0 flex-1">
-                <div className="text-sm font-medium text-gray-900 truncate">
+              <div className='min-w-0 flex-1'>
+                <div className='text-sm font-medium text-gray-900 truncate'>
                   {item.title}
                 </div>
                 {item.subtitle && (
-                  <div className="text-xs text-gray-500 truncate">
+                  <div className='text-xs text-gray-500 truncate'>
                     {item.subtitle}
                   </div>
                 )}
               </div>
             </div>
-            <div className="flex items-center space-x-2 flex-shrink-0">
+            <div className='flex items-center space-x-2 flex-shrink-0'>
               {item.badge && (
-                <span className={cn(
-                  'px-1.5 py-0.5 text-xs font-medium rounded',
-                  badgeColors[item.badge.color]
-                )}>
+                <span
+                  className={cn(
+                    'px-1.5 py-0.5 text-xs font-medium rounded',
+                    badgeColors[item.badge.color]
+                  )}
+                >
                   {item.badge.text}
                 </span>
               )}
               {item.value && (
-                <div className="text-sm font-semibold text-gray-900">
+                <div className='text-sm font-semibold text-gray-900'>
                   {item.value}
                 </div>
               )}
@@ -340,7 +381,7 @@ export function ListCard({
         {hasMore && showMore && (
           <button
             onClick={showMore}
-            className="w-full p-2.5 sm:p-3 text-sm text-blue-600 hover:bg-blue-50 transition-colors text-center"
+            className='w-full p-2.5 sm:p-3 text-sm text-blue-600 hover:bg-blue-50 transition-colors text-center'
           >
             View {items.length - maxItems} more
           </button>

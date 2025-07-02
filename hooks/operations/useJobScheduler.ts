@@ -1,9 +1,9 @@
 /**
  * Job Scheduler Hook
- * 
+ *
  * Specialized hook for managing scheduled and running jobs.
  * Provides job monitoring, filtering, and analysis capabilities.
- * 
+ *
  * Features:
  * - Job filtering and sorting
  * - Status analysis
@@ -15,7 +15,12 @@
 'use client';
 
 import { useMemo } from 'react';
-import { AutomationStatus, RunningJob, ScheduledJob } from '@/components/features/operations-hub/types';
+
+import {
+  AutomationStatus,
+  RunningJob,
+  ScheduledJob
+} from '@/components/features/operations-hub/types';
 
 export interface JobMetrics {
   totalRunning: number;
@@ -38,7 +43,7 @@ export interface JobAnalysis {
 export interface UseJobSchedulerReturn {
   // Job Analysis
   jobAnalysis: JobAnalysis | null;
-  
+
   // Utility Methods
   formatDateTime: (dateString: string) => string;
   formatDuration: (ms: number) => string;
@@ -48,8 +53,9 @@ export interface UseJobSchedulerReturn {
   getJobPriority: (job: ScheduledJob) => 'high' | 'medium' | 'low';
 }
 
-export function useJobScheduler(automationStatus: AutomationStatus | null): UseJobSchedulerReturn {
-  
+export function useJobScheduler(
+  automationStatus: AutomationStatus | null
+): UseJobSchedulerReturn {
   // Format date and time
   const formatDateTime = (dateString: string): string => {
     return new Date(dateString).toLocaleString();
@@ -60,7 +66,7 @@ export function useJobScheduler(automationStatus: AutomationStatus | null): UseJ
     const seconds = Math.floor(ms / 1000);
     const minutes = Math.floor(seconds / 60);
     const hours = Math.floor(minutes / 60);
-    
+
     if (hours > 0) {
       return `${hours}h ${minutes % 60}m ${seconds % 60}s`;
     } else if (minutes > 0) {
@@ -113,17 +119,25 @@ export function useJobScheduler(automationStatus: AutomationStatus | null): UseJ
   // Get job priority based on schedule and type
   const getJobPriority = (job: ScheduledJob): 'high' | 'medium' | 'low' => {
     const name = job.name.toLowerCase();
-    
+
     // High priority jobs
-    if (name.includes('billing') || name.includes('payment') || name.includes('critical')) {
+    if (
+      name.includes('billing') ||
+      name.includes('payment') ||
+      name.includes('critical')
+    ) {
       return 'high';
     }
-    
+
     // Medium priority jobs
-    if (name.includes('reminder') || name.includes('report') || name.includes('backup')) {
+    if (
+      name.includes('reminder') ||
+      name.includes('report') ||
+      name.includes('backup')
+    ) {
       return 'medium';
     }
-    
+
     // Low priority jobs
     return 'low';
   };
@@ -131,15 +145,17 @@ export function useJobScheduler(automationStatus: AutomationStatus | null): UseJ
   // Calculate job analysis
   const jobAnalysis = useMemo((): JobAnalysis | null => {
     if (!automationStatus) return null;
-    
+
     const { runningJobs, scheduledJobs, summary } = automationStatus;
-    
+
     // Filter jobs
     const activeJobs = scheduledJobs.filter(job => job.isActive);
     const inactiveJobs = scheduledJobs.filter(job => !job.isActive);
     const completedJobs = runningJobs.filter(job => job.status === 'COMPLETED');
-    const failedJobs = runningJobs.filter(job => job.status === 'FAILED' || job.status === 'ERROR');
-    
+    const failedJobs = runningJobs.filter(
+      job => job.status === 'FAILED' || job.status === 'ERROR'
+    );
+
     // Get recent jobs (last 24 hours)
     const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
     const recentJobs = runningJobs.filter(job => {
@@ -154,7 +170,7 @@ export function useJobScheduler(automationStatus: AutomationStatus | null): UseJ
       activeScheduled: summary.activeScheduledJobs,
       inactiveScheduled: scheduledJobs.length - summary.activeScheduledJobs,
       completedJobs: completedJobs.length,
-      failedJobs: failedJobs.length,
+      failedJobs: failedJobs.length
     };
 
     return {
@@ -163,20 +179,20 @@ export function useJobScheduler(automationStatus: AutomationStatus | null): UseJ
       scheduledJobs,
       activeJobs,
       inactiveJobs,
-      recentJobs,
+      recentJobs
     };
   }, [automationStatus]);
 
   return {
     // Job Analysis
     jobAnalysis,
-    
+
     // Utility Methods
     formatDateTime,
     formatDuration,
     getJobStatusColor,
     getJobStatusIcon,
     isJobActive,
-    getJobPriority,
+    getJobPriority
   };
 }

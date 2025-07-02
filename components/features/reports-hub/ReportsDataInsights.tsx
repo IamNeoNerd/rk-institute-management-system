@@ -1,8 +1,10 @@
 'use client';
 
 import { useEffect } from 'react';
-import { ReportsDataInsightsProps } from './types';
+
 import { useReportsHubData, useAutomationReports } from '@/hooks';
+
+import { ReportsDataInsightsProps } from './types';
 
 /**
  * Reports Data Insights Component
@@ -28,8 +30,10 @@ export default function ReportsDataInsights({
   onErrorChange,
   onAutomationReportsUpdate
 }: ReportsDataInsightsProps) {
-
-  const { reportData, loading, error } = useReportsHubData(selectedMonth, selectedYear);
+  const { reportData, loading, error } = useReportsHubData(
+    selectedMonth,
+    selectedYear
+  );
   const { automationReports } = useAutomationReports(activeTab);
 
   // Update parent component state when hook state changes

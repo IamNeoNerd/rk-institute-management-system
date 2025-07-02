@@ -15,7 +15,7 @@ services:
     container_name: rk-institute-app
     restart: unless-stopped
     ports:
-      - "3000:3000"
+      - '3000:3000'
     environment:
       - NODE_ENV=production
       - DATABASE_URL=postgresql://rk_user:${DB_PASSWORD}@db:5432/rk_institute_prod
@@ -33,7 +33,7 @@ services:
     networks:
       - rk-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      test: ['CMD', 'curl', '-f', 'http://localhost:3000/api/health']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -50,16 +50,16 @@ services:
       POSTGRES_DB: rk_institute_prod
       POSTGRES_USER: rk_user
       POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_INITDB_ARGS: "--encoding=UTF-8 --lc-collate=C --lc-ctype=C"
+      POSTGRES_INITDB_ARGS: '--encoding=UTF-8 --lc-collate=C --lc-ctype=C'
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql:ro
     ports:
-      - "5432:5432"
+      - '5432:5432'
     networks:
       - rk-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U rk_user -d rk_institute_prod"]
+      test: ['CMD-SHELL', 'pg_isready -U rk_user -d rk_institute_prod']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -76,11 +76,11 @@ services:
     volumes:
       - redis_data:/data
     ports:
-      - "6379:6379"
+      - '6379:6379'
     networks:
       - rk-network
     healthcheck:
-      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      test: ['CMD', 'redis-cli', '--raw', 'incr', 'ping']
       interval: 10s
       timeout: 3s
       retries: 5
@@ -94,8 +94,8 @@ services:
     container_name: rk-institute-nginx
     restart: unless-stopped
     ports:
-      - "80:80"
-      - "443:443"
+      - '80:80'
+      - '443:443'
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./nginx/ssl:/etc/nginx/ssl:ro
@@ -105,7 +105,7 @@ services:
     networks:
       - rk-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      test: ['CMD', 'curl', '-f', 'http://localhost/health']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -116,7 +116,7 @@ services:
   backup:
     image: postgres:15-alpine
     container_name: rk-institute-backup
-    restart: "no"
+    restart: 'no'
     environment:
       PGPASSWORD: ${DB_PASSWORD}
     volumes:

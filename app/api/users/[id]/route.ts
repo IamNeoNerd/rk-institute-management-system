@@ -1,6 +1,6 @@
-import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
+import { NextResponse } from 'next/server';
 
 const prisma = new PrismaClient();
 
@@ -23,17 +23,14 @@ export async function GET(
         family: {
           select: {
             id: true,
-            name: true,
-          },
-        },
-      },
+            name: true
+          }
+        }
+      }
     });
 
     if (!user) {
-      return NextResponse.json(
-        { error: 'User not found' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
     return NextResponse.json(user);
@@ -67,8 +64,8 @@ export async function PUT(
     const existingUser = await prisma.user.findFirst({
       where: {
         email,
-        id: { not: params.id },
-      },
+        id: { not: params.id }
+      }
     });
 
     if (existingUser) {
@@ -81,7 +78,7 @@ export async function PUT(
     // Verify family exists if provided
     if (familyId) {
       const family = await prisma.family.findUnique({
-        where: { id: familyId },
+        where: { id: familyId }
       });
 
       if (!family) {
@@ -98,7 +95,7 @@ export async function PUT(
       email,
       role,
       familyId: familyId || null,
-      isActive: isActive !== undefined ? isActive : true,
+      isActive: isActive !== undefined ? isActive : true
     };
 
     // Hash password if provided
@@ -121,10 +118,10 @@ export async function PUT(
         family: {
           select: {
             id: true,
-            name: true,
-          },
-        },
-      },
+            name: true
+          }
+        }
+      }
     });
 
     return NextResponse.json(user);
@@ -145,20 +142,17 @@ export async function DELETE(
   try {
     // Check if user exists
     const user = await prisma.user.findUnique({
-      where: { id: params.id },
+      where: { id: params.id }
     });
 
     if (!user) {
-      return NextResponse.json(
-        { error: 'User not found' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
     // Prevent deletion of the last admin user
     if (user.role === 'ADMIN') {
       const adminCount = await prisma.user.count({
-        where: { role: 'ADMIN' },
+        where: { role: 'ADMIN' }
       });
 
       if (adminCount <= 1) {
@@ -171,7 +165,7 @@ export async function DELETE(
 
     // Delete the user
     await prisma.user.delete({
-      where: { id: params.id },
+      where: { id: params.id }
     });
 
     return NextResponse.json({ message: 'User deleted successfully' });

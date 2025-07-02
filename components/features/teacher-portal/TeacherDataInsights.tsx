@@ -1,10 +1,10 @@
 /**
  * Teacher Data Insights Component
- * 
+ *
  * Handles all data fetching, state management, and real-time updates
  * for the Teacher Portal. Provides clean separation of business logic
  * from presentation components.
- * 
+ *
  * Design Features:
  * - Real-time data fetching with authentication
  * - Comprehensive error handling
@@ -16,7 +16,13 @@
 'use client';
 
 import { useEffect } from 'react';
-import { TeacherDataInsightsProps, User, TeacherProfile, DashboardStats } from './types';
+
+import {
+  TeacherDataInsightsProps,
+  User,
+  TeacherProfile,
+  DashboardStats
+} from './types';
 
 export default function TeacherDataInsights({
   onUserUpdate,
@@ -24,7 +30,6 @@ export default function TeacherDataInsights({
   onStatsUpdate,
   onLoadingChange
 }: TeacherDataInsightsProps) {
-
   useEffect(() => {
     // Initial data fetch
     fetchTeacherData();
@@ -119,7 +124,7 @@ export default function TeacherDataInsights({
       // Fetch students data with error handling
       try {
         const studentsRes = await fetch('/api/students', {
-          headers: { 'Authorization': `Bearer ${token}` },
+          headers: { Authorization: `Bearer ${token}` }
         });
         if (studentsRes.ok) {
           const studentsData = await studentsRes.json();
@@ -132,7 +137,7 @@ export default function TeacherDataInsights({
       // Fetch courses data with error handling
       try {
         const coursesRes = await fetch('/api/courses', {
-          headers: { 'Authorization': `Bearer ${token}` },
+          headers: { Authorization: `Bearer ${token}` }
         });
         if (coursesRes.ok) {
           const coursesData = await coursesRes.json();
@@ -145,14 +150,20 @@ export default function TeacherDataInsights({
       // Fetch academic logs with error handling
       try {
         const logsRes = await fetch('/api/academic-logs', {
-          headers: { 'Authorization': `Bearer ${token}` },
+          headers: { Authorization: `Bearer ${token}` }
         });
         if (logsRes.ok) {
           const logsData = await logsRes.json();
           totalLogs = logsData.length;
-          achievements = logsData.filter((log: any) => log.logType === 'ACHIEVEMENT').length;
-          concerns = logsData.filter((log: any) => log.logType === 'CONCERN').length;
-          progressReports = logsData.filter((log: any) => log.logType === 'PROGRESS').length;
+          achievements = logsData.filter(
+            (log: any) => log.logType === 'ACHIEVEMENT'
+          ).length;
+          concerns = logsData.filter(
+            (log: any) => log.logType === 'CONCERN'
+          ).length;
+          progressReports = logsData.filter(
+            (log: any) => log.logType === 'PROGRESS'
+          ).length;
         }
       } catch (logsError) {
         console.warn('Academic logs API not available');
@@ -164,7 +175,7 @@ export default function TeacherDataInsights({
         totalLogs,
         achievements,
         concerns,
-        progressReports,
+        progressReports
       });
     } catch (error) {
       console.error('Error fetching dashboard stats:', error);

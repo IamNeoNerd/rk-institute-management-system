@@ -1,9 +1,9 @@
 /**
  * Teacher Courses Hook
- * 
+ *
  * Specialized hook for managing teacher course data including course materials,
  * student enrollments, and course analytics.
- * 
+ *
  * Features:
  * - Course material management
  * - Student enrollment tracking
@@ -15,7 +15,12 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { Course, CourseMaterial, Student } from '@/components/features/teacher-portal/types';
+
+import {
+  Course,
+  CourseMaterial,
+  Student
+} from '@/components/features/teacher-portal/types';
 
 export interface CourseAnalytics {
   enrollmentRate: number;
@@ -33,15 +38,24 @@ export interface UseTeacherCoursesReturn {
   courseAnalytics: CourseAnalytics | null;
   loading: boolean;
   error: string | null;
-  
+
   // Actions
   fetchCourses: () => Promise<void>;
   selectCourse: (courseId: string) => Promise<void>;
   fetchCourseStudents: (courseId: string) => Promise<void>;
   fetchCourseAnalytics: (courseId: string) => Promise<void>;
-  uploadCourseMaterial: (courseId: string, material: FormData) => Promise<boolean>;
-  deleteCourseMaterial: (courseId: string, materialId: string) => Promise<boolean>;
-  updateCourseInfo: (courseId: string, updates: Partial<Course>) => Promise<boolean>;
+  uploadCourseMaterial: (
+    courseId: string,
+    material: FormData
+  ) => Promise<boolean>;
+  deleteCourseMaterial: (
+    courseId: string,
+    materialId: string
+  ) => Promise<boolean>;
+  updateCourseInfo: (
+    courseId: string,
+    updates: Partial<Course>
+  ) => Promise<boolean>;
   enrollStudent: (courseId: string, studentId: string) => Promise<boolean>;
   unenrollStudent: (courseId: string, studentId: string) => Promise<boolean>;
 }
@@ -51,7 +65,8 @@ export function useTeacherCourses(): UseTeacherCoursesReturn {
   const [courses, setCourses] = useState<Course[]>([]);
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
   const [courseStudents, setCourseStudents] = useState<Student[]>([]);
-  const [courseAnalytics, setCourseAnalytics] = useState<CourseAnalytics | null>(null);
+  const [courseAnalytics, setCourseAnalytics] =
+    useState<CourseAnalytics | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -60,12 +75,12 @@ export function useTeacherCourses(): UseTeacherCoursesReturn {
     try {
       setLoading(true);
       setError(null);
-      
+
       const token = localStorage.getItem('token');
       const response = await fetch('/api/teacher/courses', {
-        headers: { 'Authorization': `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${token}` }
       });
-      
+
       if (response.ok) {
         const data = await response.json();
         setCourses(data.courses || []);
@@ -81,37 +96,40 @@ export function useTeacherCourses(): UseTeacherCoursesReturn {
   }, []);
 
   // Select course and fetch details
-  const selectCourse = useCallback(async (courseId: string) => {
-    try {
-      setLoading(true);
-      setError(null);
-      
-      const course = courses.find(c => c.id === courseId);
-      if (course) {
-        setSelectedCourse(course);
-        await Promise.all([
-          fetchCourseStudents(courseId),
-          fetchCourseAnalytics(courseId)
-        ]);
-      } else {
-        setError('Course not found');
+  const selectCourse = useCallback(
+    async (courseId: string) => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const course = courses.find(c => c.id === courseId);
+        if (course) {
+          setSelectedCourse(course);
+          await Promise.all([
+            fetchCourseStudents(courseId),
+            fetchCourseAnalytics(courseId)
+          ]);
+        } else {
+          setError('Course not found');
+        }
+      } catch (err) {
+        setError('Error selecting course');
+        console.error('Error selecting course:', err);
+      } finally {
+        setLoading(false);
       }
-    } catch (err) {
-      setError('Error selecting course');
-      console.error('Error selecting course:', err);
-    } finally {
-      setLoading(false);
-    }
-  }, [courses]);
+    },
+    [courses]
+  );
 
   // Fetch course students
   const fetchCourseStudents = useCallback(async (courseId: string) => {
     try {
       const token = localStorage.getItem('token');
       const response = await fetch(`/api/courses/${courseId}/students`, {
-        headers: { 'Authorization': `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${token}` }
       });
-      
+
       if (response.ok) {
         const data = await response.json();
         setCourseStudents(data.students || []);
@@ -129,9 +147,9 @@ export function useTeacherCourses(): UseTeacherCoursesReturn {
     try {
       const token = localStorage.getItem('token');
       const response = await fetch(`/api/courses/${courseId}/analytics`, {
-        headers: { 'Authorization': `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${token}` }
       });
-      
+
       if (response.ok) {
         const data = await response.json();
         setCourseAnalytics(data.analytics);
@@ -159,167 +177,202 @@ export function useTeacherCourses(): UseTeacherCoursesReturn {
   }, []);
 
   // Upload course material
-  const uploadCourseMaterial = useCallback(async (courseId: string, material: FormData): Promise<boolean> => {
-    try {
-      const token = localStorage.getItem('token');
-      const response = await fetch(`/api/courses/${courseId}/materials`, {
-        method: 'POST',
-        headers: { 'Authorization': `Bearer ${token}` },
-        body: material,
-      });
+  const uploadCourseMaterial = useCallback(
+    async (courseId: string, material: FormData): Promise<boolean> => {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`/api/courses/${courseId}/materials`, {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${token}` },
+          body: material
+        });
 
-      if (response.ok) {
-        const newMaterial = await response.json();
-        setCourses(prev => prev.map(course => 
-          course.id === courseId 
-            ? { ...course, materials: [...course.materials, newMaterial] }
-            : course
-        ));
-        
-        if (selectedCourse?.id === courseId) {
-          setSelectedCourse(prev => prev ? {
-            ...prev,
-            materials: [...prev.materials, newMaterial]
-          } : null);
+        if (response.ok) {
+          const newMaterial = await response.json();
+          setCourses(prev =>
+            prev.map(course =>
+              course.id === courseId
+                ? { ...course, materials: [...course.materials, newMaterial] }
+                : course
+            )
+          );
+
+          if (selectedCourse?.id === courseId) {
+            setSelectedCourse(prev =>
+              prev
+                ? {
+                    ...prev,
+                    materials: [...prev.materials, newMaterial]
+                  }
+                : null
+            );
+          }
+
+          return true;
+        } else {
+          setError('Failed to upload material');
+          return false;
         }
-        
-        return true;
-      } else {
-        setError('Failed to upload material');
+      } catch (err) {
+        setError('Network error while uploading material');
+        console.error('Error uploading material:', err);
         return false;
       }
-    } catch (err) {
-      setError('Network error while uploading material');
-      console.error('Error uploading material:', err);
-      return false;
-    }
-  }, [selectedCourse]);
+    },
+    [selectedCourse]
+  );
 
   // Delete course material
-  const deleteCourseMaterial = useCallback(async (courseId: string, materialId: string): Promise<boolean> => {
-    try {
-      const token = localStorage.getItem('token');
-      const response = await fetch(`/api/courses/${courseId}/materials/${materialId}`, {
-        method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${token}` },
-      });
+  const deleteCourseMaterial = useCallback(
+    async (courseId: string, materialId: string): Promise<boolean> => {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(
+          `/api/courses/${courseId}/materials/${materialId}`,
+          {
+            method: 'DELETE',
+            headers: { Authorization: `Bearer ${token}` }
+          }
+        );
 
-      if (response.ok) {
-        setCourses(prev => prev.map(course => 
-          course.id === courseId 
-            ? { ...course, materials: course.materials.filter(m => m.id !== materialId) }
-            : course
-        ));
-        
-        if (selectedCourse?.id === courseId) {
-          setSelectedCourse(prev => prev ? {
-            ...prev,
-            materials: prev.materials.filter(m => m.id !== materialId)
-          } : null);
+        if (response.ok) {
+          setCourses(prev =>
+            prev.map(course =>
+              course.id === courseId
+                ? {
+                    ...course,
+                    materials: course.materials.filter(m => m.id !== materialId)
+                  }
+                : course
+            )
+          );
+
+          if (selectedCourse?.id === courseId) {
+            setSelectedCourse(prev =>
+              prev
+                ? {
+                    ...prev,
+                    materials: prev.materials.filter(m => m.id !== materialId)
+                  }
+                : null
+            );
+          }
+
+          return true;
+        } else {
+          setError('Failed to delete material');
+          return false;
         }
-        
-        return true;
-      } else {
-        setError('Failed to delete material');
+      } catch (err) {
+        setError('Network error while deleting material');
+        console.error('Error deleting material:', err);
         return false;
       }
-    } catch (err) {
-      setError('Network error while deleting material');
-      console.error('Error deleting material:', err);
-      return false;
-    }
-  }, [selectedCourse]);
+    },
+    [selectedCourse]
+  );
 
   // Update course info
-  const updateCourseInfo = useCallback(async (courseId: string, updates: Partial<Course>): Promise<boolean> => {
-    try {
-      const token = localStorage.getItem('token');
-      const response = await fetch(`/api/courses/${courseId}`, {
-        method: 'PUT',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(updates),
-      });
+  const updateCourseInfo = useCallback(
+    async (courseId: string, updates: Partial<Course>): Promise<boolean> => {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`/api/courses/${courseId}`, {
+          method: 'PUT',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(updates)
+        });
 
-      if (response.ok) {
-        const updatedCourse = await response.json();
-        setCourses(prev => prev.map(course => 
-          course.id === courseId ? updatedCourse : course
-        ));
-        
-        if (selectedCourse?.id === courseId) {
-          setSelectedCourse(updatedCourse);
+        if (response.ok) {
+          const updatedCourse = await response.json();
+          setCourses(prev =>
+            prev.map(course =>
+              course.id === courseId ? updatedCourse : course
+            )
+          );
+
+          if (selectedCourse?.id === courseId) {
+            setSelectedCourse(updatedCourse);
+          }
+
+          return true;
+        } else {
+          setError('Failed to update course');
+          return false;
         }
-        
-        return true;
-      } else {
-        setError('Failed to update course');
+      } catch (err) {
+        setError('Network error while updating course');
+        console.error('Error updating course:', err);
         return false;
       }
-    } catch (err) {
-      setError('Network error while updating course');
-      console.error('Error updating course:', err);
-      return false;
-    }
-  }, [selectedCourse]);
+    },
+    [selectedCourse]
+  );
 
   // Enroll student
-  const enrollStudent = useCallback(async (courseId: string, studentId: string): Promise<boolean> => {
-    try {
-      const token = localStorage.getItem('token');
-      const response = await fetch(`/api/courses/${courseId}/enroll`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ studentId }),
-      });
+  const enrollStudent = useCallback(
+    async (courseId: string, studentId: string): Promise<boolean> => {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`/api/courses/${courseId}/enroll`, {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ studentId })
+        });
 
-      if (response.ok) {
-        // Refresh course students
-        await fetchCourseStudents(courseId);
-        return true;
-      } else {
-        setError('Failed to enroll student');
+        if (response.ok) {
+          // Refresh course students
+          await fetchCourseStudents(courseId);
+          return true;
+        } else {
+          setError('Failed to enroll student');
+          return false;
+        }
+      } catch (err) {
+        setError('Network error while enrolling student');
+        console.error('Error enrolling student:', err);
         return false;
       }
-    } catch (err) {
-      setError('Network error while enrolling student');
-      console.error('Error enrolling student:', err);
-      return false;
-    }
-  }, [fetchCourseStudents]);
+    },
+    [fetchCourseStudents]
+  );
 
   // Unenroll student
-  const unenrollStudent = useCallback(async (courseId: string, studentId: string): Promise<boolean> => {
-    try {
-      const token = localStorage.getItem('token');
-      const response = await fetch(`/api/courses/${courseId}/unenroll`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ studentId }),
-      });
+  const unenrollStudent = useCallback(
+    async (courseId: string, studentId: string): Promise<boolean> => {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`/api/courses/${courseId}/unenroll`, {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ studentId })
+        });
 
-      if (response.ok) {
-        // Refresh course students
-        await fetchCourseStudents(courseId);
-        return true;
-      } else {
-        setError('Failed to unenroll student');
+        if (response.ok) {
+          // Refresh course students
+          await fetchCourseStudents(courseId);
+          return true;
+        } else {
+          setError('Failed to unenroll student');
+          return false;
+        }
+      } catch (err) {
+        setError('Network error while unenrolling student');
+        console.error('Error unenrolling student:', err);
         return false;
       }
-    } catch (err) {
-      setError('Network error while unenrolling student');
-      console.error('Error unenrolling student:', err);
-      return false;
-    }
-  }, [fetchCourseStudents]);
+    },
+    [fetchCourseStudents]
+  );
 
   return {
     // Data State
@@ -329,7 +382,7 @@ export function useTeacherCourses(): UseTeacherCoursesReturn {
     courseAnalytics,
     loading,
     error,
-    
+
     // Actions
     fetchCourses,
     selectCourse,
@@ -339,6 +392,6 @@ export function useTeacherCourses(): UseTeacherCoursesReturn {
     deleteCourseMaterial,
     updateCourseInfo,
     enrollStudent,
-    unenrollStudent,
+    unenrollStudent
   };
 }

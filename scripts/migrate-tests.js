@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+
 const glob = require('glob');
 
 class VitestMigrator {
@@ -14,20 +15,28 @@ class VitestMigrator {
       const originalContent = content;
 
       // Remove Jest environment docblock
-      content = content.replace(/\/\*\*\s*\n\s*\*\s*@jest-environment\s+\w+\s*\n\s*\*\/\s*\n/g, '');
+      content = content.replace(
+        /\/\*\*\s*\n\s*\*\s*@jest-environment\s+\w+\s*\n\s*\*\/\s*\n/g,
+        ''
+      );
 
       // Update imports - handle multiple patterns
       content = content.replace(
         /import\s+{([^}]+)}\s+from\s+['"]@jest\/globals['"]/g,
-        'import { $1, vi } from \'vitest\''
+        "import { $1, vi } from 'vitest'"
       );
 
       // Add vi import if jest functions are used but not imported
-      if (content.includes('jest.') && !content.includes('import { vi }') && !content.includes('from \'vitest\'')) {
+      if (
+        content.includes('jest.') &&
+        !content.includes('import { vi }') &&
+        !content.includes("from 'vitest'")
+      ) {
         const firstImport = content.indexOf('import');
         if (firstImport !== -1) {
-          content = content.slice(0, firstImport) + 
-            'import { vi } from \'vitest\';\n' + 
+          content =
+            content.slice(0, firstImport) +
+            "import { vi } from 'vitest';\n" +
             content.slice(firstImport);
         }
       }
@@ -38,16 +47,25 @@ class VitestMigrator {
       content = content.replace(/jest\.spyOn\(/g, 'vi.spyOn(');
       content = content.replace(/jest\.clearAllMocks\(/g, 'vi.clearAllMocks(');
       content = content.replace(/jest\.resetAllMocks\(/g, 'vi.resetAllMocks(');
-      content = content.replace(/jest\.restoreAllMocks\(/g, 'vi.restoreAllMocks(');
+      content = content.replace(
+        /jest\.restoreAllMocks\(/g,
+        'vi.restoreAllMocks('
+      );
 
       // Update timer mocks
       content = content.replace(/jest\.useFakeTimers\(/g, 'vi.useFakeTimers(');
       content = content.replace(/jest\.useRealTimers\(/g, 'vi.useRealTimers(');
-      content = content.replace(/jest\.advanceTimersByTime\(/g, 'vi.advanceTimersByTime(');
+      content = content.replace(
+        /jest\.advanceTimersByTime\(/g,
+        'vi.advanceTimersByTime('
+      );
       content = content.replace(/jest\.runAllTimers\(/g, 'vi.runAllTimers(');
 
       // Update module mocks
-      content = content.replace(/jest\.requireActual\(/g, 'await vi.importActual(');
+      content = content.replace(
+        /jest\.requireActual\(/g,
+        'await vi.importActual('
+      );
 
       // Update mock implementations for Vitest compatibility
       content = content.replace(
@@ -64,7 +82,6 @@ class VitestMigrator {
         this.migrationLog.push(`ℹ️  No changes needed: ${filePath}`);
         console.log(`ℹ️  No changes needed: ${filePath}`);
       }
-
     } catch (error) {
       this.errorLog.push(`❌ Error migrating ${filePath}: ${error.message}`);
       console.error(`❌ Error migrating ${filePath}:`, error.message);
@@ -76,7 +93,7 @@ class VitestMigrator {
 
     // Find all test files
     const testFiles = glob.sync('__tests__/**/*.{test,spec}.{js,ts,jsx,tsx}');
-    
+
     console.log(`Found ${testFiles.length} test files to migrate:\n`);
 
     // Migrate each file
